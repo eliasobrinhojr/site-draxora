@@ -380,11 +380,13 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 }
 
 /* Foto do fundador */
-.about-who { display: flex; align-items: center; gap: 14px; margin-top: var(--space-1); }
-.about-who img { width: 56px; height: 56px; border-radius: var(--radius-pill); object-fit: cover; border: 2px solid var(--line); }
-.about-who strong { display: block; font-size: 16px; line-height: 22px; color: var(--ink); }
+.about-who { display: flex; align-items: flex-end; gap: var(--space-2); margin: var(--space-1) 0 0; }
+.about-who picture { flex: none; width: clamp(132px, 34vw, 184px); }
+.about-who img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--line); }
+.about-who figcaption { padding-bottom: 6px; }
+.about-who strong { display: block; font-family: var(--font-display); font-size: 18px; line-height: 24px; color: var(--ink); }
 .about-who small { display: block; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
-.founder-photo { position: relative; margin: 0; aspect-ratio: 4 / 5; width: 100%; max-width: 380px; justify-self: center; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--line); }
+.founder-photo { position: relative; margin: 0; aspect-ratio: 4 / 5; width: 100%; max-width: 420px; justify-self: center; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--line); }
 .founder-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .founder-photo::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 4px; background: var(--lume); }
-@media (max-width: 860px) { .founder-photo { max-width: 320px; justify-self: start; } }
+@media (max-width: 860px) { .founder-photo { max-width: 100%; justify-self: stretch; } }
