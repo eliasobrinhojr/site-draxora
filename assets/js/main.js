@@ -2,8 +2,8 @@
 (function () {
   // ===== CONTATO — edite aqui =====
   // WhatsApp com DDI + DDD, só números (ex.: '5592999999999'). Vazio = esconde o botão de WhatsApp.
-  var WHATSAPP = '';
-  var EMAIL = 'contato@draxora.com.br';
+  var WHATSAPP = '5548991851531';
+  var EMAIL = 'elias.dvlpr@gmail.com';
 
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
