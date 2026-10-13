@@ -467,3 +467,9 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
   .ck-total-value strong { font-size: 34px; line-height: 38px; }
   .ck-secure { font-size: 13px; }
 }
+
+/* Selo de revisão profissional */
+.reviewer { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--bg); max-width: 520px; }
+.reviewer svg { flex: none; color: var(--nicho-mente); }
+.reviewer strong { display: block; font-size: 16px; line-height: 22px; }
+.reviewer small { display: block; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
