@@ -38,6 +38,11 @@ if (empty($c)) {
     }
 }
 $out['ok'] = $out['tabela'];
+// Sem a chave de exportação, mostra só se está funcionando (não expõe nomes do banco).
+$key = (string)($c['export_key'] ?? '');
+if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
+    $out = ['ok' => $out['ok']];
+}
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
