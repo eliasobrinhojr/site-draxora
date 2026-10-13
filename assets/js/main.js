@@ -5,7 +5,12 @@
   var WHATSAPP = '5548991851531';
   var EMAIL = 'elias.dvlpr@gmail.com';
   // Link do checkout da Hotmart (ex.: 'https://pay.hotmart.com/XXXXXXXX'). Vazio = botão desativado com aviso "em breve".
-  var CHECKOUT_URL = '';
+  var CHECKOUT_URL = 'https://pay.hotmart.com/Y108011719G';
+  // Rastreamento de anúncios. Vazio = nada é carregado.
+  // META_PIXEL_ID: só números (Gerenciador de Eventos da Meta). GTAG_ID: 'G-XXXX' (GA4) ou 'AW-XXXX' (Google Ads).
+  var META_PIXEL_ID = '';
+  var GTAG_ID = '';
+  var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 29.90, currency: 'BRL' };
 
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
@@ -134,6 +139,67 @@
     var url = CHECKOUT_URL;
     if (query) url += (url.indexOf('?') === -1 ? '?' : '&') + query.slice(1);
     btn.setAttribute('href', url);
+  });
+
+  // ===== Rastreamento com consentimento (LGPD) =====
+  var page = document.body.getAttribute('data-page') || 'home';
+  var tracking = { on: false };
+  function track(evt, params) {
+    if (!tracking.on) return;
+    if (window.fbq && META_PIXEL_ID) window.fbq('track', evt, params || {});
+    if (window.gtag && GTAG_ID) {
+      var map = { ViewContent: 'view_item', InitiateCheckout: 'begin_checkout', Lead: 'generate_lead' };
+      if (map[evt]) window.gtag('event', map[evt], { currency: PRODUCT.currency, value: PRODUCT.value, items: [{ item_id: PRODUCT.id, item_name: PRODUCT.name }] });
+    }
+  }
+  function loadTracking() {
+    if (tracking.on) return;
+    tracking.on = true;
+    if (META_PIXEL_ID) {
+      /* Meta Pixel */
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', META_PIXEL_ID);
+      window.fbq('track', 'PageView');
+    }
+    if (GTAG_ID) {
+      var g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GTAG_ID; document.head.appendChild(g);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date()); window.gtag('config', GTAG_ID);
+    }
+    var content = { content_name: PRODUCT.name, content_ids: [PRODUCT.id], content_type: 'product', value: PRODUCT.value, currency: PRODUCT.currency };
+    if (page === 'vendas' || page === 'checkout') track('ViewContent', content);
+  }
+  function readConsent() { try { return localStorage.getItem('dx-consent'); } catch (e) { return null; } }
+  function saveConsent(v) { try { localStorage.setItem('dx-consent', v); } catch (e) {} }
+  if (META_PIXEL_ID || GTAG_ID) {
+    var consent = readConsent();
+    if (consent === 'yes') loadTracking();
+    else if (consent !== 'no') {
+      var bar = document.createElement('div');
+      bar.className = 'dx-consent';
+      bar.setAttribute('role', 'region');
+      bar.setAttribute('aria-label', 'Cookies');
+      var root = document.body.getAttribute('data-root') || '';
+      bar.innerHTML = '<p>Usamos cookies para medir nossos anúncios e melhorar o site. <a href="' + root + 'privacidade/index.html">Saiba mais</a></p>' +
+        '<div><button type="button" class="dx-btn dx-btn-secondary" data-consent="no">Recusar</button><button type="button" class="dx-btn dx-btn-primary" data-consent="yes">Aceitar</button></div>';
+      document.body.appendChild(bar);
+      bar.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-consent]'); if (!b) return;
+        var v = b.getAttribute('data-consent'); saveConsent(v); bar.remove();
+        if (v === 'yes') loadTracking();
+      });
+    }
+  }
+  // Clique no pagamento = início de checkout
+  document.querySelectorAll('[data-checkout-go]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      track('InitiateCheckout', { content_name: PRODUCT.name, content_ids: [PRODUCT.id], value: PRODUCT.value, currency: PRODUCT.currency, num_items: 1 });
+    });
+  });
+  // Cadastro na lista da porta 01 = lead
+  document.querySelectorAll('form.dx-lead').forEach(function (form) {
+    form.addEventListener('submit', function () { if (form.checkValidity()) track('Lead'); });
   });
 
   // Ano no rodapé

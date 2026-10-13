@@ -10,6 +10,7 @@ Site estático, sem build: HTML, CSS e JavaScript puros. Abra `index.html` no na
 index.html                    Home da Draxora (portas / método / criador)
 mapa-dos-sintomas/index.html  Porta 00: página de vendas do Mapa dos Sintomas
 mapa-dos-sintomas/checkout/   Revisão do pedido antes do pagamento na Hotmart
+privacidade/  termos/         Política de privacidade (LGPD) e termos de uso
 assets/css/draxora.css     Tokens e componentes do design system Draxora
 assets/js/main.js          Header, animações de entrada e formulários
 assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, selo de nicho)
@@ -19,17 +20,21 @@ assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, se
 
 **Vercel ou Netlify:** importe o repositório; não há comando de build e a pasta de saída é a raiz.
 
-## Antes de lançar — o que substituir
+## Configuração (topo de `assets/js/main.js`)
 
-Os trechos marcados em amarelo na página (`[...]`, classe `placeholder-note`) são lembretes; remova-os depois de ajustar.
+| Variável | Valor atual | Para que serve |
+| --- | --- | --- |
+| `CHECKOUT_URL` | `https://pay.hotmart.com/Y108011719G` | Botão "Ir para o pagamento seguro" (repassa os utm_* da página) |
+| `META_PIXEL_ID` | vazio | Pixel da Meta: PageView, ViewContent, InitiateCheckout, Lead (só após aceite de cookies) |
+| `GTAG_ID` | vazio | GA4 (`G-…`) ou Google Ads (`AW-…`): view_item, begin_checkout, generate_lead |
+| `WHATSAPP` / `EMAIL` | 5548991851531 / elias.dvlpr@gmail.com | Formulário "Sugerir um tema" e contato |
 
-- [ ] Link de checkout da Hotmart: variável `CHECKOUT_URL` no topo de `assets/js/main.js`. Enquanto estiver vazia, o botão da página de checkout fica desativado com o aviso "vendas abrem em breve".
-- [ ] Nome e registro (CRM ou CRP) do profissional que revisou o conteúdo (seção "Quem criou" e FAQ).
-- [ ] Sua foto nas seções "Quem está por trás" (home) e "Quem criou" (porta 00).
-- [ ] Formulário "Avisar-me" da porta 01: URL da sua ferramenta de e-mail no `data-endpoint`.
-- [ ] WhatsApp e e-mail do formulário "Sugerir um tema": variáveis `WHATSAPP` e `EMAIL` no topo de `assets/js/main.js` (sem número, o botão de WhatsApp fica escondido).
-- [ ] E-mail de contato do rodapé (`contato@draxora.com.br` é provisório).
-- [ ] Termos de uso e política de privacidade (links no rodapé).
+A compra (Purchase) é registrada pela Hotmart: configure o mesmo Pixel em Hotmart → Ferramentas → Pixel de rastreamento.
+
+## Pendências conhecidas
+
+- [ ] Formulário "Avisar-me" da porta 01 ainda não grava e-mails (próxima implementação: PHP + MySQL na Hostinger).
+- [ ] `og:image` usa caminho relativo; troque por URL absoluta quando o domínio estiver definido.
 
 ## Publicar na Hostinger com deploy automático
 
