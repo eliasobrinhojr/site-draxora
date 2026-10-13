@@ -41,7 +41,7 @@ Para criar uma lista nova (porta 02…), adicione o nome em `DX_LISTAS` no fim d
 | Variável | Valor atual | Para que serve |
 | --- | --- | --- |
 | `CHECKOUT_URL` | `https://pay.hotmart.com/Y108011719G` | Botão "Ir para o pagamento seguro" (repassa os utm_* da página) |
-| `META_PIXEL_ID` | vazio | Pixel da Meta: PageView, ViewContent, InitiateCheckout, Lead (só após aceite de cookies) |
+| `META_PIXEL_ID` | `28598304023142189` | Pixel da Meta: PageView, ViewContent, InitiateCheckout, Lead (só após aceite de cookies) |
 | `GTAG_ID` | vazio | GA4 (`G-…`) ou Google Ads (`AW-…`): view_item, begin_checkout, generate_lead |
 | `WHATSAPP` / `EMAIL` | 5548991851531 / elias.dvlpr@gmail.com | Formulário "Sugerir um tema" e contato |
 
