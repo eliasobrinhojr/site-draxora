@@ -4,6 +4,8 @@
   // WhatsApp com DDI + DDD, só números (ex.: '5592999999999'). Vazio = esconde o botão de WhatsApp.
   var WHATSAPP = '5548991851531';
   var EMAIL = 'elias.dvlpr@gmail.com';
+  // Link do checkout da Hotmart (ex.: 'https://pay.hotmart.com/XXXXXXXX'). Vazio = botão desativado com aviso "em breve".
+  var CHECKOUT_URL = '';
 
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
@@ -108,6 +110,30 @@
       form.reset();
       var dlg = form.closest('dialog'); if (dlg) dlg.close();
     });
+  });
+
+  // Leva os parâmetros de campanha (utm_*, src…) da página de vendas até o checkout
+  var query = window.location.search;
+  if (query) {
+    document.querySelectorAll('a[data-keep-query]').forEach(function (a) {
+      a.setAttribute('href', a.getAttribute('href').split('?')[0] + query);
+    });
+  }
+
+  // Botão "Ir para o pagamento seguro" -> Hotmart
+  document.querySelectorAll('[data-checkout-go]').forEach(function (btn) {
+    var note = document.querySelector('[data-checkout-note]');
+    var soon = document.querySelector('[data-checkout-soon]');
+    if (!CHECKOUT_URL) {
+      btn.setAttribute('aria-disabled', 'true');
+      btn.removeAttribute('href');
+      if (soon) soon.hidden = false;
+      if (note) note.hidden = true;
+      return;
+    }
+    var url = CHECKOUT_URL;
+    if (query) url += (url.indexOf('?') === -1 ? '?' : '&') + query.slice(1);
+    btn.setAttribute('href', url);
   });
 
   // Ano no rodapé

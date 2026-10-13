@@ -9,6 +9,7 @@ Site estático, sem build: HTML, CSS e JavaScript puros. Abra `index.html` no na
 ```
 index.html                    Home da Draxora (portas / método / criador)
 mapa-dos-sintomas/index.html  Porta 00: página de vendas do Mapa dos Sintomas
+mapa-dos-sintomas/checkout/   Revisão do pedido antes do pagamento na Hotmart
 assets/css/draxora.css     Tokens e componentes do design system Draxora
 assets/js/main.js          Header, animações de entrada e formulários
 assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, selo de nicho)
@@ -22,7 +23,7 @@ assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, se
 
 Os trechos marcados em amarelo na página (`[...]`, classe `placeholder-note`) são lembretes; remova-os depois de ajustar.
 
-- [ ] Link de checkout da Hotmart: botão com `data-checkout` em `mapa-dos-sintomas/index.html`.
+- [ ] Link de checkout da Hotmart: variável `CHECKOUT_URL` no topo de `assets/js/main.js`. Enquanto estiver vazia, o botão da página de checkout fica desativado com o aviso "vendas abrem em breve".
 - [ ] Nome e registro (CRM ou CRP) do profissional que revisou o conteúdo (seção "Quem criou" e FAQ).
 - [ ] Sua foto nas seções "Quem está por trás" (home) e "Quem criou" (porta 00).
 - [ ] Formulário "Avisar-me" da porta 01: URL da sua ferramenta de e-mail no `data-endpoint`.

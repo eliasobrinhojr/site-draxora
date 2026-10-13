@@ -390,3 +390,80 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 .founder-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .founder-photo::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 4px; background: var(--lume); }
 @media (max-width: 860px) { .founder-photo { max-width: 100%; justify-self: stretch; } }
+
+/* =========================================================
+   CHECKOUT (revisão antes da Hotmart)
+   ========================================================= */
+.ck-secure { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--nicho-mente); }
+.ck { padding: 32px 0 72px; }
+.ck .wrap { display: grid; gap: var(--space-3); }
+.ck-back { justify-self: start; font-size: 14px; font-weight: 600; color: var(--ink-muted); text-decoration: none; }
+.ck-back:hover { color: var(--ink); }
+.ck-steps { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-muted); }
+.ck-steps li { display: inline-flex; align-items: center; gap: 8px; }
+.ck-steps span { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: var(--radius-pill); border: 1px solid var(--line); font-size: 11px; letter-spacing: 0; }
+.ck-steps .is-done span { background: var(--surface-raised); color: var(--nicho-mente); border-color: var(--nicho-mente); }
+.ck-steps .is-current { color: var(--ink); }
+.ck-steps .is-current span { background: var(--accent-fill); color: var(--on-accent); border-color: var(--accent-fill); }
+
+.ck-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--space-3); align-items: start; }
+@media (max-width: 900px) { .ck-grid { grid-template-columns: 1fr; } }
+.ck-side { display: grid; gap: var(--space-3); }
+.ck-card { position: relative; display: grid; gap: 20px; padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+.ck-pay::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--lume-h); }
+.ck-h { font-weight: 700; font-size: 20px; line-height: 26px; }
+
+.ck-product { display: flex; gap: var(--space-2); align-items: center; }
+.ck-cover { flex: none; position: relative; width: 104px; aspect-ratio: 794 / 1123; padding: 10px 9px; border-radius: 6px; background: #1E1B3A; color: #FFFFFF; display: flex; flex-direction: column; justify-content: flex-end; gap: 3px; overflow: hidden; box-shadow: 0 12px 28px rgba(0, 0, 0, .45); }
+.ck-cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--lume); }
+.ck-cover-tag { position: absolute; top: 10px; left: 12px; font-size: 7px; letter-spacing: .1em; text-transform: uppercase; color: #C9BCFF; }
+.ck-cover strong { font-family: var(--font-display); font-size: 15px; line-height: 15px; letter-spacing: -0.02em; }
+.ck-cover-sub { font-size: 7.5px; color: #D2D7E6; }
+.ck-cover-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-top: 6px; }
+.ck-cover-bars i { height: 4px; border-radius: 2px; background: #5FD3C3; }
+.ck-cover-bars i:nth-child(2) { background: #C9BCFF; }
+.ck-cover-bars i:nth-child(3) { background: #FFB27A; }
+.ck-cover-bars i:nth-child(4) { background: #FFD27A; }
+.ck-product-info { display: grid; gap: 6px; min-width: 0; }
+.ck-product-info h2 { font-weight: 700; font-size: 24px; line-height: 28px; }
+.ck-product-info .muted { font-size: 15px; line-height: 22px; }
+.ck-badge { justify-self: start; font-size: 13px; font-weight: 700; color: var(--nicho-mente); }
+.ck-items { padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.ck-total { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-2); }
+.ck-total > span:first-child { font-weight: 700; padding-top: 10px; }
+.ck-total-value { display: grid; justify-items: end; gap: 2px; text-align: right; }
+.ck-total-value strong { font-family: var(--font-display); font-weight: 800; font-size: 40px; line-height: 44px; letter-spacing: -0.02em; }
+.ck-total-value small { font-size: 13px; color: var(--ink-muted); }
+
+.ck-methods { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.ck-methods li { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--bg); }
+.ck-methods svg { flex: none; color: var(--nicho-mente); }
+.ck-methods strong { display: block; font-size: 15px; line-height: 20px; }
+.ck-methods small { display: block; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.ck-go { width: 100%; }
+.ck-go[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.ck-note { font-size: 13px; line-height: 19px; color: var(--ink-muted); }
+.ck-note strong { color: var(--ink); }
+.ck-soon { color: var(--lume-ouro); }
+
+.ck-guarantee { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-2); background: var(--surface-raised); }
+.ck-guarantee strong { display: block; font-size: 16px; line-height: 22px; }
+.ck-guarantee .muted { font-size: 14px; line-height: 20px; margin-top: 2px; }
+.ck-seal { display: grid; place-items: center; align-content: center; width: 64px; height: 64px; border-radius: var(--radius-pill); border: 2px solid var(--nicho-mente); color: var(--nicho-mente); line-height: 1; }
+.ck-seal b { font-family: var(--font-display); font-size: 24px; }
+.ck-seal small { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; }
+.ck-legal { font-size: 13px; line-height: 19px; color: var(--ink-muted); max-width: 72ch; }
+
+@media (max-width: 560px) {
+  .ck { padding-top: 20px; }
+  .ck-card { padding: 20px; }
+  .ck-cover { width: 88px; padding: 8px 8px; }
+  .ck-cover strong { font-size: 12.5px; line-height: 13px; }
+  .ck-cover-sub { display: none; }
+  .ck-cover-tag { top: 8px; left: 10px; font-size: 6px; }
+  .ck-go { font-size: 16px; padding: 16px; white-space: nowrap; }
+  .ck-total-value small { max-width: 18ch; }
+  .ck-product-info h2 { font-size: 21px; line-height: 26px; }
+  .ck-total-value strong { font-size: 34px; line-height: 38px; }
+  .ck-secure { font-size: 13px; }
+}
