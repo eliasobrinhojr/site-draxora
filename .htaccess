@@ -1,0 +1,11 @@
+# Draxora — cache
+# HTML sempre revalida (atualizações aparecem na hora);
+# CSS/JS/imagens ficam em cache, e o ?v= no HTML força a versão nova a cada deploy.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(css|js|svg|png|jpg|webp|woff2)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>
