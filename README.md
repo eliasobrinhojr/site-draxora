@@ -1,14 +1,14 @@
 # Draxora — site
 
-Site da Draxora: a home da marca (o "corredor de portas") e a página de vendas do Lançamento 01 — Saúde Mental.
+Site da Draxora: a home da marca (o "corredor de portas") e a página da Porta 00 — Mapa dos Sintomas.
 
 Site estático, sem build: HTML, CSS e JavaScript puros. Abra `index.html` no navegador para ver.
 
 ## Estrutura
 
 ```
-index.html                 Home da Draxora (portas / método / criador)
-saude-mental/index.html    Página de vendas do Método Porta Aberta
+index.html                    Home da Draxora (portas / método / criador)
+mapa-dos-sintomas/index.html  Porta 00: página de vendas do Mapa dos Sintomas
 assets/css/draxora.css     Tokens e componentes do design system Draxora
 assets/js/main.js          Header, animações de entrada e formulários
 assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, selo de nicho)
@@ -16,22 +16,24 @@ assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, se
 
 ## Publicar
 
-**GitHub Pages:** Settings → Pages → Source: *Deploy from a branch* → `main` / `root`.
 **Vercel ou Netlify:** importe o repositório; não há comando de build e a pasta de saída é a raiz.
 
 ## Antes de lançar — o que substituir
 
 Os trechos marcados em amarelo na página (`[...]`, classe `placeholder-note`) são lembretes; remova-os depois de ajustar.
 
-- [ ] Nome do produto ("Método Porta Aberta" é provisório), módulos e quantidade de aulas.
-- [ ] Preço e parcelamento na seção `#oferta`.
-- [ ] Link de checkout: botão com `data-checkout` em `saude-mental/index.html` (Hotmart, Kiwify, Eduzz…).
-- [ ] Formulários de e-mail: coloque a URL da sua ferramenta no atributo `data-endpoint` de cada `<form class="dx-lead">`.
-- [ ] Foto e nome do criador (seções "Quem está por trás" e "Quem criou").
-- [ ] Depoimentos reais e autorizados (ou remova a seção até ter).
+- [ ] Link de checkout da Hotmart: botão com `data-checkout` em `mapa-dos-sintomas/index.html`.
+- [ ] Nome e registro (CRM ou CRP) do profissional que revisou o conteúdo (seção "Quem criou" e FAQ).
+- [ ] Sua foto nas seções "Quem está por trás" (home) e "Quem criou" (porta 00).
+- [ ] Formulário "Avisar-me" da porta 01: URL da sua ferramenta de e-mail no `data-endpoint`.
 - [ ] E-mail de contato (`contato@draxora.com.br` é provisório).
 - [ ] Termos de uso e política de privacidade (links no rodapé).
-- [ ] Revisão do conteúdo de saúde mental por um(a) profissional da área.
+
+## Publicar na Hostinger com deploy automático
+
+1. hPanel → seu site → **Avançado → Git** → **Connect with GitHub** e autorize o repositório `site-draxora`.
+2. Branch `main`, diretório `public_html` → **Deploy**.
+3. A partir daí, todo push na `main` atualiza o site sozinho.
 
 ## Identidade
 

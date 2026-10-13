@@ -40,6 +40,37 @@
     });
   });
 
+  // Porta 00: frase vaga -> frase precisa
+  document.querySelectorAll('[data-phrases]').forEach(function (box) {
+    var tabs = Array.prototype.slice.call(box.querySelectorAll('[role="tab"]'));
+    var panel = box.querySelector('[role="tabpanel"]');
+    var text = box.querySelector('[data-phrase-text]');
+    var tags = box.querySelector('[data-phrase-tags]');
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      text.textContent = tab.getAttribute('data-precise');
+      tags.innerHTML = '';
+      tab.getAttribute('data-tags').split('|').forEach(function (s) {
+        var el = document.createElement('span'); el.textContent = s; tags.appendChild(el);
+      });
+      panel.setAttribute('aria-labelledby', tab.id);
+      if (focus) tab.focus();
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab); });
+      tab.addEventListener('keydown', function (e) {
+        var k = e.key, n = null;
+        if (k === 'ArrowDown' || k === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+        if (k === 'ArrowUp' || k === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+        if (n) { e.preventDefault(); select(n, true); }
+      });
+    });
+  });
+
   // Ano no rodapé
   document.querySelectorAll('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
 })();

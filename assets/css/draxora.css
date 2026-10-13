@@ -268,3 +268,55 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal.is-pending { transform: none; }
 }
+
+/* =========================================================
+   PORTA 00 — Mapa dos Sintomas
+   ========================================================= */
+.mapa-hero .wrap { display: grid; grid-template-columns: 1.25fr 1fr; gap: var(--space-4); align-items: center; }
+@media (max-width: 900px) { .mapa-hero .wrap { grid-template-columns: 1fr; } }
+.mapa-hero-copy { display: grid; gap: var(--space-3); min-width: 0; }
+
+.waves { display: grid; border-top: 1px solid var(--line); min-width: 0; }
+.wave { display: grid; grid-template-columns: 7.5rem 1fr; gap: var(--space-2); align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.wave span { font-weight: 600; font-size: 15px; line-height: 20px; }
+.wave svg { width: 100%; height: 32px; min-width: 0; }
+.wave path { fill: none; stroke: var(--nicho-mente); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.waves-note { padding-top: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-muted); }
+
+.phrases { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--space-3); align-items: stretch; }
+@media (max-width: 860px) { .phrases { grid-template-columns: 1fr; } }
+.phrase-list { display: grid; gap: var(--space-1); align-content: start; }
+.phrase-btn { text-align: left; font: inherit; font-size: 17px; line-height: 24px; font-weight: 600; color: var(--ink-muted); background: transparent; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 14px var(--space-2); cursor: pointer; transition: color .15s ease, border-color .15s ease, background-color .15s ease; }
+.phrase-btn:hover { color: var(--ink); border-color: var(--ink-muted); }
+.phrase-btn[aria-selected="true"] { color: var(--ink); background: var(--surface-raised); border-color: var(--lume-ambar); }
+.phrase-out { position: relative; display: grid; gap: var(--space-2); align-content: start; padding: var(--space-4) var(--space-3) var(--space-3); border-radius: var(--radius-md); background: var(--surface-raised); overflow: hidden; }
+.phrase-out::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--lume); }
+.phrase-out q { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.3; quotes: "“" "”"; }
+.phrase-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.phrase-tags span { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--line); color: var(--ink-muted); }
+
+.formula { display: flex; flex-wrap: wrap; gap: var(--space-1); align-items: center; }
+.formula-part { display: grid; gap: 2px; padding: 14px 18px; border-radius: var(--radius-md); background: var(--bg); border: 1px solid var(--line); }
+.formula-part b { font-family: var(--font-display); font-size: 19px; line-height: 24px; }
+.formula-part small { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.formula-plus { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--accent); }
+
+.kit { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+@media (max-width: 860px) { .kit { grid-template-columns: 1fr; } }
+.kit-col { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface); border: 1px solid var(--line); }
+.kit-col h3 { font-weight: 700; font-size: 22px; line-height: 28px; }
+.kit-list { margin: 0; padding: 0; list-style: none; display: grid; }
+.kit-list li { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-1); padding: 14px 0; border-top: 1px solid var(--line); }
+.kit-list li > span:first-child { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: var(--accent); padding-top: 3px; }
+.kit-list strong { display: block; }
+.kit-list small { display: block; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+
+.diary { display: grid; gap: var(--space-1); padding: var(--space-3); border-radius: var(--radius-md); border: 1px dashed var(--line); }
+.diary svg { width: 100%; height: auto; }
+.diary .up { fill: var(--nicho-mente); }
+.diary .dn { fill: var(--ink-muted); }
+.diary .mid { stroke: var(--line); stroke-width: 1; }
+.diary .tick { fill: var(--ink-muted); font-family: var(--font-mono); font-size: 10px; }
+.diary-legend { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-1); font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-muted); }
+
+.price-tag { font-family: var(--font-display); font-weight: 800; font-size: 72px; line-height: 1; letter-spacing: -0.02em; }
