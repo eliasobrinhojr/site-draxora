@@ -1,0 +1,9 @@
+# API da Draxora
+Options -Indexes
+# Arquivos internos não podem ser abertos pelo navegador
+<FilesMatch "^(_.*\.php|.*\.txt)$">
+  Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-store"
+</IfModule>

@@ -33,23 +33,45 @@
     });
   }
 
-  // Formulários de captura
-  // Para integrar com sua ferramenta de e-mail (ConvertKit, RD Station, Mailchimp, Brevo…),
-  // coloque a URL de envio no atributo data-endpoint do <form class="dx-lead">.
-  // Sem data-endpoint, o formulário só mostra a confirmação (modo demonstração).
+  // Formulários de captura "Avisar-me" -> api/inscrever.php (PHP + MySQL na Hostinger)
+  var params = new URLSearchParams(window.location.search);
   document.querySelectorAll('form.dx-lead').forEach(function (form) {
+    var err = form.querySelector('[data-lead-error]');
+    var btn = form.querySelector('button[type="submit"]');
+    function fail(msg) { if (err) { err.textContent = msg; err.hidden = false; } }
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
+      if (err) err.hidden = true;
+      var email = form.elements.email;
+      var ok = form.elements.consentimento;
+      if (!email.value.trim() || !email.checkValidity()) { fail('Digite um e-mail válido.'); email.focus(); return; }
+      if (ok && !ok.checked) { fail('Marque a caixa para autorizar o aviso por e-mail.'); ok.focus(); return; }
       var endpoint = form.getAttribute('data-endpoint');
       var data = new FormData(form);
-      var done = function () { form.classList.add('is-done'); };
-      if (!endpoint) { done(); return; }
-      var btn = form.querySelector('button[type="submit"]');
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (params.get(k)) data.append(k, params.get(k)); });
+      data.append('origem', window.location.pathname);
       if (btn) btn.disabled = true;
-      fetch(endpoint, { method: 'POST', body: data })
-        .then(done)
-        .catch(function () { if (btn) btn.disabled = false; alert('Não foi possível enviar agora. Tente de novo em instantes.'); });
+      fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+        .then(function (res) {
+          if (res && res.ok) { form.classList.add('is-done'); form.dispatchEvent(new CustomEvent('dx:lead')); }
+          else { fail((res && res.message) || 'Não foi possível salvar agora. Tente de novo em instantes.'); }
+        })
+        .catch(function () { fail('Sem conexão. Confira sua internet e tente de novo.'); })
+        .then(function () { if (btn) btn.disabled = false; });
     });
+  });
+
+  // Contador de quem está esperando uma porta (só aparece a partir do mínimo configurado no servidor)
+  document.querySelectorAll('[data-count]').forEach(function (el) {
+    if (window.location.protocol === 'file:') return;
+    var root = document.body.getAttribute('data-root') || '';
+    fetch(root + 'api/contador.php?lista=' + encodeURIComponent(el.getAttribute('data-count')))
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.total) { el.querySelector('strong').textContent = res.total.toLocaleString('pt-BR'); el.hidden = false; }
+      })
+      .catch(function () {});
   });
 
   // Porta 00: frase vaga -> frase precisa
@@ -199,7 +221,7 @@
   });
   // Cadastro na lista da porta 01 = lead
   document.querySelectorAll('form.dx-lead').forEach(function (form) {
-    form.addEventListener('submit', function () { if (form.checkValidity()) track('Lead'); });
+    form.addEventListener('dx:lead', function () { track('Lead'); });
   });
 
   // Ano no rodapé

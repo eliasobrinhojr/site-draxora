@@ -16,6 +16,21 @@ assets/js/main.js          Header, animações de entrada e formulários
 assets/img/                Logomarca (assinatura, símbolo, ícone, wordmark, selo de nicho)
 ```
 
+## Cadastro "Avisar-me" (PHP + MySQL)
+
+O formulário da porta 01 envia para `api/inscrever.php`, que grava na tabela `inscritos` (criada sozinha na primeira chamada). Proteções: caixa de consentimento (LGPD), campo-armadilha contra robôs, limite de 5 envios por aparelho a cada 10 min, aceita só envios do próprio site, guarda o IP apenas como hash.
+
+| Arquivo | Para que serve |
+| --- | --- |
+| `api/inscrever.php` | Recebe o e-mail (POST) |
+| `api/contador.php?lista=porta-01` | Total de pessoas esperando (só aparece a partir de `min_publico`) |
+| `api/exportar.php?chave=…&lista=porta-01` | Baixa a lista em CSV |
+| `api/config.exemplo.txt` | Modelo do arquivo de configuração |
+
+**Configuração no servidor (uma vez só):** as senhas não ficam no GitHub. Crie `draxora-config.php` em `domains/<seu-dominio>/` (uma pasta acima da `public_html`) copiando `api/config.exemplo.txt` e preenchendo os dados do banco criado em hPanel → Bancos de dados.
+
+Para criar uma lista nova (porta 02…), adicione o nome em `DX_LISTAS` no fim de `api/_db.php`.
+
 ## Publicar
 
 **Vercel ou Netlify:** importe o repositório; não há comando de build e a pasta de saída é a raiz.
@@ -33,7 +48,6 @@ A compra (Purchase) é registrada pela Hotmart: configure o mesmo Pixel em Hotma
 
 ## Pendências conhecidas
 
-- [ ] Formulário "Avisar-me" da porta 01 ainda não grava e-mails (próxima implementação: PHP + MySQL na Hostinger).
 - [ ] `og:image` usa caminho relativo; troque por URL absoluta quando o domínio estiver definido.
 
 ## Publicar na Hostinger com deploy automático

@@ -1,0 +1,25 @@
+<?php
+// MODELO — não preencha este arquivo aqui (o repositório é público).
+// Copie este conteúdo para um arquivo novo chamado  draxora-config.php
+// no servidor, UMA PASTA ACIMA da public_html:
+//   domains/<seu-dominio>/draxora-config.php
+// (Gerenciador de Arquivos do hPanel → abra domains/<seu-dominio> → Novo arquivo)
+
+return [
+    // Banco criado em hPanel → Bancos de dados → Gerenciamento
+    'db_dsn'  => 'mysql:host=localhost;dbname=u000000000_draxora;charset=utf8mb4',
+    'db_user' => 'u000000000_draxora',
+    'db_pass' => 'SENHA_DO_BANCO',
+
+    // Texto aleatório qualquer (use um gerador de senhas, 32+ caracteres)
+    'salt'       => 'TROQUE-POR-UM-TEXTO-ALEATORIO',
+    // Chave para baixar a lista em /api/exportar.php?chave=...  (32+ caracteres)
+    'export_key' => 'TROQUE-POR-OUTRA-CHAVE-LONGA',
+
+    // Opcional: receber um e-mail a cada cadastro (mail_from precisa ser um e-mail do seu domínio)
+    'notify_to' => '',
+    'mail_from' => '',
+
+    // A porta só mostra "N pessoas esperando" a partir deste número
+    'min_publico' => 20,
+];
