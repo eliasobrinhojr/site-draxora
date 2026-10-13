@@ -142,7 +142,7 @@ p { margin: 0; }
 /* =========================================================
    Header / footer
    ========================================================= */
-.site-header { position: sticky; top: 0; z-index: 20; background: rgba(11, 13, 23, .82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color .2s ease; }
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11, 13, 23, .82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid transparent; transition: border-color .2s ease; }
 .site-header.is-scrolled { border-bottom-color: var(--line); }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); height: 72px; }
 .site-header .brand img { height: 26px; width: auto; }
@@ -259,12 +259,12 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 
 .placeholder-note { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--lume-ouro); }
 
-/* Reveal on scroll */
-.reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
-.reveal.is-in { opacity: 1; transform: none; }
+/* Entrada suave ao rolar: o conteúdo já está visível; só os blocos abaixo da dobra sobem levemente */
+.reveal.is-pending { transform: translateY(16px); transition: transform .6s ease; }
+.reveal.is-pending.is-in { transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal.is-pending { transform: none; }
 }
