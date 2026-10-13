@@ -10,6 +10,17 @@ if (empty($c)) {
 } elseif (empty($c['db_dsn'])) {
     $out['problema'] = 'db_dsn vazio no draxora-config.php.';
 } else {
+    // Ajuda a conferir o que está escrito no arquivo (nunca mostra a senha).
+    preg_match('/dbname=([^;]+)/', (string)$c['db_dsn'], $m);
+    preg_match('/host=([^;]+)/', (string)$c['db_dsn'], $h);
+    $out['banco_no_arquivo'] = $m[1] ?? null;
+    $out['host_no_arquivo'] = $h[1] ?? null;
+    $out['usuario_no_arquivo'] = $c['db_user'] ?? null;
+    $out['senha_preenchida'] = !empty($c['db_pass']);
+    $out['arquivo_alterado_em'] = null;
+    foreach ([dirname(__DIR__, 2) . '/draxora-config.php', dirname(__DIR__, 3) . '/draxora-config.php'] as $f) {
+        if (is_file($f)) { $out['arquivo_alterado_em'] = date('Y-m-d H:i:s', (int)filemtime($f)); break; }
+    }
     try {
         $pdo = new PDO($c['db_dsn'], $c['db_user'] ?? null, $c['db_pass'] ?? null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $out['conexao'] = true;
