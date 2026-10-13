@@ -11,6 +11,16 @@
   var META_PIXEL_ID = '1760580708485734';
   var GTAG_ID = '';
   var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 29.90, currency: 'BRL' };
+  // Mercados: cada página diz o seu em <body data-market="...">. Sem data-market = Brasil.
+  // checkout vazio = botão desativado com aviso "em breve" (ex.: enquanto a oferta em euro não existe na Hotmart).
+  var MARKETS = {
+    br: { checkout: CHECKOUT_URL, value: 29.90, currency: 'BRL', lang: 'pt-BR' },
+    pt: { checkout: '', value: 14.90, currency: 'EUR', lang: 'pt-PT' }
+  };
+  var market = MARKETS[document.body.getAttribute('data-market')] || MARKETS.br;
+  CHECKOUT_URL = market.checkout;
+  PRODUCT.value = market.value;
+  PRODUCT.currency = market.currency;
 
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
@@ -203,7 +213,8 @@
       bar.setAttribute('role', 'region');
       bar.setAttribute('aria-label', 'Cookies');
       var root = document.body.getAttribute('data-root') || '';
-      bar.innerHTML = '<p>Usamos cookies para medir nossos anúncios e melhorar o site. <a href="' + root + 'privacidade/index.html">Saiba mais</a></p>' +
+      var msg = market.lang === 'pt-PT' ? 'Utilizamos cookies para medir os nossos anúncios e melhorar o site.' : 'Usamos cookies para medir nossos anúncios e melhorar o site.';
+      bar.innerHTML = '<p>' + msg + ' <a href="' + root + 'privacidade/index.html">Saiba mais</a></p>' +
         '<div><button type="button" class="dx-btn dx-btn-secondary" data-consent="no">Recusar</button><button type="button" class="dx-btn dx-btn-primary" data-consent="yes">Aceitar</button></div>';
       document.body.appendChild(bar);
       bar.addEventListener('click', function (e) {

@@ -47,6 +47,17 @@ Para criar uma lista nova (porta 02…), adicione o nome em `DX_LISTAS` no fim d
 
 A compra (Purchase) é registrada pela Hotmart: configure o mesmo Pixel em Hotmart → Ferramentas → Pixel de rastreamento.
 
+### Mercados (`MARKETS` em `assets/js/main.js`)
+
+Cada página declara o mercado em `<body data-market="…">`; sem o atributo, vale o Brasil. O mercado define o link de checkout, o valor e a moeda enviados ao Pixel e o texto do aviso de cookies.
+
+| Mercado | Páginas | Preço | Checkout |
+| --- | --- | --- | --- |
+| `br` | `/mapa-dos-sintomas/` | R$ 29,90 | `CHECKOUT_URL` |
+| `pt` | `/pt-pt/mapa-dos-sintomas/` | 14,90 € | `MARKETS.pt.checkout` — **vazio até existir a oferta em euro na Hotmart**; enquanto vazio, o botão mostra "As vendas para Portugal abrem em breve" |
+
+Link dos anúncios em Portugal: `https://draxora.com.br/pt-pt/mapa-dos-sintomas/?utm_source=meta&utm_medium=pago&utm_campaign=mapa-pt&utm_content=<criativo>`.
+
 ## Pendências conhecidas
 
 - [ ] `og:image` usa caminho relativo; troque por URL absoluta quando o domínio estiver definido.
