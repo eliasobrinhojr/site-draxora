@@ -26,6 +26,7 @@ O formulário da porta 01 envia para `api/inscrever.php`, que grava na tabela `i
 | `api/contador.php?lista=porta-01` | Total de pessoas esperando (só aparece a partir de `min_publico`) |
 | `api/exportar.php?chave=…&lista=porta-01` | Baixa a lista em CSV |
 | `api/config.exemplo.txt` | Modelo do arquivo de configuração |
+| `api/status.php` | Diagnóstico: diz se o arquivo de configuração foi achado e o que está errado na conexão (sem mostrar senhas) |
 
 **Configuração no servidor (uma vez só):** as senhas não ficam no GitHub. Crie `draxora-config.php` em `domains/<seu-dominio>/` (uma pasta acima da `public_html`) copiando `api/config.exemplo.txt` e preenchendo os dados do banco criado em hPanel → Bancos de dados.
 

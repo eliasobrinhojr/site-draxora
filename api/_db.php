@@ -39,11 +39,16 @@ function dx_db(): PDO {
     if (empty($c['db_dsn'])) {
         dx_json(503, ['ok' => false, 'error' => 'config', 'message' => 'Cadastro indisponível no momento. Tente mais tarde.']);
     }
-    $pdo = new PDO($c['db_dsn'], $c['db_user'] ?? null, $c['db_pass'] ?? null, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
-    dx_migrate($pdo);
+    try {
+        $pdo = new PDO($c['db_dsn'], $c['db_user'] ?? null, $c['db_pass'] ?? null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+        dx_migrate($pdo);
+    } catch (PDOException $e) {
+        error_log('[draxora] conexao: ' . $e->getMessage());
+        dx_json(503, ['ok' => false, 'error' => 'conexao', 'message' => 'Cadastro indisponível no momento. Tente mais tarde.']);
+    }
     return $pdo;
 }
 
