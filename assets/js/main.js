@@ -8,7 +8,7 @@
   var CHECKOUT_URL = 'https://pay.hotmart.com/Y108011719G';
   // Rastreamento de anúncios. Vazio = nada é carregado.
   // META_PIXEL_ID: só números (Gerenciador de Eventos da Meta). GTAG_ID: 'G-XXXX' (GA4) ou 'AW-XXXX' (Google Ads).
-  var META_PIXEL_ID = '28598304023142189';
+  var META_PIXEL_ID = '1760580708485734';
   var GTAG_ID = '';
   var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 29.90, currency: 'BRL' };
 
