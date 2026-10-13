@@ -1,5 +1,10 @@
 // Draxora — interações do site (sem dependências)
 (function () {
+  // ===== CONTATO — edite aqui =====
+  // WhatsApp com DDI + DDD, só números (ex.: '5592999999999'). Vazio = esconde o botão de WhatsApp.
+  var WHATSAPP = '';
+  var EMAIL = 'contato@draxora.com.br';
+
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
   if (header) {
@@ -68,6 +73,40 @@
         if (k === 'ArrowUp' || k === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
         if (n) { e.preventDefault(); select(n, true); }
       });
+    });
+  });
+
+  // Modal "Sugerir um tema" -> WhatsApp ou e-mail
+  document.querySelectorAll('[data-open]').forEach(function (btn) {
+    var dlg = document.getElementById(btn.getAttribute('data-open'));
+    if (!dlg || typeof dlg.showModal !== 'function') return;
+    btn.addEventListener('click', function () {
+      dlg.showModal();
+      var first = dlg.querySelector('textarea, input');
+      if (first) first.focus();
+    });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+    dlg.querySelectorAll('[data-close]').forEach(function (c) { c.addEventListener('click', function () { dlg.close(); }); });
+  });
+
+  document.querySelectorAll('form[data-suggest]').forEach(function (form) {
+    var wa = form.querySelector('[data-whatsapp]');
+    if (wa && !WHATSAPP) wa.hidden = true;
+    var err = form.querySelector('[data-error]');
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var via = ev.submitter ? ev.submitter.value : (WHATSAPP ? 'whatsapp' : 'email');
+      var tema = form.elements.tema.value.trim();
+      var nome = form.elements.nome.value.trim();
+      if (!tema) { err.hidden = false; form.elements.tema.focus(); return; }
+      err.hidden = true;
+      var msg = 'Olá, Draxora! Tenho uma sugestão de porta:\n\n' + tema + (nome ? '\n\n— ' + nome : '');
+      var url = via === 'whatsapp'
+        ? 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg)
+        : 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Sugestão de porta') + '&body=' + encodeURIComponent(msg);
+      if (via === 'whatsapp') window.open(url, '_blank', 'noopener'); else window.location.href = url;
+      form.reset();
+      var dlg = form.closest('dialog'); if (dlg) dlg.close();
     });
   });
 

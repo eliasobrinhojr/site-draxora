@@ -26,7 +26,8 @@ Os trechos marcados em amarelo na página (`[...]`, classe `placeholder-note`) s
 - [ ] Nome e registro (CRM ou CRP) do profissional que revisou o conteúdo (seção "Quem criou" e FAQ).
 - [ ] Sua foto nas seções "Quem está por trás" (home) e "Quem criou" (porta 00).
 - [ ] Formulário "Avisar-me" da porta 01: URL da sua ferramenta de e-mail no `data-endpoint`.
-- [ ] E-mail de contato (`contato@draxora.com.br` é provisório).
+- [ ] WhatsApp e e-mail do formulário "Sugerir um tema": variáveis `WHATSAPP` e `EMAIL` no topo de `assets/js/main.js` (sem número, o botão de WhatsApp fica escondido).
+- [ ] E-mail de contato do rodapé (`contato@draxora.com.br` é provisório).
 - [ ] Termos de uso e política de privacidade (links no rodapé).
 
 ## Publicar na Hostinger com deploy automático
@@ -34,6 +35,10 @@ Os trechos marcados em amarelo na página (`[...]`, classe `placeholder-note`) s
 1. hPanel → seu site → **Avançado → Git** → **Connect with GitHub** e autorize o repositório `site-draxora`.
 2. Branch `main`, diretório `public_html` → **Deploy**.
 3. A partir daí, todo push na `main` atualiza o site sozinho.
+
+## Cache
+
+O `.htaccess` faz o HTML sempre buscar a versão nova. CSS e JS são chamados com `?v=` no HTML: ao mudar esses arquivos, atualize esse número nas duas páginas para os visitantes receberem a versão nova.
 
 ## Identidade
 
