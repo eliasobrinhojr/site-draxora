@@ -504,3 +504,9 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 .door .dx-lead-ok { color: var(--nicho-mente); }
 .door.is-closed::before { left: 0; }
 .door.is-closed::after { left: 0; }
+
+/* Porta 00 · prévia das folhas (v2) */
+.sheets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); margin-top: var(--space-3); }
+.sheets figure { margin: 0; display: grid; gap: var(--space-1); }
+.sheets img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); box-shadow: 0 18px 40px rgba(0, 0, 0, .45); background: #fff; }
+.sheets figcaption { font-size: 13px; line-height: 18px; color: var(--ink-muted); text-align: center; }

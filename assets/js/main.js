@@ -215,8 +215,13 @@
   }
   // Clique no pagamento = início de checkout
   document.querySelectorAll('[data-checkout-go]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
       track('InitiateCheckout', { content_name: PRODUCT.name, content_ids: [PRODUCT.id], value: PRODUCT.value, currency: PRODUCT.currency, num_items: 1 });
+      // Dá tempo de o evento sair antes de trocar de página (sem isso, parte dos InitiateCheckout se perde)
+      var href = btn.getAttribute('href');
+      if (!tracking.on || !href || e.metaKey || e.ctrlKey || e.shiftKey || btn.target === '_blank') return;
+      e.preventDefault();
+      setTimeout(function () { window.location.href = href; }, 350);
     });
   });
   // Cadastro na lista da porta 01 = lead
