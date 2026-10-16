@@ -506,7 +506,30 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 .door.is-closed::after { left: 0; }
 
 /* Porta 00 · prévia das folhas (v2) */
-.sheets-preview { margin: var(--space-3) 0 0; display: grid; gap: var(--space-1); }
-.sheets-preview img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; -webkit-user-drag: none; }
-.sheets-preview figcaption { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; font-size: 13px; line-height: 18px; color: var(--ink-muted); text-align: center; }
-.sheets-tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--nicho-mente); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+/* Mapa dos Sintomas · página de vendas: texto curto + prévia do entregável */
+.mapa-hero .wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-areas: "top mock" "h1 mock" "lead mock" "act mock" "proof mock"; column-gap: var(--space-4); row-gap: var(--space-3); align-content: center; }
+.mapa-hero .launch-hero-top { grid-area: top; } .mapa-hero h1 { grid-area: h1; } .mapa-hero .lead { grid-area: lead; }
+.mapa-hero .home-hero-actions { grid-area: act; } .mapa-hero .launch-hero-proof { grid-area: proof; }
+.hero-mock { grid-area: mock; margin: 0; align-self: center; }
+.hero-mock img, .feat-img img, .offer-mock img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+@media (max-width: 900px) {
+  .mapa-hero .wrap { grid-template-columns: 1fr; grid-template-areas: "top" "h1" "lead" "mock" "act" "proof"; row-gap: var(--space-2); }
+  .hero-mock { margin: -8px -16px; }
+}
+.feat-sec { padding: 64px 0; }
+.feat { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: var(--space-4); align-items: center; }
+.feat.is-rev .feat-copy { order: 2; }
+.feat-copy { display: grid; gap: var(--space-2); justify-items: start; }
+.feat-copy .lead { max-width: 34ch; }
+.feat-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.feat-chips li { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.feat-img { position: relative; margin: 0; }
+.prev-tag { position: absolute; top: 6%; right: 6%; font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--on-accent); background: var(--nicho-mente); border-radius: 999px; padding: 4px 10px; }
+@media (max-width: 860px) {
+  .feat-sec { padding: 40px 0; }
+  .feat { grid-template-columns: 1fr; gap: var(--space-2); }
+  .feat.is-rev .feat-copy { order: 0; }
+  .feat-img { margin: 0 -16px; }
+}
+.offer-mock { margin: 0; }
+@media (max-width: 900px) { .offer-mock { margin: 0 -16px -24px; } }
