@@ -1,3 +1,2 @@
 User-agent: *
 Disallow: /mapa-dos-sintomas/checkout/
-Disallow: /assets/anuncios/
