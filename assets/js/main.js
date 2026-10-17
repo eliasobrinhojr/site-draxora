@@ -139,6 +139,15 @@
     });
   });
 
+  // Checkout sempre abre no topo (Safari e navegadores do Instagram/Facebook guardavam o scroll da página de vendas)
+  if (document.body.getAttribute('data-page') === 'checkout') {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    var toTop = function () { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); };
+    toTop();
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', toTop);
+  }
+
   // Leva os parâmetros de campanha (utm_*, src…) da página de vendas até o checkout
   var query = window.location.search;
   if (query) {
