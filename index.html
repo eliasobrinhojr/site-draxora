@@ -71,24 +71,24 @@
 
         <div class="door is-closed">
           <span class="door-num" aria-hidden="true">01</span>
-          <span class="door-lock">App em breve</span>
-          <h3>O Mapa dos Sintomas vai virar app.</h3>
-          <p>Estamos transformando o guia em um app: registre o dia em segundos e chegue à consulta com tudo pronto. Inscreva-se e receba as novidades do app em primeira mão.</p>
-          <p class="door-count" data-count="porta-01" hidden><strong></strong> pessoas esperando o app</p>
+          <span class="door-lock">Em breve</span>
+          <h3>Ainda em construção.</h3>
+          <p>O tema é segredo. Deixe seu e-mail e descubra antes.</p>
+          <p class="door-count" data-count="porta-01" hidden><strong></strong> pessoas esperando esta porta</p>
           <form class="dx-lead" data-endpoint="api/inscrever.php" novalidate>
             <label class="sr-only" for="lead-01">Seu e-mail</label>
             <div class="dx-lead-row">
               <input id="lead-01" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
               <input type="hidden" name="lista" value="porta-01">
-              <button class="dx-btn dx-btn-secondary" type="submit">Quero saber primeiro</button>
+              <button class="dx-btn dx-btn-secondary" type="submit">Avisar-me</button>
             </div>
             <div class="dx-hp" aria-hidden="true"><label for="lead-01-site">Site</label><input id="lead-01-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
             <label class="dx-consent-check" for="lead-01-ok">
               <input id="lead-01-ok" type="checkbox" name="consentimento" value="sim" required>
-              <span>Aceito receber e-mails da Draxora sobre o app e outros lançamentos. Posso sair quando quiser. <a href="privacidade/index.html">Privacidade</a></span>
+              <span>Aceito receber e-mails da Draxora sobre lançamentos. Posso sair quando quiser. <a href="privacidade/index.html">Privacidade</a></span>
             </label>
             <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
-            <p class="dx-lead-ok" role="status">Pronto. Você vai receber as novidades do app em primeira mão.</p>
+            <p class="dx-lead-ok" role="status">Pronto. Você vai saber antes.</p>
           </form>
         </div>
 
@@ -99,6 +99,30 @@
           <p>Os próximos temas nascem do que você precisa.</p>
           <button class="door-cta door-cta-btn" type="button" data-open="sugestao">Sugerir um tema</button>
         </div>
+      </div>
+
+      <div class="door-next" id="app">
+        <div class="door-next-copy">
+          <span class="door-lock">Porta 00 · o próximo passo</span>
+          <h3>O Mapa dos Sintomas vai virar app.</h3>
+          <p>O guia e as folhas vão para o celular: registre o dia em segundos e chegue à consulta com tudo pronto. Inscreva-se e receba as novidades do app em primeira mão.</p>
+          <p class="door-count" data-count="mapa-dos-sintomas" hidden><strong></strong> pessoas esperando o app</p>
+        </div>
+        <form class="dx-lead" data-endpoint="api/inscrever.php" novalidate>
+          <label class="sr-only" for="lead-app">Seu e-mail</label>
+          <div class="dx-lead-row">
+            <input id="lead-app" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
+            <input type="hidden" name="lista" value="mapa-dos-sintomas">
+            <button class="dx-btn dx-btn-primary" type="submit">Quero saber primeiro</button>
+          </div>
+          <div class="dx-hp" aria-hidden="true"><label for="lead-app-site">Site</label><input id="lead-app-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
+          <label class="dx-consent-check" for="lead-app-ok">
+            <input id="lead-app-ok" type="checkbox" name="consentimento" value="sim" required>
+            <span>Aceito receber e-mails da Draxora sobre o app e outros lançamentos. Posso sair quando quiser. <a href="privacidade/index.html">Privacidade</a></span>
+          </label>
+          <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
+          <p class="dx-lead-ok" role="status">Pronto. Você vai receber as novidades do app em primeira mão.</p>
+        </form>
       </div>
     </div>
   </section>

@@ -533,3 +533,9 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 }
 .offer-mock { margin: 0; }
 @media (max-width: 900px) { .offer-mock { margin: 0 -16px -24px; } }
+/* Porta 00 · próximo passo: o app */
+.door-next { margin-top: var(--space-3); display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: var(--space-3); align-items: center; padding: var(--space-3); border-radius: var(--radius-md); background: var(--surface); border: 1px solid color-mix(in srgb, var(--nicho-mente) 40%, var(--line)); }
+.door-next h3 { font-weight: 700; font-size: 26px; line-height: 31px; margin: 6px 0 8px; }
+.door-next p { color: var(--ink-muted); }
+.door-next .door-lock { color: var(--nicho-mente); }
+@media (max-width: 900px) { .door-next { grid-template-columns: 1fr; } }
