@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Manrope:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/draxora.css?v=202610190305">
+  <link rel="stylesheet" href="../assets/css/draxora.css?v=202610191150">
 </head>
 <body data-page="vendas" data-root="../">
 
@@ -211,6 +211,35 @@
     </div>
   </section>
 
+  <!-- APP EM BREVE -->
+  <section class="section" id="app">
+    <div class="wrap reveal">
+      <div class="door-next">
+        <div class="door-next-copy">
+          <span class="door-lock">Em breve · o próximo passo</span>
+          <h3>O Mapa dos Sintomas vai virar app.</h3>
+          <p>O guia e as folhas vão para o celular: registre o dia em segundos e chegue à consulta com tudo pronto. Deixe seu e-mail e receba as novidades do app em primeira mão.</p>
+          <p class="door-count" data-count="mapa-dos-sintomas" hidden><strong></strong> pessoas esperando o app</p>
+        </div>
+        <form class="dx-lead" data-endpoint="../api/inscrever.php" novalidate>
+          <label class="sr-only" for="lead-app">Seu e-mail</label>
+          <div class="dx-lead-row">
+            <input id="lead-app" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
+            <input type="hidden" name="lista" value="mapa-dos-sintomas">
+            <button class="dx-btn dx-btn-secondary" type="submit">Quero saber primeiro</button>
+          </div>
+          <div class="dx-hp" aria-hidden="true"><label for="lead-app-site">Site</label><input id="lead-app-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
+          <label class="dx-consent-check" for="lead-app-ok">
+            <input id="lead-app-ok" type="checkbox" name="consentimento" value="sim" required>
+            <span>Aceito receber e-mails da Draxora sobre o app e outros lançamentos. Posso sair quando quiser. <a href="../privacidade/index.html">Privacidade</a></span>
+          </label>
+          <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
+          <p class="dx-lead-ok" role="status">Pronto. Você vai receber as novidades do app em primeira mão.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -229,6 +258,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=202610170040" defer></script>
+<script src="../assets/js/main.js?v=202610191150" defer></script>
 </body>
 </html>

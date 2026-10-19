@@ -544,3 +544,5 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 .door-next .dx-lead-error { color: var(--lume-coral); }
 .door-next .dx-lead-ok { color: var(--nicho-mente); }
 @media (max-width: 900px) { .door-next { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-3); } }
+.section#app { padding-top: 0; }
+.section#app .door-next { margin-top: 0; }
