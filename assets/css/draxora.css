@@ -546,3 +546,14 @@ a.door:hover .door-cta::after { transform: translateX(4px); }
 @media (max-width: 900px) { .door-next { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-3); } }
 .section#app { padding-top: 0; }
 .section#app .door-next { margin-top: 0; }
+
+/* Página de vendas · por que acontece + antes/depois (v4) */
+.mp-why { display: grid; gap: var(--space-3); max-width: 760px; margin-top: var(--space-3); }
+.mp-quote { margin: 0; padding: 24px 28px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; letter-spacing: -.02em; color: var(--ink); }
+.mp-steps { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); }
+.mp-steps li { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: center; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+.mp-steps .mp-n { grid-row: span 2; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 22px; color: #0B0D17; }
+.mp-steps strong { font-size: 18px; color: var(--ink); }
+.mp-steps small { font-size: 14px; color: var(--ink-muted); }
+.mp-note { margin-top: var(--space-3); color: var(--ink-muted); font-weight: 600; }
+@media (max-width: 720px) { .mp-steps { grid-template-columns: 1fr; } }

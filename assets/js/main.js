@@ -212,7 +212,7 @@
       bar.setAttribute('role', 'region');
       bar.setAttribute('aria-label', 'Cookies');
       var root = document.body.getAttribute('data-root') || '';
-      bar.innerHTML = '<p>Usamos cookies para medir nossos anúncios e melhorar o site. <a href="' + root + 'privacidade/index.html">Saiba mais</a></p>' +
+      bar.innerHTML = '<p>Aceitar ajuda a saber quais anúncios trazem leitores, para gastar menos e chegar a quem precisa. Não coletamos o que você anota. <a href="' + root + 'privacidade/index.html">Saiba mais</a></p>' +
         '<div><button type="button" class="dx-btn dx-btn-secondary" data-consent="no">Recusar</button><button type="button" class="dx-btn dx-btn-primary" data-consent="yes">Aceitar</button></div>';
       document.body.appendChild(bar);
       bar.addEventListener('click', function (e) {
