@@ -21,7 +21,7 @@ h1, h2, h3, p { margin: 0; }
 .eb { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--terracota); }
 .t { font-family: var(--serif); font-weight: 500; letter-spacing: -.018em; line-height: 1.06; color: var(--verde); text-wrap: balance; }
 .t em { font-style: italic; color: var(--terracota); }
-.t-xl { font-size: clamp(40px, 6vw, 68px); }
+.t-xl { font-size: clamp(40px, 5vw, 62px); }
 .t-l { font-size: clamp(32px, 4.2vw, 50px); }
 .t-m { font-size: clamp(26px, 3vw, 34px); }
 .lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.6; color: var(--texto-suave); max-width: 60ch; }
@@ -46,7 +46,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* hero */
 .hero { position: relative; padding: 72px 0 88px; overflow: hidden; }
-.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: center; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .95fr); gap: 40px; align-items: center; }
 .hero-copy { display: grid; gap: 22px; position: relative; padding-left: 26px; }
 .hero-copy::before { content: ""; position: absolute; left: 0; top: 4px; width: 7px; height: 92px; border-radius: 8px; background: var(--fresta); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
