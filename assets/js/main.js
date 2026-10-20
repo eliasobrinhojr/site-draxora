@@ -10,7 +10,7 @@
   // META_PIXEL_ID: só números (Gerenciador de Eventos da Meta). GTAG_ID: 'G-XXXX' (GA4) ou 'AW-XXXX' (Google Ads).
   var META_PIXEL_ID = '1760580708485734';
   var GTAG_ID = '';
-  var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 29.90, currency: 'BRL' };
+  var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 14.90, currency: 'BRL' };
 
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
