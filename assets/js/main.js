@@ -13,8 +13,8 @@
   // Google Ads: GADS_ID = 'AW-XXXXXXXXX' (Ferramentas > Conversões > Configuração da tag).
   // GADS_LEAD = rótulo da conversão "Amostra grátis" (a parte depois da barra em send_to: 'AW-XXX/<rótulo>').
   // A compra é registrada pela integração da Hotmart, não por aqui.
-  var GADS_ID = '';
-  var GADS_LEAD = '';
+  var GADS_ID = 'AW-709873576';
+  var GADS_LEAD = 'rk4zCO7u5aQdEKifv9IC';
   var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 14.90, currency: 'BRL' };
 
   // Header ganha borda ao rolar
