@@ -40,6 +40,27 @@
 
   // Formulários de captura "Avisar-me" -> api/inscrever.php (PHP + MySQL na Hostinger)
   var params = new URLSearchParams(window.location.search);
+  // Sucesso: o próprio formulário vira um cartão de confirmação, com o e-mail cadastrado,
+  // recebe o foco (leitores de tela anunciam) e fica visível na tela.
+  function leadDone(form, email, ja) {
+    var ok = form.querySelector('.dx-lead-ok');
+    form.classList.add('is-done');
+    if (!ok) return;
+    if (!ok.querySelector('.dx-done-icon')) {
+      var icon = document.createElement('span');
+      icon.className = 'dx-done-icon'; icon.setAttribute('aria-hidden', 'true');
+      icon.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      ok.insertBefore(icon, ok.firstChild);
+    }
+    var who = ok.querySelector('.dx-lead-email') || document.createElement('span');
+    who.className = 'dx-lead-email';
+    who.textContent = ja ? email + ' já estava na lista. Tudo certo.' : 'Cadastramos ' + email + '.';
+    ok.appendChild(who);
+    ok.setAttribute('tabindex', '-1');
+    try { ok.focus({ preventScroll: true }); } catch (e) { ok.focus(); }
+    var r = ok.getBoundingClientRect();
+    if (r.top < 80 || r.bottom > window.innerHeight) ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
   document.querySelectorAll('form.dx-lead').forEach(function (form) {
     var err = form.querySelector('[data-lead-error]');
     var btn = form.querySelector('button[type="submit"]');
@@ -59,7 +80,7 @@
       fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (res) {
-          if (res && res.ok) { form.classList.add('is-done'); form.dispatchEvent(new CustomEvent('dx:lead')); }
+          if (res && res.ok) { leadDone(form, email.value.trim(), res.ja); form.dispatchEvent(new CustomEvent('dx:lead')); }
           else { fail((res && res.message) || 'Não foi possível salvar agora. Tente de novo em instantes.'); }
         })
         .catch(function () { fail('Sem conexão. Confira sua internet e tente de novo.'); })
@@ -138,9 +159,21 @@
       var url = via === 'whatsapp'
         ? 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg)
         : 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Sugestão de porta') + '&body=' + encodeURIComponent(msg);
-      if (via === 'whatsapp') window.open(url, '_blank', 'noopener'); else window.location.href = url;
-      form.reset();
-      var dlg = form.closest('dialog'); if (dlg) dlg.close();
+      var open = function () { if (via === 'whatsapp') window.open(url, '_blank', 'noopener'); else window.location.href = url; };
+      open();
+      // Em vez de só fechar, o modal confirma o que aconteceu
+      var dlg = form.closest('dialog');
+      var done = dlg && dlg.querySelector('[data-suggest-done]');
+      if (!done) { form.reset(); if (dlg) dlg.close(); return; }
+      done.querySelector('[data-suggest-done-text]').textContent = via === 'whatsapp'
+        ? 'Abrimos o WhatsApp com a sua mensagem pronta. É só tocar em enviar.'
+        : 'Abrimos o seu e-mail com a mensagem pronta. É só enviar.';
+      var retry = done.querySelector('[data-suggest-retry]');
+      if (retry) retry.onclick = function (e) { e.preventDefault(); open(); };
+      form.hidden = true; done.hidden = false; done.focus();
+      dlg.addEventListener('close', function reset() {
+        form.reset(); form.hidden = false; done.hidden = true; dlg.removeEventListener('close', reset);
+      });
     });
   });
 

@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/v5.css?v=202610211430">
+  <link rel="stylesheet" href="assets/css/v5.css?v=202610211800">
 </head>
 <body data-page="home" data-root="">
 
@@ -194,8 +194,15 @@
     </div>
     <p class="dx-modal-note">Abre o seu WhatsApp ou o seu e-mail com a mensagem pronta. Você só confirma o envio.</p>
   </form>
+  <div class="dx-modal-box dx-modal-done" data-suggest-done role="status" tabindex="-1" hidden>
+    <span class="dx-done-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <h2 class="dx-modal-title">Obrigado pela sugestão!</h2>
+    <p data-suggest-done-text>Abrimos o WhatsApp com a sua mensagem pronta. É só tocar em enviar.</p>
+    <p class="dx-modal-note">Não abriu? <a href="#" data-suggest-retry>Tentar de novo</a></p>
+    <button class="btn btn-primary" type="button" data-close>Fechar</button>
+  </div>
 </dialog>
 
-<script src="assets/js/main.js?v=202610211430" defer></script>
+<script src="assets/js/main.js?v=202610211800" defer></script>
 </body>
 </html>

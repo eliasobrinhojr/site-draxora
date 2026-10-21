@@ -304,3 +304,18 @@ h1, h2, h3, p { margin: 0; }
 .amostra .dx-lead-ok p { margin: 0 0 12px; }
 .amostra .dx-lead-ok .btn { background: var(--petroleo); color: #fff; }
 @media (max-width: 760px) { .amostra { grid-template-columns: 1fr; padding: 28px 22px; gap: 24px; } .amostra img { max-width: 170px; margin: 0 auto; } }
+
+/* Confirmação de cadastro: cartão no lugar do formulário */
+@keyframes dx-pop { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+.dx-lead.is-done .dx-lead-ok { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 6px; align-items: center; padding: 18px 20px; border: 1.5px solid currentColor; border-radius: 18px; font-size: 17px; line-height: 1.4; animation: dx-pop .35s ease-out; outline: none; }
+.dx-lead.is-done .dx-lead-ok > :not(.dx-done-icon) { grid-column: 2; margin: 0; }
+.dx-done-icon { grid-row: 1 / span 3; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 2px solid currentColor; }
+.dx-lead-email { font-size: 14px; font-weight: 500; opacity: .85; overflow-wrap: anywhere; }
+.dx-lead.is-done .dx-lead-ok .btn { justify-self: start; margin-top: 6px; }
+.dx-modal-done { justify-items: start; outline: none; animation: dx-pop .35s ease-out; }
+.dx-modal-done .dx-done-icon { width: 52px; height: 52px; color: var(--petroleo); }
+.dx-modal-done p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { .dx-lead.is-done .dx-lead-ok, .dx-modal-done { animation: none; } }
+
+/* "hidden" sempre esconde, mesmo em componentes com display próprio */
+[hidden] { display: none !important; }
