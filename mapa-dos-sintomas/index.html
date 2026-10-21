@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/v5.css?v=202610201200">
+  <link rel="stylesheet" href="../assets/css/v5.css?v=202610211200">
 </head>
 <body data-page="vendas" data-root="../">
 
@@ -48,7 +48,7 @@
         <div class="chips"><span class="chip">Bipolaridade</span><span class="chip">Borderline</span><span class="chip">TDAH</span></div>
         <div class="actions">
           <a class="btn btn-primary btn-lg" href="https://pay.hotmart.com/Y108011719G" data-checkout-go>Quero o guia · R$ 14,90</a>
-          <a class="btn btn-out btn-lg" href="../assets/amostra/mapa-dos-sintomas-amostra-v5.pdf" target="_blank" rel="noopener">Ver amostra grátis</a>
+          <a class="btn btn-out btn-lg" href="#amostra">Ver amostra grátis</a>
         </div>
         <div class="proof"><span>Acesso imediato</span><span>Pagamento seguro pela Hotmart</span><span>Garantia de 7 dias</span></div>
       </div>
@@ -180,6 +180,38 @@
   </section>
 
   <!-- OFERTA -->
+  <!-- AMOSTRA (captura de e-mail) -->
+  <section class="sec" id="amostra">
+    <div class="wrap">
+      <div class="amostra">
+        <picture><source srcset="../assets/img/v5/capa.webp" type="image/webp"><img src="../assets/img/v5/capa.jpg" alt="Capa do guia Mapa dos Sintomas" width="900" height="1140" loading="lazy"></picture>
+        <div class="amostra-copy">
+          <span class="eb">Amostra grátis</span>
+          <h2 class="t t-m">Veja antes de <em>decidir</em>.</h2>
+          <p>Capa, aviso de uso e o sumário completo do guia, em PDF. Deixe seu e-mail e baixe na hora.</p>
+          <form class="dx-lead" data-endpoint="../api/inscrever.php" data-lead="amostra" novalidate>
+            <label class="sr-only" for="lead-amostra">Seu e-mail</label>
+            <div class="dx-lead-row">
+              <input id="lead-amostra" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
+              <input type="hidden" name="lista" value="amostra">
+              <button class="btn" type="submit">Quero a amostra</button>
+            </div>
+            <div class="dx-hp" aria-hidden="true"><label for="lead-amostra-site">Site</label><input id="lead-amostra-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
+            <label class="dx-consent-check" for="lead-amostra-ok">
+              <input id="lead-amostra-ok" type="checkbox" name="consentimento" value="sim" required>
+              <span>Aceito receber e-mails da Draxora sobre o Mapa dos Sintomas e outros lançamentos. Posso sair quando quiser. <a href="../privacidade/index.html">Privacidade</a></span>
+            </label>
+            <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
+            <div class="dx-lead-ok" role="status">
+              <p>Pronto! Sua amostra está aqui:</p>
+              <a class="btn btn-primary" href="../assets/amostra/mapa-dos-sintomas-amostra-v5.pdf" target="_blank" rel="noopener" data-amostra-download>Baixar a amostra (PDF)</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="sec sec-menta" id="comprar">
     <div class="wrap offer">
       <picture><source srcset="../assets/img/v5/capa.webp" type="image/webp"><img src="../assets/img/v5/capa.jpg" alt="Capa do guia Mapa dos Sintomas" width="900" height="1140" loading="lazy" style="width:100%;max-width:380px;margin:0 auto"></picture>
@@ -196,7 +228,7 @@
           <div><div class="price">R$ 14,90</div><small>pagamento único · Pix, cartão ou boleto</small></div>
           <a class="btn btn-primary btn-lg" href="https://pay.hotmart.com/Y108011719G" data-checkout-go>Quero o guia</a>
         </div>
-        <p class="guarantee">Acesso imediato · pagamento seguro e garantia de 7 dias pela Hotmart · <a href="../assets/amostra/mapa-dos-sintomas-amostra-v5.pdf" target="_blank" rel="noopener">ver amostra grátis</a></p>
+        <p class="guarantee">Acesso imediato · pagamento seguro e garantia de 7 dias pela Hotmart · <a href="#amostra">ver amostra grátis</a></p>
       </div>
     </div>
   </section>
@@ -212,7 +244,7 @@
         <details open><summary>O guia diz qual transtorno eu tenho?</summary><div class="a">Não. Ele ajuda você a observar e descrever o que sente. Quem avalia e diagnostica é o profissional.</div></details>
         <details><summary>Serve se eu já fui a várias consultas?</summary><div class="a">Serve. O guia é para o caminho até o diagnóstico, seja a primeira consulta ou a quinta. A Ficha conta sua história uma vez e a Minha semana registra o que mudou entre uma consulta e outra.</div></details>
         <details><summary>Preciso imprimir?</summary><div class="a">As folhas vêm num PDF separado, pronto para imprimir: 1 Ficha (uma vez só), 4 Minha semana por mês e 1 Para levar à consulta a cada consulta. Se preferir, dá para preencher no celular ou no tablet com um leitor de PDF que permita anotar. O guia se lê bem no celular.</div></details>
-        <details><summary>Posso ver antes de comprar?</summary><div class="a">Pode. A <a href="../assets/amostra/mapa-dos-sintomas-amostra-v5.pdf" target="_blank" rel="noopener">amostra grátis</a> mostra a capa, o aviso de uso e o sumário completo. E a compra tem garantia de 7 dias pela Hotmart.</div></details>
+        <details><summary>Posso ver antes de comprar?</summary><div class="a">Pode. A <a href="#amostra">amostra grátis</a> mostra a capa, o aviso de uso e o sumário completo. E a compra tem garantia de 7 dias pela Hotmart.</div></details>
         <details><summary>Como recebo o material?</summary><div class="a">Logo após a confirmação do pagamento, você recebe por e-mail o acesso à área de membros da Hotmart, onde baixa 2 PDFs: o guia, para ler no celular, e as folhas para imprimir. No Pix e no cartão a liberação é imediata; no boleto, após a compensação.</div></details>
         <details><summary>Posso usar para ajudar alguém da família?</summary><div class="a">Pode. Muita informação importante é percebida primeiro por quem convive com a pessoa. A Minha semana tem uma pergunta para quem convive com você responder no domingo. Se possível, vá junto à consulta.</div></details>
         <details><summary>Estou numa fase muito difícil. O que faço?</summary><div class="a">Se você está pensando em se machucar ou em tirar a própria vida, a prioridade é conversar com alguém agora. O CVV atende 24 horas, de graça, pelo 188 ou em cvv.org.br. Em emergência, ligue 192 (SAMU) ou vá ao pronto-socorro mais próximo.</div></details>
@@ -278,6 +310,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=202610201200" defer></script>
+<script src="../assets/js/main.js?v=202610211200" defer></script>
 </body>
 </html>

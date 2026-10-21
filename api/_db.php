@@ -91,4 +91,4 @@ function dx_clean(?string $v, int $max): ?string {
 }
 
 // Listas aceitas. Adicione aqui a cada nova porta.
-const DX_LISTAS = ['porta-01', 'mapa-dos-sintomas'];
+const DX_LISTAS = ['porta-01', 'mapa-dos-sintomas', 'amostra'];

@@ -289,3 +289,18 @@ h1, h2, h3, p { margin: 0; }
 .vm-q { font: italic 500 clamp(26px, 2.8vw, 34px)/1.2 var(--serif); color: var(--verde); }
 @media (max-width: 760px) { .vm { grid-template-columns: 1fr; gap: 32px; } }
 .hd nav a[aria-current="page"] { color: var(--verde); font-weight: 700; }
+
+/* amostra grátis (captura de e-mail) */
+.amostra { display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: center; background: var(--areia); border-radius: 28px; padding: 40px 44px; }
+.amostra img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 18px 40px rgba(41,79,70,.16); transform: rotate(-3deg); }
+.amostra-copy { display: grid; gap: 14px; }
+.amostra .dx-input { border-color: var(--linha); background: #fff; }
+.amostra .dx-lead .btn { background: var(--verde); color: var(--creme); }
+.amostra .dx-lead .btn:hover { background: #23443C; }
+.amostra .dx-consent-check { color: var(--texto-suave); }
+.amostra .dx-consent-check a { color: var(--petroleo); }
+.amostra .dx-lead-error { color: var(--terracota); }
+.amostra .dx-lead-ok { color: var(--verde); }
+.amostra .dx-lead-ok p { margin: 0 0 12px; }
+.amostra .dx-lead-ok .btn { background: var(--petroleo); color: #fff; }
+@media (max-width: 760px) { .amostra { grid-template-columns: 1fr; padding: 28px 22px; gap: 24px; } .amostra img { max-width: 170px; margin: 0 auto; } }

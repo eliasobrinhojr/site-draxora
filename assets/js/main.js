@@ -10,6 +10,11 @@
   // META_PIXEL_ID: só números (Gerenciador de Eventos da Meta). GTAG_ID: 'G-XXXX' (GA4) ou 'AW-XXXX' (Google Ads).
   var META_PIXEL_ID = '1760580708485734';
   var GTAG_ID = '';
+  // Google Ads: GADS_ID = 'AW-XXXXXXXXX' (Ferramentas > Conversões > Configuração da tag).
+  // GADS_LEAD = rótulo da conversão "Amostra grátis" (a parte depois da barra em send_to: 'AW-XXX/<rótulo>').
+  // A compra é registrada pela integração da Hotmart, não por aqui.
+  var GADS_ID = '';
+  var GADS_LEAD = '';
   var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 14.90, currency: 'BRL' };
 
   // Header ganha borda ao rolar
@@ -178,9 +183,13 @@
   function track(evt, params) {
     if (!tracking.on) return;
     if (window.fbq && META_PIXEL_ID) window.fbq('track', evt, params || {});
-    if (window.gtag && GTAG_ID) {
+    if (window.gtag && (GTAG_ID || GADS_ID)) {
       var map = { ViewContent: 'view_item', InitiateCheckout: 'begin_checkout', Lead: 'generate_lead' };
       if (map[evt]) window.gtag('event', map[evt], { currency: PRODUCT.currency, value: PRODUCT.value, items: [{ item_id: PRODUCT.id, item_name: PRODUCT.name }] });
+      // Conversão do Google Ads: só o cadastro da amostra grátis
+      if (evt === 'Lead' && params && params.content_name === 'amostra' && GADS_ID && GADS_LEAD) {
+        window.gtag('event', 'conversion', { send_to: GADS_ID + '/' + GADS_LEAD });
+      }
     }
   }
   function loadTracking() {
@@ -192,11 +201,13 @@
       window.fbq('init', META_PIXEL_ID);
       window.fbq('track', 'PageView');
     }
-    if (GTAG_ID) {
-      var g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + GTAG_ID; document.head.appendChild(g);
+    if (GTAG_ID || GADS_ID) {
+      var g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=' + (GADS_ID || GTAG_ID); document.head.appendChild(g);
       window.dataLayer = window.dataLayer || [];
       window.gtag = function () { window.dataLayer.push(arguments); };
-      window.gtag('js', new Date()); window.gtag('config', GTAG_ID);
+      window.gtag('js', new Date());
+      if (GTAG_ID) window.gtag('config', GTAG_ID);
+      if (GADS_ID) window.gtag('config', GADS_ID);
     }
     var content = { content_name: PRODUCT.name, content_ids: [PRODUCT.id], content_type: 'product', value: PRODUCT.value, currency: PRODUCT.currency };
     if (page === 'vendas' || page === 'checkout') track('ViewContent', content);
@@ -233,9 +244,12 @@
       setTimeout(function () { window.location.href = href; }, 350);
     });
   });
-  // Cadastro na lista da porta 01 = lead
+  // Cadastro em qualquer lista = lead (a amostra grátis também conta como conversão no Google Ads)
   document.querySelectorAll('form.dx-lead').forEach(function (form) {
-    form.addEventListener('dx:lead', function () { track('Lead'); });
+    form.addEventListener('dx:lead', function () {
+      var lista = form.elements.lista ? form.elements.lista.value : '';
+      track('Lead', { content_name: lista });
+    });
   });
 
   // Ano no rodapé
