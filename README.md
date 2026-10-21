@@ -47,9 +47,13 @@ Para criar uma lista nova (porta 02…), adicione o nome em `DX_LISTAS` no fim d
 
 A compra (Purchase) é registrada pela Hotmart: configure o mesmo Pixel em Hotmart → Ferramentas → Pixel de rastreamento.
 
-## Pendências conhecidas
+## Segurança
 
-- [ ] `og:image` usa caminho relativo; troque por URL absoluta quando o domínio estiver definido.
+- **Nada secreto no repositório.** Senhas e chaves ficam só em `draxora-config.php`, no servidor, fora da `public_html`. Nunca faça commit desse arquivo.
+- O `.htaccess` da raiz bloqueia o que o deploy copia mas não é página: pasta `.git`, arquivos ocultos, `.md`, `.txt` (menos `robots.txt`), `.sql`, `.log`, `.bak`… Se um dia precisar publicar um `.txt` (ex.: `ads.txt`), libere-o com um bloco `<Files>` como o do `robots.txt`.
+- Cabeçalhos de proteção: HTTPS obrigatório (HSTS), sem iframe por outros sites, sem listagem de pastas, `Referrer-Policy`, `Permissions-Policy` e uma CSP básica (não bloqueia Pixel, Google Ads, fontes nem Hotmart).
+- API: limite de 5 cadastros por aparelho a cada 10 min e `max_por_hora` no site todo; o cabeçalho `CF-Connecting-IP` só é aceito quando a conexão vem da Cloudflare; o CSV exportado neutraliza fórmulas (`=`, `+`, `-`, `@`).
+- `api/status.php?chave=…` mostra também como o servidor enxerga o IP do visitante.
 
 ## Publicar na Hostinger com deploy automático
 

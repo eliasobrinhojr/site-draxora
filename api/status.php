@@ -38,6 +38,14 @@ if (empty($c)) {
     }
 }
 $out['ok'] = $out['tabela'];
+// Como o servidor enxerga o visitante (para conferir o limite de tentativas por aparelho).
+$remote = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+$out['visitante'] = [
+    'ip_parcial' => preg_replace('/[0-9a-f]+$/i', 'x', dx_client_ip()),
+    'conexao_via_cloudflare' => dx_is_cloudflare($remote),
+    'cabecalho_cf_presente' => !empty($_SERVER['HTTP_CF_CONNECTING_IP']),
+    'cabecalho_x_forwarded_presente' => !empty($_SERVER['HTTP_X_FORWARDED_FOR']),
+];
 // Sem a chave de exportação, mostra só se está funcionando (não expõe nomes do banco).
 $key = (string)($c['export_key'] ?? '');
 if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {

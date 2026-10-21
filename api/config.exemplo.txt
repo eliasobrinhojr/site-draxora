@@ -22,4 +22,7 @@ return [
 
     // A porta só mostra "N pessoas esperando" a partir deste número
     'min_publico' => 20,
+
+    // Freio contra robôs: máximo de cadastros novos por hora no site todo
+    'max_por_hora' => 300,
 ];

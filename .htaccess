@@ -1,4 +1,39 @@
-# Draxora — cache
+# Draxora — configuração do servidor (Hostinger)
+
+# ===== Segurança =====
+# Sem listagem de pastas (ex.: /assets/amostra/ não mostra os arquivos)
+Options -Indexes
+
+# O deploy pelo Git copia o repositório inteiro para a public_html.
+# Bloqueia o que não é página do site: pasta .git, arquivos ocultos, documentação e arquivos de apoio.
+<IfModule mod_alias.c>
+  RedirectMatch 404 (?i)/\.(git|github|vscode|idea|claude)(/|$)
+</IfModule>
+<FilesMatch "(?i)(^\.|\.(md|txt|sql|log|bak|old|orig|swp|sh|ini|yml|yaml|lock|dist)$)">
+  Require all denied
+</FilesMatch>
+<Files "robots.txt">
+  Require all granted
+</Files>
+
+<IfModule mod_headers.c>
+  # Navegador sempre em HTTPS por 1 ano
+  Header always set Strict-Transport-Security "max-age=31536000"
+  # Não adivinhar tipo de arquivo; não deixar outros sites colocarem o nosso dentro de um iframe
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # Outros sites recebem só o domínio de origem, nunca o caminho com utm_*
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # O site não usa câmera, microfone, localização nem pagamento no navegador
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  # Regras de conteúdo que não afetam Pixel, Google Ads, fontes nem Hotmart
+  Header always set Content-Security-Policy "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests"
+  # Não anunciar versão do servidor/PHP
+  Header always unset X-Powered-By
+  Header unset X-Powered-By
+</IfModule>
+
+# ===== Cache =====
 # HTML sempre revalida (atualizações aparecem na hora);
 # CSS/JS/imagens ficam em cache, e o ?v= no HTML força a versão nova a cada deploy.
 <IfModule mod_headers.c>

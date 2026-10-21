@@ -47,6 +47,16 @@ if ((int)$q->fetchColumn() >= 5) {
     dx_json(429, ['ok' => false, 'error' => 'limite', 'message' => 'Muitas tentativas. Tente de novo em alguns minutos.']);
 }
 
+// Freio geral contra robôs espalhados em muitos IPs: no máximo N cadastros novos por hora
+// no site todo (padrão 300; ajuste 'max_por_hora' no draxora-config.php).
+$hora = (new DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')))->modify('-1 hour')->format('Y-m-d H:i:s');
+$g = $pdo->prepare('SELECT COUNT(*) FROM inscritos WHERE criado_em >= ?');
+$g->execute([$hora]);
+if ((int)$g->fetchColumn() >= (int)(dx_config()['max_por_hora'] ?? 300)) {
+    error_log('[draxora] limite geral por hora atingido');
+    dx_json(429, ['ok' => false, 'error' => 'limite', 'message' => 'Muitas inscrições agora. Tente de novo em alguns minutos.']);
+}
+
 try {
     $ins = $pdo->prepare('INSERT INTO inscritos (email, lista, consentimento_em, origem, utm_source, utm_medium, utm_campaign, utm_content, ip_hash, criado_em)
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');

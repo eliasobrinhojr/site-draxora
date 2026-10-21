@@ -29,6 +29,6 @@ $out = fopen('php://output', 'w');
 fwrite($out, "\xEF\xBB\xBF"); // BOM para o Excel ler acentos
 fputcsv($out, ['email', 'lista', 'cadastrado_em', 'consentimento_em', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'origem'], ';');
 while ($row = $q->fetch()) {
-    fputcsv($out, array_values($row), ';');
+    fputcsv($out, array_map('dx_csv_cell', array_values($row)), ';');
 }
 fclose($out);
