@@ -3,7 +3,7 @@
   // ===== CONTATO — edite aqui =====
   // WhatsApp com DDI + DDD, só números (ex.: '5592999999999'). Vazio = esconde o botão de WhatsApp.
   var WHATSAPP = '5548991851531';
-  var EMAIL = 'elias.dvlpr@gmail.com';
+  var EMAIL = 'contato@draxora.com.br';
   // Link do checkout da Hotmart (ex.: 'https://pay.hotmart.com/XXXXXXXX'). Vazio = botão desativado com aviso "em breve".
   var CHECKOUT_URL = 'https://pay.hotmart.com/Y108011719G';
   // Rastreamento de anúncios. Vazio = nada é carregado.

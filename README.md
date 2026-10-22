@@ -43,7 +43,7 @@ Para criar uma lista nova (porta 02…), adicione o nome em `DX_LISTAS` no fim d
 | `CHECKOUT_URL` | `https://pay.hotmart.com/Y108011719G` | Botão "Ir para o pagamento seguro" (repassa os utm_* da página) |
 | `META_PIXEL_ID` | `1760580708485734` | Pixel da Meta: PageView, ViewContent, InitiateCheckout, Lead (só após aceite de cookies) |
 | `GTAG_ID` | vazio | GA4 (`G-…`) ou Google Ads (`AW-…`): view_item, begin_checkout, generate_lead |
-| `WHATSAPP` / `EMAIL` | 5548991851531 / elias.dvlpr@gmail.com | Formulário "Sugerir um tema" e contato |
+| `WHATSAPP` / `EMAIL` | 5548991851531 / contato@draxora.com.br | Formulário "Sugerir um tema" e contato |
 
 A compra (Purchase) é registrada pela Hotmart: configure o mesmo Pixel em Hotmart → Ferramentas → Pixel de rastreamento.
 
