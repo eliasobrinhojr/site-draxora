@@ -39,6 +39,7 @@
   }
 
   // Formulários de captura "Avisar-me" -> api/inscrever.php (PHP + MySQL na Hostinger)
+  var PAGE_T0 = Date.now();
   var params = new URLSearchParams(window.location.search);
   // Sucesso: o próprio formulário vira um cartão de confirmação, com o e-mail cadastrado,
   // recebe o foco (leitores de tela anunciam) e fica visível na tela.
@@ -76,6 +77,7 @@
       var data = new FormData(form);
       ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (params.get(k)) data.append(k, params.get(k)); });
       data.append('origem', window.location.pathname);
+      data.append('dx_t', String(Math.round((Date.now() - PAGE_T0) / 1000)));
       if (btn) btn.disabled = true;
       fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })

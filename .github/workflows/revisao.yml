@@ -1,0 +1,38 @@
+# Revisão automática antes da publicação.
+# Roda em todo push e pull request. Se falhar, o GitHub mostra um X vermelho no commit:
+# NÃO publique (não junte na main) até corrigir.
+name: Revisão antes da publicação
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  revisao:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP sem erro de sintaxe
+        run: for f in api/*.php; do php -l "$f"; done
+      - name: JavaScript sem erro de sintaxe
+        run: node --check assets/js/main.js
+      - name: Nenhuma senha ou chave no repositório
+        run: |
+          if git ls-files | grep -iE '(^|/)(draxora-config\.php|\.env|.*\.sql|.*\.pem|.*\.key)$'; then
+            echo "::error::Arquivo de configuração/segredo no repositório"; exit 1; fi
+          if git grep -nE "('db_pass'|'export_key'|'salt')\s*=>\s*'[^']{12,}'" -- . ':!api/config.exemplo.txt'; then
+            echo "::error::Parece haver uma senha ou chave no código"; exit 1; fi
+          if git grep -nE "(AKIA[0-9A-Z]{16}|xkeysib-[0-9a-f]{20,}|sk_live_[0-9a-zA-Z]{20,}|ghp_[0-9A-Za-z]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY)"; then
+            echo "::error::Token ou chave privada no código"; exit 1; fi
+      - name: Mesma versão de CSS/JS (?v=) em todas as páginas
+        run: |
+          n=$(grep -rhoE '(v5\.css|main\.js)\?v=[0-9]+' --include=*.html . | sed 's/.*?v=//' | sort -u | wc -l)
+          if [ "$n" -ne 1 ]; then grep -rnoE '(v5\.css|main\.js)\?v=[0-9]+' --include=*.html .; echo "::error::?v= diferente entre páginas"; exit 1; fi
+      - name: Nada carregado por http:// inseguro
+        run: |
+          if grep -rnE '(src|href)="http://' --include=*.html .; then echo "::error::Recurso em http://"; exit 1; fi
+      - name: Proteções do servidor continuam no .htaccess
+        run: |
+          for t in 'Options -Indexes' 'Strict-Transport-Security' 'X-Frame-Options' 'Content-Security-Policy' 'RedirectMatch 404'; do
+            grep -q "$t" .htaccess || { echo "::error::Falta '$t' no .htaccess"; exit 1; }; done
+          grep -q 'Require all denied' api/.htaccess || { echo "::error::api/.htaccess sem bloqueio"; exit 1; }

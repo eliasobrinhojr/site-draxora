@@ -1,5 +1,16 @@
 # Draxora — configuração do servidor (Hostinger)
 
+# ===== Endereço único e seguro =====
+# Sempre https://draxora.com.br (sem www). A CDN da Hostinger informa o protocolo em
+# X-Forwarded-Proto; a regra só age quando ele diz "http", então não há risco de loop.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.draxora\.com\.br$ [NC]
+  RewriteRule ^ https://draxora.com.br%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTP:X-Forwarded-Proto} =http [NC]
+  RewriteRule ^ https://draxora.com.br%{REQUEST_URI} [R=301,L]
+</IfModule>
+
 # ===== Segurança =====
 # Sem listagem de pastas (ex.: /assets/amostra/ não mostra os arquivos)
 Options -Indexes

@@ -38,6 +38,12 @@ if (empty($c)) {
     }
 }
 $out['ok'] = $out['tabela'];
+// Versão do PHP do servidor (só aparece com a chave). Mínimo seguro em 22/10/2026:
+// 8.5.12, 8.4.27 ou 8.3.36 (correção das falhas críticas CVE-2026-109618/109619).
+$out['php'] = PHP_VERSION;
+$out['php_seguro'] = version_compare(PHP_VERSION, '8.5.12', '>=')
+    || (version_compare(PHP_VERSION, '8.4.27', '>=') && version_compare(PHP_VERSION, '8.5.0', '<'))
+    || (version_compare(PHP_VERSION, '8.3.36', '>=') && version_compare(PHP_VERSION, '8.4.0', '<'));
 // Como o servidor enxerga o visitante (para conferir o limite de tentativas por aparelho).
 $remote = (string)($_SERVER['REMOTE_ADDR'] ?? '');
 $out['visitante'] = [

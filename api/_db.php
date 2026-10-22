@@ -6,6 +6,11 @@
 
 declare(strict_types=1);
 
+// Produção: avisos do PHP vão só para o log, nunca para a resposta (um aviso impresso
+// estragaria o JSON e o formulário mostraria erro mesmo com o cadastro salvo).
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
 if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) { http_response_code(404); exit; }
 
 function dx_config(): array {

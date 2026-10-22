@@ -9,15 +9,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     dx_json(405, ['ok' => false, 'error' => 'method']);
 }
 
-// Só aceita envios do próprio site.
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$host = $_SERVER['HTTP_HOST'] ?? '';
-if ($origin !== '' && parse_url($origin, PHP_URL_HOST) !== preg_replace('/:\d+$/', '', $host)) {
+// Só aceita envios do próprio site. Navegadores sempre mandam Origin num envio por fetch;
+// sem Origin, usamos o Referer; sem nenhum dos dois, é um robô postando direto.
+$host = preg_replace('/:\d+$/', '', strtolower((string)($_SERVER['HTTP_HOST'] ?? '')));
+$from = (string)($_SERVER['HTTP_ORIGIN'] ?? '') ?: (string)($_SERVER['HTTP_REFERER'] ?? '');
+$fromHost = strtolower((string)parse_url($from, PHP_URL_HOST));
+if ($from === '' || $fromHost !== $host) {
     dx_json(403, ['ok' => false, 'error' => 'origin']);
 }
 
-// Robôs preenchem o campo escondido "site": fingimos sucesso e não gravamos nada.
-if (!empty($_POST['site'])) {
+// Robôs: campo escondido "site" preenchido, ou envio sem o carimbo de tempo que o JavaScript
+// do site acrescenta (dx_t = segundos desde que a página abriu; pessoa leva mais de 2 s).
+// Fingimos sucesso e não gravamos nada, para o robô não aprender a contornar.
+$dxT = $_POST['dx_t'] ?? null;
+if (!empty($_POST['site']) || !is_numeric($dxT) || (float)$dxT < 2) {
     dx_json(200, ['ok' => true]);
 }
 
@@ -100,9 +105,9 @@ if ($brevoKey !== '' && !empty($brevoLists[$lista]) && function_exists('curl_ini
         'updateEnabled' => true,
         'attributes' => [
             'LISTA' => $lista,
-            'UTM_SOURCE' => (string)($_POST['utm_source'] ?? ''),
-            'UTM_CAMPAIGN' => (string)($_POST['utm_campaign'] ?? ''),
-            'UTM_CONTENT' => (string)($_POST['utm_content'] ?? ''),
+            'UTM_SOURCE' => (string)dx_clean($_POST['utm_source'] ?? null, 160),
+            'UTM_CAMPAIGN' => (string)dx_clean($_POST['utm_campaign'] ?? null, 160),
+            'UTM_CONTENT' => (string)dx_clean($_POST['utm_content'] ?? null, 160),
         ],
     ]);
     $ch = curl_init('https://api.brevo.com/v3/contacts');
@@ -116,7 +121,8 @@ if ($brevoKey !== '' && !empty($brevoLists[$lista]) && function_exists('curl_ini
     ]);
     $resp = curl_exec($ch);
     $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    // (sem curl_close: no PHP 8.5 ela é obsoleta; o recurso é liberado sozinho)
+    unset($ch);
     if ($code < 200 || $code >= 300) {
         error_log('[draxora] brevo ' . $code . ': ' . substr((string)$resp, 0, 200));
     }
