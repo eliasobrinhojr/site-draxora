@@ -57,6 +57,8 @@ $key = (string)($c['export_key'] ?? '');
 if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
     $out = ['ok' => $out['ok']];
 }
+// Diz apenas se a integração com o Brevo está ligada (chave preenchida + lista "amostra" mapeada). Nunca mostra a chave.
+$out['brevo_configurado'] = !empty($c['brevo_api_key']) && !empty($c['brevo_listas']['amostra']) && function_exists('curl_init');
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
