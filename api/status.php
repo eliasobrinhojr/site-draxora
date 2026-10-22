@@ -58,6 +58,10 @@ if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
     $out = ['ok' => $out['ok']];
 }
 // Diz apenas se a integração com o Brevo está ligada (chave preenchida + lista "amostra" mapeada). Nunca mostra a chave.
+// Último evento da integração (sem e-mails: qualquer endereço na mensagem é mascarado).
+$out['brevo_ultimo_evento'] = is_file(dx_log_file())
+    ? preg_replace('/[^\s@"]+@[^\s@"]+/', '[e-mail]', trim((string)file_get_contents(dx_log_file())))
+    : null;
 $out['brevo_configurado'] = !empty($c['brevo_api_key']) && !empty($c['brevo_listas']['amostra']) && function_exists('curl_init');
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');

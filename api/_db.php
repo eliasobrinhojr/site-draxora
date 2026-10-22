@@ -28,6 +28,12 @@ function dx_config(): array {
     return $cfg;
 }
 
+// Arquivo (fora da public_html) onde o site guarda o último erro de integração, para o diagnóstico.
+function dx_log_file(): string {
+    $dir = dirname(__DIR__, 2);
+    return (is_dir($dir) && is_writable($dir)) ? $dir . '/draxora-ultimo-erro.txt' : sys_get_temp_dir() . '/draxora-ultimo-erro.txt';
+}
+
 function dx_json(int $status, array $body): void {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');

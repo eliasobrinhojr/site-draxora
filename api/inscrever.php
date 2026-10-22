@@ -121,10 +121,15 @@ if ($brevoKey !== '' && !empty($brevoLists[$lista]) && function_exists('curl_ini
     ]);
     $resp = curl_exec($ch);
     $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr = (string)curl_error($ch);
     // (sem curl_close: no PHP 8.5 ela é obsoleta; o recurso é liberado sozinho)
     unset($ch);
     if ($code < 200 || $code >= 300) {
-        error_log('[draxora] brevo ' . $code . ': ' . substr((string)$resp, 0, 200));
+        $err = $curlErr !== '' ? "curl: $curlErr" : substr((string)$resp, 0, 200);
+        error_log('[draxora] brevo ' . $code . ': ' . $err);
+        @file_put_contents(dx_log_file(), date('Y-m-d H:i:s') . " brevo HTTP $code: $err\n");
+    } else {
+        @file_put_contents(dx_log_file(), date('Y-m-d H:i:s') . " brevo ok ($code)\n");
     }
 }
 
