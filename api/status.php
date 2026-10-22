@@ -62,6 +62,12 @@ if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
 $out['brevo_ultimo_evento'] = is_file(dx_log_file())
     ? preg_replace('/[^\s@"]+@[^\s@"]+/', '[e-mail]', trim((string)file_get_contents(dx_log_file())))
     : null;
+// Formato da chave (nunca a chave): prefixo esperado "xkeysib-", tamanho, e se há espaço/aspas sobrando.
+$k = (string)($c['brevo_api_key'] ?? '');
+$out['brevo_chave'] = ['prefixo_ok' => str_starts_with($k, 'xkeysib-'), 'tamanho' => strlen($k), 'tem_espaco_ou_aspas' => (bool)preg_match('/[\s"\']/', $k)];
+foreach ([dirname(__DIR__, 2) . '/draxora-config.php', dirname(__DIR__, 3) . '/draxora-config.php'] as $i => $f) {
+    $out['config_candidato_' . ($i + 1)] = is_file($f) ? date('Y-m-d H:i:s', (int)filemtime($f)) : null;
+}
 $out['brevo_configurado'] = !empty($c['brevo_api_key']) && !empty($c['brevo_listas']['amostra']) && function_exists('curl_init');
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
