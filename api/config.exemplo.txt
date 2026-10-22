@@ -20,6 +20,11 @@ return [
     'notify_to' => '',
     'mail_from' => '',
 
+    // Opcional: Brevo (e-mail marketing). Chave de API v3 criada em app.brevo.com → SMTP & API → Chaves de API.
+    // 'brevo_listas' liga cada lista do site ao ID da lista no Brevo (CRM → Listas → coluna ID).
+    'brevo_api_key' => '',
+    'brevo_listas'  => ['amostra' => 3],
+
     // A porta só mostra "N pessoas esperando" a partir deste número
     'min_publico' => 20,
 

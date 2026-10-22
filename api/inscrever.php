@@ -89,4 +89,37 @@ if (!empty($c['notify_to']) && !empty($c['mail_from'])) {
     );
 }
 
+// Envia o contato ao Brevo (lista por nome de lista), se a chave estiver no draxora-config.php.
+// Falha aqui nunca derruba o cadastro: o e-mail já está salvo no banco.
+$brevoKey = (string)($c['brevo_api_key'] ?? '');
+$brevoLists = (array)($c['brevo_listas'] ?? []);
+if ($brevoKey !== '' && !empty($brevoLists[$lista]) && function_exists('curl_init')) {
+    $payload = json_encode([
+        'email' => $email,
+        'listIds' => [(int)$brevoLists[$lista]],
+        'updateEnabled' => true,
+        'attributes' => [
+            'LISTA' => $lista,
+            'UTM_SOURCE' => (string)($_POST['utm_source'] ?? ''),
+            'UTM_CAMPAIGN' => (string)($_POST['utm_campaign'] ?? ''),
+            'UTM_CONTENT' => (string)($_POST['utm_content'] ?? ''),
+        ],
+    ]);
+    $ch = curl_init('https://api.brevo.com/v3/contacts');
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => ['accept: application/json', 'content-type: application/json', 'api-key: ' . $brevoKey],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 4,
+        CURLOPT_CONNECTTIMEOUT => 3,
+    ]);
+    $resp = curl_exec($ch);
+    $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($code < 200 || $code >= 300) {
+        error_log('[draxora] brevo ' . $code . ': ' . substr((string)$resp, 0, 200));
+    }
+}
+
 dx_json(201, ['ok' => true]);
