@@ -55,7 +55,9 @@
     }
     var who = ok.querySelector('.dx-lead-email') || document.createElement('span');
     who.className = 'dx-lead-email';
-    who.textContent = ja ? email + ' já estava na lista. Tudo certo.' : 'Cadastramos ' + email + '.';
+    who.textContent = ja
+      ? email + ' já estava na lista. Tudo certo.'
+      : 'Cadastramos ' + email + '. Uma cópia chega no seu e-mail em instantes (confira Promoções ou Spam).';
     ok.appendChild(who);
     ok.setAttribute('tabindex', '-1');
     try { ok.focus({ preventScroll: true }); } catch (e) { ok.focus(); }
