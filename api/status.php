@@ -52,11 +52,6 @@ $out['visitante'] = [
     'cabecalho_cf_presente' => !empty($_SERVER['HTTP_CF_CONNECTING_IP']),
     'cabecalho_x_forwarded_presente' => !empty($_SERVER['HTTP_X_FORWARDED_FOR']),
 ];
-// Sem a chave de exportação, mostra só se está funcionando (não expõe nomes do banco).
-$key = (string)($c['export_key'] ?? '');
-if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
-    $out = ['ok' => $out['ok']];
-}
 // Diz apenas se a integração com o Brevo está ligada (chave preenchida + lista "amostra" mapeada). Nunca mostra a chave.
 // Último evento da integração (sem e-mails: qualquer endereço na mensagem é mascarado).
 $out['brevo_ultimo_evento'] = is_file(dx_log_file())
@@ -69,6 +64,11 @@ foreach ([dirname(__DIR__, 2) . '/draxora-config.php', dirname(__DIR__, 3) . '/d
     $out['config_candidato_' . ($i + 1)] = is_file($f) ? date('Y-m-d H:i:s', (int)filemtime($f)) : null;
 }
 $out['brevo_configurado'] = !empty($c['brevo_api_key']) && !empty($c['brevo_listas']['amostra']) && function_exists('curl_init');
+// Sem a chave de exportação, mostra só se está funcionando (nada de banco, Brevo, PHP ou arquivos de config).
+$key = (string)($c['export_key'] ?? '');
+if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
+    $out = ['ok' => $out['ok']];
+}
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
