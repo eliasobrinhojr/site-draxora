@@ -3,32 +3,65 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Draxora · Presença para entender. Energia para o próximo passo.</title>
-  <meta name="description" content="Draxora cria ferramentas simples de saúde mental e autocuidado, com cuidado e sem jargão. A primeira é o Mapa dos Sintomas, um guia para a primeira consulta.">
-  <meta property="og:title" content="Draxora">
+  <title>Draxora · Ferramentas de saúde mental para se entender</title>
+  <meta name="description" content="Guias e ferramentas práticas de saúde mental, feitas por quem já foi paciente e revisadas por psicóloga. Comece pelo guia para a primeira consulta.">
+  <meta property="og:title" content="Draxora · Ferramentas de saúde mental">
   <meta property="og:description" content="Presença para entender o que você sente. Energia para o próximo passo.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://draxora.com.br/assets/img/v5/og-mapa-dos-sintomas.jpg">
+  <meta property="og:url" content="https://draxora.com.br/">
+  <meta property="og:image" content="https://draxora.com.br/assets/img/v5/og-draxora.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="pt_BR">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://draxora.com.br/">
   <meta name="theme-color" content="#FAF7F0">
   <link rel="icon" type="image/svg+xml" href="assets/img/draxora-icone-app.svg?v=5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/v5.css?v=202610221640">
+  <link rel="stylesheet" href="assets/css/v5.css?v=202610231500">
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://draxora.com.br/#org",
+   "name": "Draxora",
+   "url": "https://draxora.com.br/",
+   "logo": "https://draxora.com.br/assets/img/draxora-icone-app.svg",
+   "email": "contato@draxora.com.br",
+   "sameAs": [
+    "https://www.instagram.com/usedraxora/"
+   ],
+   "founder": {
+    "@id": "https://draxora.com.br/sobre/#elias"
+   }
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://draxora.com.br/#site",
+   "name": "Draxora",
+   "url": "https://draxora.com.br/",
+   "inLanguage": "pt-BR",
+   "publisher": {
+    "@id": "https://draxora.com.br/#org"
+   }
+  }
+ ]
+}
+  </script>
 </head>
 <body data-page="home" data-root="">
 
 <header class="hd">
   <div class="wrap">
-    <a class="brand" href="index.html" aria-label="Draxora — início"><img src="assets/img/v5/draxora-v5.svg" alt="Draxora" width="180" height="28"></a>
+    <a class="brand" href="./" aria-label="Draxora — início"><img src="assets/img/v5/draxora-v5.svg" alt="Draxora" width="180" height="28"></a>
     <nav aria-label="Principal">
       <a href="#portas">Portas</a>
-      <a href="sobre/index.html">Sobre</a>
-      <a class="btn btn-primary" href="mapa-dos-sintomas/index.html">Mapa dos Sintomas</a>
+      <a href="sobre/">Sobre</a>
+      <a class="btn btn-primary" href="mapa-dos-sintomas/">Mapa dos Sintomas</a>
     </nav>
   </div>
 </header>
@@ -42,7 +75,7 @@
         <h1 class="t t-xl">Presença para entender o que você sente. <em>Energia para o próximo passo.</em></h1>
         <p class="lead">Ferramentas simples, com cuidado e sem jargão, para você se observar e chegar mais claro às conversas que importam.</p>
         <div class="actions">
-          <a class="btn btn-primary btn-lg" href="mapa-dos-sintomas/index.html">Conhecer o Mapa dos Sintomas</a>
+          <a class="btn btn-primary btn-lg" href="mapa-dos-sintomas/">Conhecer o Mapa dos Sintomas</a>
           <a class="btn btn-out btn-lg" href="#portas">Ver as portas</a>
         </div>
       </div>
@@ -57,7 +90,7 @@
         <h2 class="t t-l">Uma está aberta. <em>As outras, a caminho.</em></h2>
       </div>
       <div class="doors">
-        <a class="door is-open" href="mapa-dos-sintomas/index.html">
+        <a class="door is-open" href="mapa-dos-sintomas/">
           <div class="door-copy">
             <span class="door-num">Porta 00 · disponível</span>
             <h3>Mapa dos Sintomas</h3>
@@ -81,7 +114,7 @@
             <div class="dx-hp" aria-hidden="true"><label for="lead-01-site">Site</label><input id="lead-01-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
             <label class="dx-consent-check" for="lead-01-ok">
               <input id="lead-01-ok" type="checkbox" name="consentimento" value="sim" required>
-              <span>Aceito receber e-mails da Draxora sobre lançamentos. Posso sair quando quiser. <a href="privacidade/index.html">Privacidade</a></span>
+              <span>Aceito receber e-mails da Draxora sobre lançamentos. Posso sair quando quiser. <a href="privacidade/">Privacidade</a></span>
             </label>
             <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
             <p class="dx-lead-ok" role="status">Pronto. Você vai saber antes.</p>
@@ -116,7 +149,7 @@
           <div class="dx-hp" aria-hidden="true"><label for="lead-app-site">Site</label><input id="lead-app-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
           <label class="dx-consent-check" for="lead-app-ok">
             <input id="lead-app-ok" type="checkbox" name="consentimento" value="sim" required>
-            <span>Aceito receber e-mails da Draxora sobre o app e outros lançamentos. Posso sair quando quiser. <a href="privacidade/index.html">Privacidade</a></span>
+            <span>Aceito receber e-mails da Draxora sobre o app e outros lançamentos. Posso sair quando quiser. <a href="privacidade/">Privacidade</a></span>
           </label>
           <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
           <p class="dx-lead-ok" role="status">Pronto. Você vai receber as novidades do app em primeira mão.</p>
@@ -135,7 +168,7 @@
           <picture><source srcset="assets/img/elias-retrato.webp" type="image/webp"><img src="assets/img/elias-retrato.jpg" alt="Foto de Elias Jr" width="615" height="769" loading="lazy"></picture>
           <figcaption><strong>Elias Jr</strong><small>Fundador da Draxora</small></figcaption>
         </figure>
-        <p><a class="btn btn-out" href="sobre/index.html">Conheça a Draxora</a></p>
+        <p><a class="btn btn-out" href="sobre/">Conheça a Draxora</a></p>
       </div>
       <ul class="about-list">
         <li><span class="about-num">01</span><span><strong>Método, não motivação</strong><span>Passos claros, para aplicar no mesmo dia.</span></span></li>
@@ -152,12 +185,12 @@
     <div class="ft-top">
       <img src="assets/img/v5/draxora-v5.svg" alt="Draxora" width="150" height="24">
       <nav aria-label="Rodapé">
-        <a href="mapa-dos-sintomas/index.html">Mapa dos Sintomas</a>
-        <a href="sobre/index.html">Sobre</a>
+        <a href="mapa-dos-sintomas/">Mapa dos Sintomas</a>
+        <a href="sobre/">Sobre</a>
         <a href="https://www.instagram.com/usedraxora/" rel="noopener" target="_blank">Instagram</a>
         <a href="mailto:contato@draxora.com.br">Contato</a>
-        <a href="termos/index.html">Termos de uso</a>
-        <a href="privacidade/index.html">Privacidade</a>
+        <a href="termos/">Termos de uso</a>
+        <a href="privacidade/">Privacidade</a>
       </nav>
     </div>
     <p><strong>Material educativo.</strong> Não substitui avaliação, diagnóstico ou tratamento por profissional de saúde. Em sofrimento intenso, ligue <strong>188</strong> (CVV, 24 horas). Em emergência, <strong>192</strong>.</p>
@@ -203,6 +236,6 @@
   </div>
 </dialog>
 
-<script src="assets/js/main.js?v=202610221640" defer></script>
+<script src="assets/js/main.js?v=202610231500" defer></script>
 </body>
 </html>

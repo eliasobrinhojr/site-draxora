@@ -1,2 +1,4 @@
 User-agent: *
 Disallow: /mapa-dos-sintomas/checkout/
+
+Sitemap: https://draxora.com.br/sitemap.xml
