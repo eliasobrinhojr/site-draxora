@@ -341,3 +341,23 @@ h1, h2, h3, p { margin: 0; }
   .brand { display: inline-flex; align-items: center; min-height: 44px; }
   .nf-links .btn { flex: 1 1 100%; justify-content: center; }
 }
+
+/* Guias (artigos) */
+.guia .wrap { max-width: 720px; }
+.crumbs { font-size: 14px; color: var(--texto-suave); }
+.crumbs a { color: var(--petroleo); text-decoration: none; font-weight: 600; display: inline-flex; min-height: 44px; align-items: center; }
+.byline { font-size: 14px; color: var(--texto-suave); border-bottom: 1px solid var(--linha); padding-bottom: 18px; }
+.byline a { color: var(--petroleo); }
+.resposta { font-size: 18px !important; color: var(--verde) !important; background: var(--menta); border-radius: 18px; padding: 18px 22px; }
+.guia h2 { font-size: 26px; margin-top: 26px; }
+.guia-cta { margin: 28px 0 8px; background: var(--areia); border-radius: var(--raio); padding: 28px; display: grid; gap: 10px; justify-items: start; }
+.guia-cta-t { font: 500 26px/1.15 var(--serif) !important; color: var(--verde) !important; }
+.guia-cta-t em { color: var(--terracota); }
+.guia-cta .btn { width: 100%; max-width: 320px; justify-content: center; }
+.crise { background: var(--papel); border: 1.5px solid #B23A2E; border-radius: 18px; padding: 16px 20px; }
+.crise a { color: #B23A2E; font-weight: 700; }
+.legal-note { font-size: 14px !important; }
+.guia-lista { list-style: none; padding: 0 !important; display: grid; gap: 14px !important; }
+.guia-lista a { display: grid; gap: 6px; padding: 22px 24px; background: var(--papel); border: 1.5px solid var(--linha); border-radius: 18px; text-decoration: none; }
+.guia-lista strong { font: 600 21px/1.25 var(--serif); }
+.guia-lista span { color: var(--texto-suave); }
