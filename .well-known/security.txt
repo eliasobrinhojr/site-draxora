@@ -1,0 +1,5 @@
+# Encontrou uma falha de segurança no site da Draxora? Avise por e-mail.
+Contact: mailto:contato@draxora.com.br
+Expires: 2027-10-23T00:00:00.000Z
+Preferred-Languages: pt, en
+Canonical: https://draxora.com.br/.well-known/security.txt

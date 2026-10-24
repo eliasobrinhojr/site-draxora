@@ -1,3 +1,8 @@
+/* Fontes da marca servidas pelo próprio site (sem Google Fonts: mais rápido e sem enviar o IP do visitante a terceiros).
+   Recorte latino; Newsreader com tamanho óptico fixo em 36. Licença OFL em assets/fonts/. */
+@font-face { font-family: "Newsreader"; src: url("../fonts/newsreader.woff2") format("woff2"); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("../fonts/newsreader-italic.woff2") format("woff2"); font-weight: 400 500; font-style: italic; font-display: swap; }
+@font-face { font-family: "Figtree"; src: url("../fonts/figtree.woff2") format("woff2"); font-weight: 300 900; font-style: normal; font-display: swap; }
 /* Draxora v5 — identidade clara: creme, verde profundo, acento terracota (prévia) */
 :root {
   --creme: #FAF7F0; --papel: #FFFFFF; --verde: #294F46; --texto-suave: #55675F; --salvia: #789783;
@@ -319,3 +324,20 @@ h1, h2, h3, p { margin: 0; }
 
 /* "hidden" sempre esconde, mesmo em componentes com display próprio */
 [hidden] { display: none !important; }
+
+/* Página 404 */
+.nf .wrap { max-width: 760px; padding-top: 24px; padding-bottom: 72px; }
+.nf .eb { margin-bottom: 14px; }
+.nf .lead { margin: 18px 0 26px; }
+.nf-links { display: flex; flex-wrap: wrap; gap: 12px; }
+.nf-help { margin-top: 28px; color: var(--texto-suave); }
+
+/* Usabilidade no celular: áreas de toque de pelo menos 44px e caixas de consentimento maiores */
+.dx-consent-check input { width: 22px; height: 22px; margin-top: 0; }
+.door-lock { font-size: 13px; }
+@media (max-width: 760px) {
+  .ft nav { gap: 4px 18px; }
+  .ft nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  .brand { display: inline-flex; align-items: center; min-height: 44px; }
+  .nf-links .btn { flex: 1 1 100%; justify-content: center; }
+}

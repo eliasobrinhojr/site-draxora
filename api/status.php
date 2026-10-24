@@ -64,6 +64,14 @@ foreach ([dirname(__DIR__, 2) . '/draxora-config.php', dirname(__DIR__, 3) . '/d
     $out['config_candidato_' . ($i + 1)] = is_file($f) ? date('Y-m-d H:i:s', (int)filemtime($f)) : null;
 }
 $out['brevo_configurado'] = !empty($c['brevo_api_key']) && !empty($c['brevo_listas']['amostra']) && function_exists('curl_init');
+// Avisos da política de conteúdo (modo relatório): contagem por diretiva + domínio
+$cspF = dx_csp_file();
+$csp = [];
+if (is_file($cspF)) {
+    foreach (file($cspF) ?: [] as $l) { $p = explode("\t", trim($l)); if (count($p) >= 3) { $k = $p[1] . ' ← ' . $p[2]; $csp[$k] = ($csp[$k] ?? 0) + 1; } }
+    arsort($csp);
+}
+$out['csp_avisos'] = array_slice($csp, 0, 30, true);
 // Sem a chave de exportação, mostra só se está funcionando (nada de banco, Brevo, PHP ou arquivos de config).
 $key = (string)($c['export_key'] ?? '');
 if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {

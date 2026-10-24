@@ -26,6 +26,12 @@ Options -Indexes
 <Files "robots.txt">
   Require all granted
 </Files>
+<Files "security.txt">
+  Require all granted
+</Files>
+
+# Página própria para endereço inexistente (também usada pelos bloqueios acima)
+ErrorDocument 404 /404.html
 
 <IfModule mod_headers.c>
   # Navegador sempre em HTTPS por 1 ano
@@ -39,6 +45,12 @@ Options -Indexes
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
   # Regras de conteúdo que não afetam Pixel, Google Ads, fontes nem Hotmart
   Header always set Content-Security-Policy "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests"
+  # Isola o site de janelas abertas por outros domínios (o WhatsApp continua abrindo normalmente)
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  Header always set X-Permitted-Cross-Domain-Policies "none"
+  # Política completa em MODO RELATÓRIO: nada é bloqueado; o navegador só avisa /api/csp.php do que
+  # sairia da lista. Depois de alguns dias sem avisos indevidos, ela passa a valer de verdade.
+  Header always set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' https://connect.facebook.net https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com; connect-src 'self' https://www.facebook.com https://connect.facebook.net https://www.google.com https://www.googletagmanager.com https://*.google-analytics.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://*.doubleclick.net; img-src 'self' data: https://www.facebook.com https://www.google.com https://www.google.com.br https://googleads.g.doubleclick.net https://www.googletagmanager.com https://*.doubleclick.net; frame-src https://td.doubleclick.net https://www.googletagmanager.com; font-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; report-uri /api/csp.php"
   # Não anunciar versão do servidor/PHP
   Header always unset X-Powered-By
   Header unset X-Powered-By
@@ -51,8 +63,12 @@ Options -Indexes
   <FilesMatch "\.(html)$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
-  <FilesMatch "\.(css|js|svg|png|jpg|webp|woff2)$">
+  <FilesMatch "\.(css|js|svg|png|jpg|webp)$">
     Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  # Fontes quase nunca mudam: 1 ano
+  <FilesMatch "\.(woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>
 

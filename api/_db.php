@@ -34,6 +34,10 @@ function dx_log_file(): string {
     return (is_dir($dir) && is_writable($dir)) ? $dir . '/draxora-ultimo-erro.txt' : sys_get_temp_dir() . '/draxora-ultimo-erro.txt';
 }
 
+function dx_csp_file(): string {
+    return dirname(dx_log_file()) . '/draxora-csp.txt';
+}
+
 function dx_json(int $status, array $body): void {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
