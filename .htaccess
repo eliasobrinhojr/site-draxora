@@ -72,7 +72,15 @@ ErrorDocument 404 /404.html
   </FilesMatch>
 </IfModule>
 
-# Amostra antiga (v3) retirada: aponta para a amostra v5
-<IfModule mod_alias.c>
-  Redirect 301 /assets/amostra/mapa-dos-sintomas-amostra.pdf /assets/amostra/mapa-dos-sintomas-amostra-v5.pdf
+# 25/10/2026: o guia completo passou a ser gratuito (por e-mail). As amostras antigas (v3 e v5)
+# levavam ao checkout da Hotmart, que foi desativado: agora levam ao cadastro do guia gratuito.
+<IfModule mod_rewrite.c>
+  RewriteRule ^assets/amostra/ https://draxora.com.br/mapa-dos-sintomas/?utm_source=amostra&utm_medium=pdf#amostra [R=301,NE,L]
+</IfModule>
+
+# PDFs do guia: fora da busca do Google (a entrega é pelo e-mail)
+<IfModule mod_headers.c>
+  <FilesMatch "\.pdf$">
+    Header set X-Robots-Tag "noindex, nofollow"
+  </FilesMatch>
 </IfModule>

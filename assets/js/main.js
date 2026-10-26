@@ -5,7 +5,7 @@
   var WHATSAPP = '5548991851531';
   var EMAIL = 'contato@draxora.com.br';
   // Link do checkout da Hotmart (ex.: 'https://pay.hotmart.com/XXXXXXXX'). Vazio = botão desativado com aviso "em breve".
-  var CHECKOUT_URL = 'https://pay.hotmart.com/Y108011719G';
+  var CHECKOUT_URL = ''; // 25/10/2026: o guia passou a ser gratuito, entregue por e-mail
   // Rastreamento de anúncios. Vazio = nada é carregado.
   // META_PIXEL_ID: só números (Gerenciador de Eventos da Meta). GTAG_ID: 'G-XXXX' (GA4) ou 'AW-XXXX' (Google Ads).
   var META_PIXEL_ID = '1760580708485734';
@@ -15,7 +15,7 @@
   // A compra é registrada pela integração da Hotmart, não por aqui.
   var GADS_ID = 'AW-18529209896';
   var GADS_LEAD = 'DpX4CPWg66QdEKictYNF';
-  var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 14.90, currency: 'BRL' };
+  var PRODUCT = { name: 'Mapa dos Sintomas', id: 'Y108011719G', value: 0, currency: 'BRL' };
 
   // Header ganha borda ao rolar
   var header = document.querySelector('.site-header');
@@ -55,9 +55,14 @@
     }
     var who = ok.querySelector('.dx-lead-email') || document.createElement('span');
     who.className = 'dx-lead-email';
-    who.textContent = ja
-      ? email + ' já estava na lista. Tudo certo.'
-      : 'Cadastramos ' + email + '. Uma cópia chega no seu e-mail em instantes (confira Promoções ou Spam).';
+    var guia = !!form.querySelector('input[name="lista"][value="amostra"]');
+    who.textContent = guia
+      ? (ja
+        ? email + ' já estava cadastrado. Se não achar o guia no seu e-mail, escreva para contato@draxora.com.br.'
+        : 'Enviamos o guia para ' + email + '. Chega em instantes (confira Promoções ou Spam).')
+      : (ja
+        ? email + ' já estava na lista. Tudo certo.'
+        : 'Cadastramos ' + email + '. Você recebe as novidades em primeira mão.');
     ok.appendChild(who);
     ok.setAttribute('tabindex', '-1');
     try { ok.focus({ preventScroll: true }); } catch (e) { ok.focus(); }
