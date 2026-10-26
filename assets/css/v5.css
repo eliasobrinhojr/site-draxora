@@ -361,3 +361,17 @@ h1, h2, h3, p { margin: 0; }
 .guia-lista a { display: grid; gap: 6px; padding: 22px 24px; background: var(--papel); border: 1.5px solid var(--linha); border-radius: 18px; text-decoration: none; }
 .guia-lista strong { font: 600 21px/1.25 var(--serif); }
 .guia-lista span { color: var(--texto-suave); }
+
+/* Página /conte/ (relato de uso) */
+.conte form { display: grid; gap: 22px; margin-top: 8px; }
+.dx-q { border: 1px solid var(--linha); border-radius: 16px; padding: 16px 18px; margin: 0; display: grid; gap: 10px; background: #fff; }
+.dx-q legend { float: left; width: 100%; font: 600 17px/1.4 var(--sans); color: var(--verde); padding: 0; margin-bottom: 4px; }
+.dx-q legend + * { clear: both; }
+.dx-opt { display: flex; gap: 10px; align-items: center; min-height: 40px; font-size: 16px; color: var(--texto-suave); cursor: pointer; }
+.dx-opt input { width: 20px; height: 20px; accent-color: var(--petroleo); flex: none; }
+.conte .dx-field { display: grid; gap: 8px; }
+.conte .dx-field label { color: var(--texto-suave); font-size: 15px; }
+.conte .dx-consent-check { color: var(--texto-suave); }
+.conte .dx-consent-check a { color: var(--petroleo); }
+.dx-feedback.is-done > :not(.dx-fb-ok) { display: none; }
+.dx-fb-ok { background: var(--menta, #DDE8DF); border-radius: 16px; padding: 18px 20px; color: var(--verde); }

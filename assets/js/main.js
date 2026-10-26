@@ -2,7 +2,7 @@
 (function () {
   // ===== CONTATO — edite aqui =====
   // WhatsApp com DDI + DDD, só números (ex.: '5592999999999'). Vazio = esconde o botão de WhatsApp.
-  var WHATSAPP = '5548991851531';
+  var WHATSAPP = ''; // 25/10/2026: número pessoal retirado; volta quando houver o WhatsApp Business da Draxora
   var EMAIL = 'contato@draxora.com.br';
   // Link do checkout da Hotmart (ex.: 'https://pay.hotmart.com/XXXXXXXX'). Vazio = botão desativado com aviso "em breve".
   var CHECKOUT_URL = ''; // 25/10/2026: o guia passou a ser gratuito, entregue por e-mail
@@ -91,6 +91,37 @@
         .then(function (res) {
           if (res && res.ok) { leadDone(form, email.value.trim(), res.ja); form.dispatchEvent(new CustomEvent('dx:lead')); }
           else { fail((res && res.message) || 'Não foi possível salvar agora. Tente de novo em instantes.'); }
+        })
+        .catch(function () { fail('Sem conexão. Confira sua internet e tente de novo.'); })
+        .then(function () { if (btn) btn.disabled = false; });
+    });
+  });
+
+  // Relato de uso (/conte/) -> api/feedback.php
+  document.querySelectorAll('form.dx-feedback').forEach(function (form) {
+    var err = form.querySelector('[data-fb-error]');
+    var btn = form.querySelector('button[type="submit"]');
+    function fail(msg) { if (err) { err.textContent = msg; err.hidden = false; } }
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      if (err) err.hidden = true;
+      var miss = ['usou', 'consulta', 'ajudou'].filter(function (k) { return !form.querySelector('input[name="' + k + '"]:checked'); });
+      if (miss.length) { fail('Responda as três primeiras perguntas.'); return; }
+      var email = form.elements.email;
+      if (email.value.trim() && !email.checkValidity()) { fail('Confira o e-mail (ou deixe em branco).'); email.focus(); return; }
+      if (!form.elements.consentimento.checked) { fail('Marque a caixa de autorização para enviar.'); return; }
+      var data = new FormData(form);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (params.get(k)) data.append(k, params.get(k)); });
+      data.append('origem', window.location.pathname);
+      data.append('dx_t', String(Math.round((Date.now() - PAGE_T0) / 1000)));
+      if (btn) btn.disabled = true;
+      fetch(form.getAttribute('data-endpoint'), { method: 'POST', body: data, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+        .then(function (res) {
+          if (res && res.ok) {
+            form.classList.add('is-done');
+            var ok = form.querySelector('.dx-fb-ok'); ok.hidden = false; ok.setAttribute('tabindex', '-1'); ok.focus();
+          } else { fail((res && res.message) || 'Não foi possível enviar agora. Tente de novo em instantes.'); }
         })
         .catch(function () { fail('Sem conexão. Confira sua internet e tente de novo.'); })
         .then(function () { if (btn) btn.disabled = false; });

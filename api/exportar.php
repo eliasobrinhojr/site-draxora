@@ -10,6 +10,21 @@ if (strlen($key) < 16 || !hash_equals($key, (string)($_GET['chave'] ?? ''))) {
     dx_json(403, ['ok' => false, 'error' => 'chave']);
 }
 
+// ?tipo=feedback baixa os relatos da página /conte/
+if (($_GET['tipo'] ?? '') === 'feedback') {
+    $pdo = dx_db(); dx_migrate($pdo);
+    $q = $pdo->query('SELECT criado_em, usou, consulta, ajudou, canal, texto, email, utm_source, utm_campaign, utm_content, origem FROM feedback ORDER BY criado_em DESC');
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="relatos-' . date('Y-m-d') . '.csv"');
+    header('Cache-Control: no-store');
+    $out = fopen('php://output', 'w');
+    fwrite($out, "\xEF\xBB\xBF");
+    fputcsv($out, ['criado_em', 'usou', 'consulta', 'ajudou', 'canal', 'texto', 'email', 'utm_source', 'utm_campaign', 'utm_content', 'origem'], ';');
+    while ($row = $q->fetch()) fputcsv($out, array_map('dx_csv_cell', array_values($row)), ';');
+    fclose($out);
+    exit;
+}
+
 $lista = (string)($_GET['lista'] ?? '');
 $sql = 'SELECT email, lista, criado_em, consentimento_em, utm_source, utm_medium, utm_campaign, utm_content, origem FROM inscritos';
 $params = [];

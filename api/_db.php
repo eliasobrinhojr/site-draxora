@@ -86,6 +86,24 @@ function dx_migrate(PDO $pdo): void {
         criado_em VARCHAR(25) NOT NULL,
         UNIQUE (email, lista)
     )$tail");
+    // Relatos de uso do Mapa dos Sintomas (página /conte/). E-mail é opcional.
+    $pdo->exec("CREATE TABLE IF NOT EXISTS feedback (
+        id $id,
+        usou VARCHAR(20) NOT NULL,
+        consulta VARCHAR(20) NOT NULL,
+        ajudou VARCHAR(20) NOT NULL,
+        canal VARCHAR(20) NULL,
+        texto TEXT NULL,
+        email VARCHAR(190) NULL,
+        consentimento_em VARCHAR(25) NOT NULL,
+        origem VARCHAR(255) NULL,
+        utm_source VARCHAR(120) NULL,
+        utm_medium VARCHAR(120) NULL,
+        utm_campaign VARCHAR(160) NULL,
+        utm_content VARCHAR(160) NULL,
+        ip_hash CHAR(64) NOT NULL,
+        criado_em VARCHAR(25) NOT NULL
+    )$tail");
 }
 
 function dx_now(): string {
