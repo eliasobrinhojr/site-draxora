@@ -76,6 +76,7 @@ ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
   RewriteRule ^ig/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=instagram&utm_medium=bio#amostra [R=302,NE,L]
   RewriteRule ^wpp/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=whatsapp&utm_medium=canal#amostra [R=302,NE,L]
+  RewriteRule ^canal/?$ https://whatsapp.com/channel/0029Vb9c3uxEwEjqXdFM4d09 [R=302,L]
   RewriteRule ^guia/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=link#amostra [R=302,NE,L]
 </IfModule>
 

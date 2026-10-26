@@ -375,3 +375,6 @@ h1, h2, h3, p { margin: 0; }
 .conte .dx-consent-check a { color: var(--petroleo); }
 .dx-feedback.is-done > :not(.dx-fb-ok) { display: none; }
 .dx-fb-ok { background: var(--menta, #DDE8DF); border-radius: 16px; padding: 18px 20px; color: var(--verde); }
+
+.dx-canal { font-size: 14px; line-height: 1.5; margin-top: 8px; }
+.dx-canal a { color: var(--petroleo); font-weight: 700; }
