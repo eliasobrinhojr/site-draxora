@@ -72,6 +72,13 @@ ErrorDocument 404 /404.html
   </FilesMatch>
 </IfModule>
 
+# Links curtos para bio e canais (o Instagram estraga o "#" no link da bio)
+<IfModule mod_rewrite.c>
+  RewriteRule ^ig/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=instagram&utm_medium=bio#amostra [R=302,NE,L]
+  RewriteRule ^wpp/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=whatsapp&utm_medium=canal#amostra [R=302,NE,L]
+  RewriteRule ^guia/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=link#amostra [R=302,NE,L]
+</IfModule>
+
 # 25/10/2026: o guia completo passou a ser gratuito (por e-mail). As amostras antigas (v3 e v5)
 # levavam ao checkout da Hotmart, que foi desativado: agora levam ao cadastro do guia gratuito.
 <IfModule mod_rewrite.c>
