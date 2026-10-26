@@ -378,3 +378,4 @@ h1, h2, h3, p { margin: 0; }
 
 .dx-canal { font-size: 14px; line-height: 1.5; margin-top: 8px; }
 .dx-canal a { color: var(--petroleo); font-weight: 700; }
+.dx-canal-link { display: inline-block; margin-left: 6px; font-size: 14px; font-weight: 600; color: var(--petroleo); }
