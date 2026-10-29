@@ -226,6 +226,22 @@
     window.addEventListener('pageshow', toTop);
   }
 
+  // Chegando por anúncio em #amostra: garante que o formulário fique visível abaixo do cabeçalho fixo
+  // (navegadores do Instagram/Facebook rolam antes de fontes e imagens assentarem)
+  if (window.location.hash === '#amostra') {
+    var alvo = document.querySelector('#amostra .amostra-copy');
+    if (alvo) {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      var posiciona = function () {
+        var hd = document.querySelector('.hd');
+        var y = alvo.getBoundingClientRect().top + window.pageYOffset - ((hd ? hd.offsetHeight : 72) + 12);
+        window.scrollTo({ top: Math.max(0, y), left: 0, behavior: 'instant' });
+      };
+      posiciona();
+      window.addEventListener('load', function () { posiciona(); setTimeout(posiciona, 350); });
+    }
+  }
+
   // Leva os parâmetros de campanha (utm_*, src…) da página de vendas até o checkout
   var query = window.location.search;
   if (query) {
