@@ -104,6 +104,15 @@ function dx_migrate(PDO $pdo): void {
         ip_hash CHAR(64) NOT NULL,
         criado_em VARCHAR(25) NOT NULL
     )$tail");
+    // Downloads dos PDFs (link /baixar/guia e /baixar/folhas nos e-mails). Sem e-mail: só contagem.
+    $pdo->exec("CREATE TABLE IF NOT EXISTS downloads (
+        id $id,
+        arquivo VARCHAR(20) NOT NULL,
+        origem VARCHAR(60) NULL,
+        robo TINYINT NOT NULL DEFAULT 0,
+        ip_hash CHAR(64) NOT NULL,
+        criado_em VARCHAR(25) NOT NULL
+    )$tail");
 }
 
 function dx_now(): string {
