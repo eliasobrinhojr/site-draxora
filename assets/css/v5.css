@@ -381,3 +381,27 @@ h1, h2, h3, p { margin: 0; }
 .dx-canal { font-size: 14px; line-height: 1.5; margin-top: 8px; }
 .dx-canal a { color: var(--petroleo); font-weight: 700; }
 .dx-canal-link { display: inline-block; margin-left: 6px; font-size: 14px; font-weight: 600; color: var(--petroleo); }
+
+/* ===== Contraste mínimo de leitura (WCAG AA, 02/11/2026) =====
+   Terracota #A95F4D continua nos títulos grandes em itálico (passa com folga para texto grande).
+   Em texto pequeno, sobre creme, areia ou menta, usa o terracota escuro (6,3 / 5,4 / 5,3).
+   Sobre o verde, a argila vira argila clara (5,2). */
+:root { --argila-clara: #E6BBA8; }
+.eb, .pe-tag, .legal .updated, .door-num, .about-num, .door-count strong, .amostra .dx-lead-error { color: var(--terracota-escuro); }
+.road-when { color: var(--texto-suave); }
+.amostra .dx-consent-check a, .sec-areia a:not(.btn), .guia-cta a:not(.btn) { color: var(--petroleo-escuro); }
+.app .eb, .app .t em, .app-count strong, .app a, .app .dx-consent-check a,
+.door.is-open .door-num, .pe-energia .pe-tag, .cmp-com .eb, .cmp-com .t em { color: var(--argila-clara); }
+.dx-lead .btn { background: var(--argila-clara); }
+
+/* Atalho "Pular para o conteúdo": invisível até receber o foco pelo Tab */
+.skip { position: absolute; left: 16px; top: -60px; z-index: 1000; background: var(--verde); color: var(--creme); padding: 12px 18px; border-radius: 999px; font-weight: 700; text-decoration: none; }
+.skip:focus { top: 12px; outline: 3px solid var(--argila-clara); outline-offset: 2px; }
+main:focus { outline: none; }
+
+/* Link "Preferências de cookies" no rodapé (botão com cara de link) */
+.dx-cookie-prefs { background: none; border: 0; padding: 0; font: inherit; line-height: inherit; color: var(--verde); font-weight: 600; cursor: pointer; }
+.ft nav { align-items: center; }
+@media (max-width: 760px) { .ft nav .dx-cookie-prefs { display: inline-flex; align-items: center; min-height: 44px; } }
+.dx-cookie-prefs:hover { text-decoration: underline; }
+.dx-cookie-prefs:focus-visible { outline: 3px solid var(--terracota); outline-offset: 3px; }

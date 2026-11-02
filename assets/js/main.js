@@ -302,25 +302,54 @@
     if (page === 'vendas' || page === 'checkout') track('ViewContent', content);
   }
   function readConsent() { try { return localStorage.getItem('dx-consent'); } catch (e) { return null; } }
-  function saveConsent(v) { try { localStorage.setItem('dx-consent', v); } catch (e) {} }
-  if (META_PIXEL_ID || GTAG_ID) {
-    var consent = readConsent();
-    if (consent === 'yes') loadTracking();
-    else if (consent !== 'no') {
-      var bar = document.createElement('div');
-      bar.className = 'dx-consent';
-      bar.setAttribute('role', 'region');
-      bar.setAttribute('aria-label', 'Cookies');
-      var root = document.body.getAttribute('data-root') || '';
-      bar.innerHTML = '<p>Aceitar ajuda a saber quais anúncios trazem leitores, para gastar menos e chegar a quem precisa. Não coletamos o que você anota. <a href="' + root + 'privacidade/index.html">Saiba mais</a></p>' +
-        '<div><button type="button" class="dx-btn dx-btn-secondary" data-consent="no">Recusar</button><button type="button" class="dx-btn dx-btn-primary" data-consent="yes">Aceitar</button></div>';
-      document.body.appendChild(bar);
-      bar.addEventListener('click', function (e) {
-        var b = e.target.closest('[data-consent]'); if (!b) return;
-        var v = b.getAttribute('data-consent'); saveConsent(v); bar.remove();
-        if (v === 'yes') loadTracking();
+  function saveConsent(v) {
+    try { localStorage.setItem('dx-consent', v); localStorage.setItem('dx-consent-em', new Date().toISOString()); } catch (e) {}
+  }
+  // Ao recusar depois de ter aceitado: apaga os cookies de medição que a Meta e o Google criaram neste domínio.
+  function clearTrackingCookies() {
+    ['_fbp', '_fbc', '_gcl_au', '_gcl_aw', '_gcl_dc', '_gcl_gb'].forEach(function (n) {
+      ['', '; domain=' + location.hostname, '; domain=.' + location.hostname.replace(/^www\./, '')].forEach(function (d) {
+        document.cookie = n + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;
       });
-    }
+    });
+  }
+  // Páginas onde a medição de anúncios nunca carrega, mesmo com "Aceitar":
+  // a /conte/ pergunta sobre a consulta, e a simples visita já sugere tratamento (dado de saúde).
+  var SEM_MEDICAO = ['conte'];
+  var medicaoNaPagina = SEM_MEDICAO.indexOf(page) === -1;
+  function showConsentBar(fromPrefs) {
+    var old = document.querySelector('.dx-consent'); if (old) old.remove();
+    var bar = document.createElement('div');
+    bar.className = 'dx-consent';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', 'Cookies');
+    var root = document.body.getAttribute('data-root') || '';
+    var atual = readConsent();
+    var estado = fromPrefs ? ' <strong>Sua escolha atual: ' + (atual === 'yes' ? 'aceitou' : atual === 'no' ? 'recusou' : 'nenhuma') + '.</strong>' : '';
+    bar.innerHTML = '<p>Aceitar ajuda a saber quais anúncios trazem leitores, para gastar menos e chegar a quem precisa. Não coletamos o que você anota.' + estado + ' <a href="' + root + 'privacidade/">Saiba mais</a></p>' +
+      '<div><button type="button" class="dx-btn dx-btn-secondary" data-consent="no">Recusar</button><button type="button" class="dx-btn dx-btn-primary" data-consent="yes">Aceitar</button></div>';
+    document.body.appendChild(bar);
+    if (fromPrefs) bar.querySelector('[data-consent]').focus();
+    bar.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-consent]'); if (!b) return;
+      var v = b.getAttribute('data-consent'); saveConsent(v); bar.remove();
+      if (v === 'yes' && medicaoNaPagina) loadTracking();
+      if (v === 'no') {
+        clearTrackingCookies();
+        // Os scripts da Meta e do Google já carregados só saem da página recarregando.
+        if (tracking.on) location.reload();
+      }
+    });
+  }
+  if (META_PIXEL_ID || GTAG_ID || GADS_ID) {
+    var consent = readConsent();
+    if (consent === 'yes' && medicaoNaPagina) loadTracking();
+    else if (consent !== 'yes' && consent !== 'no' && medicaoNaPagina) showConsentBar(false);
+    // Rodapé: "Preferências de cookies" reabre o aviso para mudar a escolha
+    document.querySelectorAll('[data-cookie-prefs]').forEach(function (b) {
+      b.hidden = false;
+      b.addEventListener('click', function () { showConsentBar(true); });
+    });
   }
   // Clique no pagamento = início de checkout
   document.querySelectorAll('[data-checkout-go]').forEach(function (btn) {
