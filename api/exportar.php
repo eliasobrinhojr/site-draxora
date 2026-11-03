@@ -25,21 +25,24 @@ if (($_GET['tipo'] ?? '') === 'resumo') {
     krsort($dias);
     $tot = ['cadastros' => 0, 'baixou_guia' => 0, 'baixou_folhas' => 0, 'cliques_total' => 0, 'relatos' => 0];
     foreach ($dias as $v) foreach ($v as $k => $n) $tot[$k] += $n;
+    // Relatos por resposta à pergunta de diagnóstico (só totais; '(sem resposta)' = pulou ou respondeu antes de 03/11).
+    $porDiag = [];
+    foreach ($pdo->query("SELECT COALESCE(diagnostico,'(sem resposta)') d, COUNT(*) n FROM feedback GROUP BY d") as $r) $porDiag[$r['d']] = (int)$r['n'];
     $porOrigem = [];
     foreach ($pdo->query("SELECT COALESCE(origem,'(sem)') o, arquivo, COUNT(DISTINCT ip_hash) n FROM downloads WHERE robo=0 GROUP BY o, arquivo") as $r) $porOrigem[$r['o']][$r['arquivo']] = (int)$r['n'];
-    dx_json(200, ['ok' => true, 'obs' => 'downloads contados desde a troca dos links nos e-mails; baixou_* = pessoas únicas por dia', 'total' => $tot, 'downloads_por_origem' => $porOrigem, 'por_dia' => $dias]);
+    dx_json(200, ['ok' => true, 'obs' => 'downloads contados desde a troca dos links nos e-mails; baixou_* = pessoas únicas por dia', 'total' => $tot, 'relatos_por_diagnostico' => $porDiag, 'downloads_por_origem' => $porOrigem, 'por_dia' => $dias]);
 }
 
 // ?tipo=feedback baixa os relatos da página /conte/
 if (($_GET['tipo'] ?? '') === 'feedback') {
     $pdo = dx_db(); dx_migrate($pdo);
-    $q = $pdo->query('SELECT criado_em, usou, consulta, ajudou, canal, texto, email, utm_source, utm_campaign, utm_content, origem FROM feedback ORDER BY criado_em DESC');
+    $q = $pdo->query('SELECT criado_em, usou, consulta, ajudou, diagnostico, canal, texto, email, utm_source, utm_campaign, utm_content, origem FROM feedback ORDER BY criado_em DESC');
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="relatos-' . date('Y-m-d') . '.csv"');
     header('Cache-Control: no-store');
     $out = fopen('php://output', 'w');
     fwrite($out, "\xEF\xBB\xBF");
-    fputcsv($out, ['criado_em', 'usou', 'consulta', 'ajudou', 'canal', 'texto', 'email', 'utm_source', 'utm_campaign', 'utm_content', 'origem'], ';');
+    fputcsv($out, ['criado_em', 'usou', 'consulta', 'ajudou', 'diagnostico', 'canal', 'texto', 'email', 'utm_source', 'utm_campaign', 'utm_content', 'origem'], ';');
     while ($row = $q->fetch()) fputcsv($out, array_map('dx_csv_cell', array_values($row)), ';');
     fclose($out);
     exit;

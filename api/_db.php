@@ -104,6 +104,11 @@ function dx_migrate(PDO $pdo): void {
         ip_hash CHAR(64) NOT NULL,
         criado_em VARCHAR(25) NOT NULL
     )$tail");
+    // 03/11: pergunta opcional "já tinha diagnóstico?" na /conte (coluna nova em tabela que já existe).
+    $cols = $mysql
+        ? $pdo->query("SHOW COLUMNS FROM feedback LIKE 'diagnostico'")->fetchAll()
+        : array_filter($pdo->query("PRAGMA table_info(feedback)")->fetchAll(), fn($c) => $c['name'] === 'diagnostico');
+    if (!$cols) $pdo->exec("ALTER TABLE feedback ADD COLUMN diagnostico VARCHAR(30) NULL");
     // Downloads dos PDFs (link /baixar/guia e /baixar/folhas nos e-mails). Sem e-mail: só contagem.
     $pdo->exec("CREATE TABLE IF NOT EXISTS downloads (
         id $id,

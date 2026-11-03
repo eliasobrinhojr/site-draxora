@@ -56,11 +56,18 @@
           <label class="dx-opt"><input type="radio" name="ajudou" value="nao" required> <span>Não fez diferença</span></label>
           <label class="dx-opt"><input type="radio" name="ajudou" value="nao-se-aplica" required> <span>Ainda não sei</span></label>
       </fieldset>
+      <fieldset class="dx-q"><legend>4. Quando você baixou o guia, já tinha diagnóstico? (opcional) <small style="display:block;font-weight:400;margin-top:4px">Ajuda a entender para quem o Mapa é mais útil: quem está começando ou quem já faz acompanhamento. Pode pular.</small></legend>
+          <label class="dx-opt"><input type="radio" name="diagnostico" value="sim-acompanha"> <span>Sim, e faço acompanhamento</span></label>
+          <label class="dx-opt"><input type="radio" name="diagnostico" value="sim-sem-acompanhar"> <span>Sim, mas não faço acompanhamento agora</span></label>
+          <label class="dx-opt"><input type="radio" name="diagnostico" value="em-investigacao"> <span>Estou em investigação</span></label>
+          <label class="dx-opt"><input type="radio" name="diagnostico" value="nao"> <span>Não, estava indo à primeira consulta</span></label>
+          <label class="dx-opt"><input type="radio" name="diagnostico" value="prefiro-nao-dizer"> <span>Prefiro não dizer</span></label>
+      </fieldset>
       <div class="dx-field">
-        <label for="fb-texto"><strong>4. O que funcionou, o que atrapalhou ou o que você mudaria?</strong> (opcional)</label>
+        <label for="fb-texto"><strong>5. O que funcionou, o que atrapalhou ou o que você mudaria?</strong> (opcional)</label>
         <textarea id="fb-texto" name="texto" rows="5" maxlength="2000" placeholder="Escreva do seu jeito."></textarea>
       </div>
-      <fieldset class="dx-q"><legend>5. Você segue o canal do Mapa dos Sintomas no WhatsApp? (opcional) <a class="dx-canal-link" href="https://whatsapp.com/channel/0029Vb9c3uxEwEjqXdFM4d09" target="_blank" rel="noopener">Conhecer o canal</a></legend>
+      <fieldset class="dx-q"><legend>6. Você segue o canal do Mapa dos Sintomas no WhatsApp? (opcional) <a class="dx-canal-link" href="https://whatsapp.com/channel/0029Vb9c3uxEwEjqXdFM4d09" target="_blank" rel="noopener">Conhecer o canal</a></legend>
           <label class="dx-opt"><input type="radio" name="canal" value="sim"> <span>Sigo</span></label>
           <label class="dx-opt"><input type="radio" name="canal" value="nao"> <span>Não sigo</span></label>
           <label class="dx-opt"><input type="radio" name="canal" value="nao-sabia"> <span>Não sabia que existe</span></label>
@@ -72,7 +79,7 @@
       <div class="dx-hp" aria-hidden="true"><label for="fb-site">Site</label><input id="fb-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
       <label class="dx-consent-check" for="fb-ok">
         <input id="fb-ok" type="checkbox" name="consentimento" value="sim" required>
-        <span>Autorizo a Draxora a usar estas respostas para melhorar o Mapa dos Sintomas, decidir as próximas versões e ferramentas da Draxora, e em relatórios sobre o uso da ferramenta, sempre sem identificar quem respondeu. Posso pedir para apagar quando quiser. <a href="../privacidade/">Privacidade</a></span>
+        <span>Autorizo a Draxora a usar estas respostas, inclusive a resposta opcional sobre diagnóstico, para melhorar o Mapa dos Sintomas, decidir as próximas versões e ferramentas da Draxora, e em relatórios sobre o uso da ferramenta, sempre sem identificar quem respondeu. Posso pedir para apagar quando quiser. <a href="../privacidade/">Privacidade</a></span>
       </label>
       <p class="dx-lead-error" data-fb-error role="alert" hidden></p>
       <button class="btn btn-primary btn-lg" type="submit">Enviar</button>
