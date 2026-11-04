@@ -114,6 +114,11 @@ function dx_migrate(PDO $pdo): void {
         ? $pdo->query("SHOW COLUMNS FROM feedback LIKE 'versao'")->fetchAll()
         : array_filter($pdo->query("PRAGMA table_info(feedback)")->fetchAll(), fn($c) => $c['name'] === 'versao');
     if (!$cols) $pdo->exec("ALTER TABLE feedback ADD COLUMN versao VARCHAR(12) NULL");
+    // 04/11: pergunta opcional "por quantas semanas você pintou?" (mede a hipótese de uso por 4 semanas).
+    $cols = $mysql
+        ? $pdo->query("SHOW COLUMNS FROM feedback LIKE 'semanas'")->fetchAll()
+        : array_filter($pdo->query("PRAGMA table_info(feedback)")->fetchAll(), fn($c) => $c['name'] === 'semanas');
+    if (!$cols) $pdo->exec("ALTER TABLE feedback ADD COLUMN semanas VARCHAR(8) NULL");
     // Downloads dos PDFs (link /baixar/guia e /baixar/folhas nos e-mails). Sem e-mail: só contagem.
     $pdo->exec("CREATE TABLE IF NOT EXISTS downloads (
         id $id,

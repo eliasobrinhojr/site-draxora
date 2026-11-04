@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mapa dos Sintomas · Draxora</title>
   <meta name="robots" content="noindex">
-  <meta http-equiv="refresh" content="0; url=../mapa-dos-sintomas/?utm_source=guia&amp;utm_medium=pdf&amp;utm_campaign=ponte-app#app">
+  <meta http-equiv="refresh" content="0; url=../mapa-dos-sintomas/?utm_source=atalho&amp;utm_medium=link&amp;utm_campaign=ponte-app#app">
   <link rel="canonical" href="https://draxora.com.br/mapa-dos-sintomas/">
   <script>
     // Atalho /app → lista "se o app sair, você fica sabendo primeiro" (página do Mapa, #app).
-    // Origem do clique: utm_* que vierem no link; senão, Instagram/Facebook pelo referrer; senão, o PDF do guia.
+    // Origem do clique: utm_* que vierem no link; senão, Instagram/Facebook pelo referrer; senão, "atalho" (desde 04/11: o PDF 1.0, que usava este link, saiu do fluxo).
     (function () {
       var q = new URLSearchParams(location.search), out = new URLSearchParams();
       ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (q.get(k)) out.set(k, q.get(k)); });
@@ -17,7 +17,7 @@
         var r = document.referrer || '';
         if (/instagram\./i.test(r) || /Instagram/.test(navigator.userAgent)) { out.set('utm_source', 'instagram'); out.set('utm_medium', 'social'); }
         else if (/facebook\.|fb\.me/i.test(r) || /FBAN|FBAV|FB_IAB/.test(navigator.userAgent)) { out.set('utm_source', 'facebook'); out.set('utm_medium', 'social'); }
-        else { out.set('utm_source', 'guia'); out.set('utm_medium', 'pdf'); }
+        else { out.set('utm_source', 'atalho'); out.set('utm_medium', 'link'); }
       }
       if (!out.get('utm_campaign')) out.set('utm_campaign', 'ponte-app');
       location.replace('../mapa-dos-sintomas/?' + out.toString() + '#app');
@@ -25,6 +25,6 @@
   </script>
 </head>
 <body style="margin:0;background:#FAF7F0;color:#294F46;font:17px/1.6 system-ui,sans-serif;padding:24px">
-  <p>Abrindo a página do Mapa dos Sintomas… <a style="color:#066A62;font-weight:700" href="../mapa-dos-sintomas/?utm_source=guia&amp;utm_medium=pdf&amp;utm_campaign=ponte-app#app">Toque aqui se não abrir.</a></p>
+  <p>Abrindo a página do Mapa dos Sintomas… <a style="color:#066A62;font-weight:700" href="../mapa-dos-sintomas/?utm_source=atalho&amp;utm_medium=link&amp;utm_campaign=ponte-app#app">Toque aqui se não abrir.</a></p>
 </body>
 </html>

@@ -109,7 +109,7 @@
       ev.preventDefault();
       if (err) err.hidden = true;
       var miss = ['usou', 'consulta', 'ajudou'].filter(function (k) { return !form.querySelector('input[name="' + k + '"]:checked'); });
-      if (miss.length) { fail('Responda as três primeiras perguntas.'); return; }
+      if (miss.length) { fail('Responda as perguntas 1, 3 e 4.'); return; }
       var email = form.elements.email;
       if (email.value.trim() && !email.checkValidity()) { fail('Confira o e-mail (ou deixe em branco).'); email.focus(); return; }
       if (!form.elements.consentimento.checked) { fail('Marque a caixa de autorização para enviar.'); return; }

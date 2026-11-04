@@ -32,6 +32,9 @@ if (($_GET['tipo'] ?? '') === 'resumo') {
     // Relatos por versão do material (1.1 desde 04/11; '(sem resposta)' = pulou ou respondeu antes de 04/11).
     $porVersao = [];
     foreach ($pdo->query("SELECT COALESCE(versao,'(sem resposta)') d, COUNT(*) n FROM feedback GROUP BY d") as $r) $porVersao[$r['d']] = (int)$r['n'];
+    // Relatos por semanas de uso da Minha semana (desde 04/11; '(sem resposta)' = pulou ou respondeu antes).
+    $porSemanas = [];
+    foreach ($pdo->query("SELECT COALESCE(semanas,'(sem resposta)') d, COUNT(*) n FROM feedback GROUP BY d") as $r) $porSemanas[$r['d']] = (int)$r['n'];
     // Cadastros do guia por origem do anúncio (utm_source > utm_content), por dia e no total. Sem e-mails.
     $cadOrigem = []; $cadOrigemDia = [];
     foreach ($pdo->query("SELECT SUBSTR(criado_em,1,10) d, COALESCE(NULLIF(utm_source,''),'(sem)') s, COALESCE(NULLIF(utm_content,''),'(sem)') c, COUNT(*) n FROM inscritos WHERE lista='amostra' GROUP BY d, s, c") as $r) {
@@ -45,19 +48,19 @@ if (($_GET['tipo'] ?? '') === 'resumo') {
     krsort($dlEmail);
     $porOrigem = [];
     foreach ($pdo->query("SELECT COALESCE(origem,'(sem)') o, arquivo, COUNT(DISTINCT ip_hash) n FROM downloads WHERE robo=0 GROUP BY o, arquivo") as $r) $porOrigem[$r['o']][$r['arquivo']] = (int)$r['n'];
-    dx_json(200, ['ok' => true, 'obs' => 'downloads contados desde a troca dos links nos e-mails; baixou_* = pessoas únicas por dia', 'total' => $tot, 'relatos_por_diagnostico' => $porDiag, 'relatos_por_versao' => $porVersao, 'cadastros_por_origem' => $cadOrigem, 'cadastros_por_origem_dia' => $cadOrigemDia, 'downloads_por_email_dia' => $dlEmail, 'downloads_por_origem' => $porOrigem, 'por_dia' => $dias]);
+    dx_json(200, ['ok' => true, 'obs' => 'downloads contados desde a troca dos links nos e-mails; baixou_* = pessoas únicas por dia', 'total' => $tot, 'relatos_por_diagnostico' => $porDiag, 'relatos_por_versao' => $porVersao, 'relatos_por_semanas' => $porSemanas, 'cadastros_por_origem' => $cadOrigem, 'cadastros_por_origem_dia' => $cadOrigemDia, 'downloads_por_email_dia' => $dlEmail, 'downloads_por_origem' => $porOrigem, 'por_dia' => $dias]);
 }
 
 // ?tipo=feedback baixa os relatos da página /conte/
 if (($_GET['tipo'] ?? '') === 'feedback') {
     $pdo = dx_db(); dx_migrate($pdo);
-    $q = $pdo->query('SELECT criado_em, usou, consulta, ajudou, versao, diagnostico, canal, texto, email, utm_source, utm_campaign, utm_content, origem FROM feedback ORDER BY criado_em DESC');
+    $q = $pdo->query('SELECT criado_em, usou, semanas, consulta, ajudou, versao, diagnostico, canal, texto, email, utm_source, utm_campaign, utm_content, origem FROM feedback ORDER BY criado_em DESC');
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="relatos-' . date('Y-m-d') . '.csv"');
     header('Cache-Control: no-store');
     $out = fopen('php://output', 'w');
     fwrite($out, "\xEF\xBB\xBF");
-    fputcsv($out, ['criado_em', 'usou', 'consulta', 'ajudou', 'versao', 'diagnostico', 'canal', 'texto', 'email', 'utm_source', 'utm_campaign', 'utm_content', 'origem'], ';');
+    fputcsv($out, ['criado_em', 'usou', 'semanas', 'consulta', 'ajudou', 'versao', 'diagnostico', 'canal', 'texto', 'email', 'utm_source', 'utm_campaign', 'utm_content', 'origem'], ';');
     while ($row = $q->fetch()) fputcsv($out, array_map('dx_csv_cell', array_values($row)), ';');
     fclose($out);
     exit;

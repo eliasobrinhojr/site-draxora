@@ -180,7 +180,7 @@ usort($dl, fn($a, $b) => ($b['guia'] + $b['folhas']) <=> ($a['guia'] + $a['folha
 
 // Relatos da /conte/: totais por resposta.
 $resumo = [];
-foreach (['usou', 'consulta', 'ajudou', 'versao', 'diagnostico', 'canal'] as $col) {
+foreach (['usou', 'semanas', 'consulta', 'ajudou', 'versao', 'diagnostico', 'canal'] as $col) {
     $resumo[$col] = [];
     foreach (dx_todos($pdo, "SELECT COALESCE(NULLIF($col,''),'(sem resposta)') v, COUNT(*) n FROM feedback WHERE criado_em >= ? AND criado_em < ? GROUP BY v", [$de, $ate]) as $r) {
         $resumo[$col][$r['v']] = (int)$r['n'];
@@ -203,10 +203,10 @@ $saida = [
 // Listas com pessoas: só quando pedidas (o modo apresentação não pede).
 if ($listas) {
     $saida['relatos'] = array_map(fn($r) => [
-        'em' => $r['criado_em'], 'usou' => $r['usou'], 'consulta' => $r['consulta'], 'ajudou' => $r['ajudou'],
+        'em' => $r['criado_em'], 'usou' => $r['usou'], 'semanas' => $r['semanas'] ?: null, 'consulta' => $r['consulta'], 'ajudou' => $r['ajudou'],
         'versao' => $r['versao'] ?: null, 'diagnostico' => $r['diagnostico'] ?: null, 'canal' => $r['canal'] ?: null, 'texto' => $r['texto'],
         'email' => $emailsInteiros ? $r['email'] : dx_mascara($r['email']), 'fonte' => dx_fonte($r['utm_source']),
-    ], dx_todos($pdo, 'SELECT criado_em, usou, consulta, ajudou, versao, diagnostico, canal, texto, email, utm_source FROM feedback WHERE criado_em >= ? AND criado_em < ? ORDER BY criado_em DESC LIMIT 100', [$de, $ate]));
+    ], dx_todos($pdo, 'SELECT criado_em, usou, semanas, consulta, ajudou, versao, diagnostico, canal, texto, email, utm_source FROM feedback WHERE criado_em >= ? AND criado_em < ? ORDER BY criado_em DESC LIMIT 100', [$de, $ate]));
     $saida['interessados'] = array_map(fn($r) => [
         'em' => $r['criado_em'], 'email' => $emailsInteiros ? $r['email'] : dx_mascara($r['email']),
         'fonte' => dx_fonte($r['utm_source']), 'campanha' => $r['utm_campaign'],

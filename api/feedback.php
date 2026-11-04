@@ -1,6 +1,6 @@
 <?php
 // POST /api/feedback.php — relato de uso do Mapa dos Sintomas (página /conte/).
-// Campos: usou, consulta, ajudou, versao?, diagnostico?, canal?, texto?, email?, consentimento=sim, site (armadilha), dx_t, utm_*, origem.
+// Campos: usou, semanas?, consulta, ajudou, versao?, diagnostico?, canal?, texto?, email?, consentimento=sim, site (armadilha), dx_t, utm_*, origem.
 declare(strict_types=1);
 require __DIR__ . '/_db.php';
 
@@ -26,13 +26,14 @@ $op = [
     'ajudou' => ['muito', 'um-pouco', 'nao', 'nao-se-aplica'],
     'canal' => ['sim', 'nao', 'nao-sabia', ''],
     'versao' => ['1.1', '1.0', 'nao-lembro', ''],
+    'semanas' => ['menos-1', '1', '2-3', '4-mais', ''],
     'diagnostico' => ['sim-acompanha', 'sim-sem-acompanhar', 'em-investigacao', 'nao', 'prefiro-nao-dizer', ''],
 ];
 $v = [];
 foreach ($op as $k => $allowed) {
     $v[$k] = (string)($_POST[$k] ?? '');
     if (!in_array($v[$k], $allowed, true)) {
-        dx_json(422, ['ok' => false, 'error' => $k, 'message' => 'Responda as três primeiras perguntas.']);
+        dx_json(422, ['ok' => false, 'error' => $k, 'message' => 'Responda as perguntas 1, 3 e 4.']);
     }
 }
 if ((string)($_POST['consentimento'] ?? '') !== 'sim') {
@@ -56,10 +57,10 @@ if ((int)$q->fetchColumn() >= 3) {
     dx_json(429, ['ok' => false, 'error' => 'limite', 'message' => 'Já recebemos suas respostas. Obrigado!']);
 }
 try {
-    $ins = $pdo->prepare('INSERT INTO feedback (usou, consulta, ajudou, versao, diagnostico, canal, texto, email, consentimento_em, origem, utm_source, utm_medium, utm_campaign, utm_content, ip_hash, criado_em)
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    $ins = $pdo->prepare('INSERT INTO feedback (usou, consulta, ajudou, versao, semanas, diagnostico, canal, texto, email, consentimento_em, origem, utm_source, utm_medium, utm_campaign, utm_content, ip_hash, criado_em)
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     $ins->execute([
-        $v['usou'], $v['consulta'], $v['ajudou'], $v['versao'] ?: null, $v['diagnostico'] ?: null, $v['canal'] ?: null,
+        $v['usou'], $v['consulta'], $v['ajudou'], $v['versao'] ?: null, $v['semanas'] ?: null, $v['diagnostico'] ?: null, $v['canal'] ?: null,
         $texto !== '' ? $texto : null, $email !== '' ? $email : null, $now,
         dx_clean($_POST['origem'] ?? null, 255),
         dx_clean($_POST['utm_source'] ?? null, 120),

@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/draxora-icone-app.svg?v=5">
   <link rel="preload" href="assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/v5.css?v=202611041300">
+  <link rel="stylesheet" href="assets/css/v5.css?v=202611041530">
   <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -87,7 +87,7 @@
     <div class="wrap">
       <div class="sec-head">
         <span class="eb">As portas</span>
-        <h2 class="t t-l">Uma está aberta. <em>As outras, a caminho.</em></h2>
+        <h2 class="t t-l">Uma está aberta. <em>A próxima nasce do que você contar.</em></h2>
       </div>
       <div class="doors">
         <a class="door is-open" href="mapa-dos-sintomas/">
@@ -100,28 +100,13 @@
           <picture><source srcset="assets/img/v5/paraconsulta.webp?v=2" type="image/webp"><img src="assets/img/v5/paraconsulta.jpg?v=2" alt="" width="700" height="880" loading="lazy"></picture>
         </a>
         <div class="door">
-          <span class="door-lock">Porta 01 · em breve</span>
-          <h3>Ainda em construção.</h3>
-          <p>O tema é segredo. Deixe seu e-mail e descubra antes.</p>
-          <p class="door-count" data-count="porta-01" hidden><strong></strong> pessoas esperando esta porta</p>
-          <form class="dx-lead" data-endpoint="api/inscrever.php" novalidate>
-            <label class="sr-only" for="lead-01">Seu e-mail</label>
-            <div class="dx-lead-row">
-              <input id="lead-01" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
-              <input type="hidden" name="lista" value="porta-01">
-              <button class="btn" type="submit">Avisar-me</button>
-            </div>
-            <div class="dx-hp" aria-hidden="true"><label for="lead-01-site">Site</label><input id="lead-01-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
-            <label class="dx-consent-check" for="lead-01-ok">
-              <input id="lead-01-ok" type="checkbox" name="consentimento" value="sim" required>
-              <span>Aceito receber e-mails da Draxora sobre lançamentos. Posso sair quando quiser. <a href="privacidade/">Privacidade</a></span>
-            </label>
-            <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
-            <p class="dx-lead-ok" role="status">Pronto. Você vai saber antes.</p>
-          </form>
+          <span class="door-lock">Usou o Mapa?</span>
+          <h3>Conte como foi.</h3>
+          <p>Leva 1 minuto, sem precisar deixar e-mail. O que você contar decide a próxima versão do guia.</p>
+          <a class="btn btn-out" href="conte/?de=home" style="justify-self:start">Contar como foi</a>
         </div>
         <div class="door">
-          <span class="door-lock">Porta 02 · sua ideia</span>
+          <span class="door-lock">Porta 01 · sua ideia</span>
           <h3>Qual porta você abriria?</h3>
           <p>Os próximos temas nascem do que você precisa.</p>
           <button class="btn btn-out" type="button" data-open="sugestao" style="justify-self:start">Sugerir um tema</button>
@@ -204,7 +189,7 @@
   <form class="dx-modal-box" data-suggest>
     <div class="dx-modal-head">
       <div>
-        <span class="eb">Porta 02 · sugestão</span>
+        <span class="eb">Porta 01 · sugestão</span>
         <h2 class="dx-modal-title" id="sugestao-title">Qual porta você abriria?</h2>
       </div>
       <button class="dx-modal-close" type="button" data-close aria-label="Fechar">
@@ -238,6 +223,6 @@
   </div>
 </dialog>
 
-<script src="assets/js/main.js?v=202611041300" defer></script>
+<script src="assets/js/main.js?v=202611041530" defer></script>
 </body>
 </html>
