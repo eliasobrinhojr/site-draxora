@@ -226,15 +226,26 @@
     window.addEventListener('pageshow', toTop);
   }
 
-  // Chegando por anúncio em #amostra: garante que o formulário fique visível abaixo do cabeçalho fixo
+  // Chegando por link direto em #amostra (anúncios) ou #app (atalho /app, Instagram): garante que o
+  // formulário fique visível abaixo do cabeçalho fixo e acima do aviso de cookies
   // (navegadores do Instagram/Facebook rolam antes de fontes e imagens assentarem)
-  if (window.location.hash === '#amostra') {
-    var alvo = document.querySelector('#amostra .amostra-copy');
+  var ancoras = { '#amostra': '#amostra .amostra-copy', '#app': '#app .app' };
+  if (ancoras[window.location.hash]) {
+    var alvo = document.querySelector(ancoras[window.location.hash]);
+    var campo = alvo && alvo.querySelector('form');
     if (alvo) {
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       var posiciona = function () {
         var hd = document.querySelector('.hd');
-        var y = alvo.getBoundingClientRect().top + window.pageYOffset - ((hd ? hd.offsetHeight : 72) + 12);
+        var topo = alvo.getBoundingClientRect().top + window.pageYOffset - ((hd ? hd.offsetHeight : 72) + 12);
+        var y = topo;
+        if (campo && window.location.hash === '#app') {
+          // No celular o formulário fica longe do título: rola o mínimo para ele aparecer inteiro
+          var barra = document.querySelector('.dx-consent');
+          var livre = window.innerHeight - (barra ? barra.offsetHeight + 16 : 16);
+          var fundoCampo = campo.getBoundingClientRect().bottom + window.pageYOffset;
+          y = Math.max(topo, fundoCampo - livre);
+        }
         window.scrollTo({ top: Math.max(0, y), left: 0, behavior: 'instant' });
       };
       posiciona();
