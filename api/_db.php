@@ -119,6 +119,25 @@ function dx_migrate(PDO $pdo): void {
         ? $pdo->query("SHOW COLUMNS FROM feedback LIKE 'semanas'")->fetchAll()
         : array_filter($pdo->query("PRAGMA table_info(feedback)")->fetchAll(), fn($c) => $c['name'] === 'semanas');
     if (!$cols) $pdo->exec("ALTER TABLE feedback ADD COLUMN semanas VARCHAR(8) NULL");
+    // Teste do app (/teste/, desde 04/11): turmas de convidados e eventos anônimos.
+    // Nenhum conteúdo de registro (sono, humor, remédio, nota) chega aqui: só o fato e o dia.
+    $pdo->exec("CREATE TABLE IF NOT EXISTS teste_turmas (
+        codigo VARCHAR(20) NOT NULL PRIMARY KEY,
+        nome VARCHAR(60) NOT NULL,
+        ativa TINYINT NOT NULL DEFAULT 1,
+        criada_em VARCHAR(25) NOT NULL
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS teste_eventos (
+        id $id,
+        pid CHAR(36) NOT NULL,
+        turma VARCHAR(20) NOT NULL,
+        tipo VARCHAR(12) NOT NULL,
+        dia VARCHAR(10) NOT NULL,
+        valor VARCHAR(16) NULL,
+        ip_hash CHAR(64) NOT NULL,
+        criado_em VARCHAR(25) NOT NULL,
+        UNIQUE (pid, tipo, dia)
+    )$tail");
     // Downloads dos PDFs (link /baixar/guia e /baixar/folhas nos e-mails). Sem e-mail: só contagem.
     $pdo->exec("CREATE TABLE IF NOT EXISTS downloads (
         id $id,

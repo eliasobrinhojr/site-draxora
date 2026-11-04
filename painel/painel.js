@@ -45,7 +45,7 @@
       c.classList.remove('carregando');
       if (d._status === 401) { mostraEntrar(st.dados ? 'A sessão terminou. Entre de novo.' : ''); return; }
       if (!d.ok) { $('#gerado').textContent = 'Não foi possível carregar agora (' + (d.message || d._status) + ').'; return; }
-      st.dados = d; $('#entrar').hidden = true; $('#app').hidden = false; desenha();
+      st.dados = d; $('#entrar').hidden = true; $('#app').hidden = false; desenha(); document.dispatchEvent(new CustomEvent('dx:carregado'));
     }).catch(function () { c.classList.remove('carregando'); $('#gerado').textContent = 'Sem conexão. Tente de novo.'; });
   }
 

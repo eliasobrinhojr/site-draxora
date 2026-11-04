@@ -167,3 +167,27 @@ body.apresentacao #painel { max-width: 1400px; }
   body.apresentacao .rotulo, body.apresentacao .hb-rot, body.apresentacao .hb-val { font-size: 16px; }
   body.apresentacao .card h2 { font-size: 21px; }
 }
+
+/* Teste do app */
+.teste-grid { display: grid; gap: 20px; }
+@media (min-width: 760px) { .teste-grid { grid-template-columns: 1fr 1fr; } .teste-kpis, .teste-ret { grid-column: 1 / -1; } }
+.teste-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.teste-kpi { background: var(--fundo); border-radius: 12px; padding: 10px 12px; }
+.ret-linha { display: grid; grid-template-columns: 76px 1fr 120px; align-items: center; gap: 10px; margin-top: 8px; font-size: 14px; }
+.ret-trilho { position: relative; height: 14px; background: var(--trilho); border-radius: 999px; }
+.ret-barra { height: 100%; background: var(--s1); border-radius: 999px; }
+.ret-marca { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--s2); opacity: .55; }
+.ret-marca.forte { opacity: 1; }
+.ret-val { font-variant-numeric: tabular-nums; color: var(--txt-2); font-size: 13px; }
+.veredito { margin-top: 12px; font-weight: 700; }
+.veredito.bom { color: var(--s1); } .veredito.ruim { color: var(--erro); } .veredito.meio { color: var(--s2); }
+.dist-cols { display: flex; align-items: flex-end; gap: 6px; height: 120px; margin-top: 8px; }
+.dist-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; font-size: 12px; }
+.dist-b { width: 100%; min-height: 2px; background: var(--f4); border-radius: 4px 4px 0 0; }
+.dist-b.ativa { background: var(--f1); }
+.dist-x { color: var(--txt-2); }
+.teste-cons ul { margin: 6px 0 0; padding-left: 18px; }
+.teste-turmas summary { cursor: pointer; font-weight: 700; }
+.f-turma { display: grid; gap: 8px; margin-top: 12px; }
+.f-turma input { width: 100%; min-height: 40px; padding: 8px 12px; border: 1px solid var(--linha); border-radius: 10px; background: var(--card); color: var(--txt); font: inherit; }
+.item { border-top: 1px solid var(--linha); padding-top: 10px; }

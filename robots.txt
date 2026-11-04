@@ -2,5 +2,6 @@ User-agent: *
 Disallow: /mapa-dos-sintomas/checkout/
 Disallow: /assets/guia/
 Disallow: /assets/amostra/
+Disallow: /teste/
 
 Sitemap: https://draxora.com.br/sitemap.xml

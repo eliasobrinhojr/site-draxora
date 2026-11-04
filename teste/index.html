@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Minha semana · teste</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#294F46">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Minha semana">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
+  <link rel="apple-touch-icon" href="icone-180.png">
+  <link rel="stylesheet" href="app.css?v=1">
+  <script src="app.js?v=1" defer></script>
+</head>
+<body>
+<!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
+<header class="topo">
+  <span class="marca">Minha semana <small>teste</small></span>
+  <nav class="abas" id="abas" hidden aria-label="Telas">
+    <button type="button" data-tela="hoje" aria-current="page">Hoje</button>
+    <button type="button" data-tela="semana">Semana</button>
+    <button type="button" data-tela="resumo">Resumo</button>
+    <button type="button" data-tela="ajustes">Ajustes</button>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+  <p class="carregando" id="carregando">Carregando…</p>
+
+  <!-- Sem convite -->
+  <section class="tela" id="t-convite" hidden>
+    <h1>Este teste é só para convidados.</h1>
+    <p>Se você recebeu um convite, abra o link dele de novo. Se não, conheça o guia gratuito Mapa dos Sintomas.</p>
+    <p><a class="btn" href="/mapa-dos-sintomas/">Conhecer o guia</a></p>
+  </section>
+
+  <!-- Termo -->
+  <section class="tela" id="t-termo" hidden>
+    <h1>Teste do diário entre consultas</h1>
+    <div class="caixa aviso" id="aviso-ios" hidden>
+      <p><b>No iPhone, comece pela tela inicial.</b> Toque em Compartilhar e depois em "Adicionar à Tela de Início". Abra o Minha semana por lá e aceite o termo. Se começar aqui no Safari, os registros ficam presos ao Safari.</p>
+    </div>
+    <p>Você foi convidado para testar, por cerca de 4 semanas, uma versão simples de um diário no celular: sono, humor e remédio em 20 segundos por dia, e um resumo de 1 página para levar à consulta.</p>
+    <div class="caixa">
+      <p><b>Fica só no seu celular:</b> tudo o que você registra (sono, humor, remédio e notas) e o resumo. A Draxora não recebe esse conteúdo.</p>
+      <p><b>O que a Draxora recebe:</b> apenas contagens anônimas, como "registrou neste dia", "gerou o resumo" e as respostas "levou à consulta?" e "ajudou?". Elas vêm ligadas a um código aleatório criado no seu celular, não ao seu nome, e-mail ou telefone. Servem para decidir se vale construir o app.</p>
+    </div>
+    <p>Sua participação é voluntária. Você pode parar a qualquer momento em Ajustes, Sair do teste, que apaga os registros deste aparelho. Participar ou não, ou sair, não muda em nada o seu atendimento.</p>
+    <p>Isto não é atendimento de saúde: o diário não faz diagnóstico, não avalia sintomas e não avisa nenhum profissional. Quem avalia é sempre o profissional que acompanha você.</p>
+    <p class="sos">Em sofrimento intenso, ligue <a href="tel:188">188</a> (CVV, 24 horas). Em emergência, <a href="tel:192">192</a>.</p>
+    <form id="f-termo">
+      <label class="check"><input type="checkbox" name="idade" required> <span>Tenho 18 anos ou mais.</span></label>
+      <label class="check"><input type="checkbox" name="aceito" required> <span>Li e aceito participar do teste nestas condições.</span></label>
+      <p class="erro" id="erro-termo" role="alert" hidden></p>
+      <button class="btn" type="submit">Começar</button>
+    </form>
+  </section>
+
+  <!-- Hoje -->
+  <section class="tela" id="t-hoje" hidden>
+    <div class="dia-nav">
+      <button type="button" class="seta" id="dia-ant" aria-label="Dia anterior">‹</button>
+      <h1 id="dia-titulo">Hoje</h1>
+      <button type="button" class="seta" id="dia-prox" aria-label="Próximo dia">›</button>
+    </div>
+    <p class="dica" id="dica-dia">Escolha uma opção em cada linha. Dia difícil? Só o humor já vale.</p>
+    <form id="f-dia">
+      <fieldset>
+        <legend>Sono <small>quanto dormi esta noite</small></legend>
+        <div class="opcoes" data-campo="sono"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Humor <small>como estive na maior parte do dia</small></legend>
+        <div class="opcoes" data-campo="humor"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Remédio <small>se você usa</small></legend>
+        <div class="opcoes" data-campo="remedio"></div>
+      </fieldset>
+      <label class="nota"><span>Nota <small>opcional, algo marcante hoje</small></span>
+        <input type="text" name="nota" maxlength="60" autocomplete="off" placeholder="1 palavra ou frase curta">
+      </label>
+      <button class="btn" type="submit">Salvar o dia</button>
+      <p class="ok" id="ok-dia" role="status" hidden></p>
+    </form>
+    <p class="semana-conta" id="semana-conta"></p>
+    <div class="caixa leve" id="instalar-dica" hidden>
+      <p><b>Deixe na tela inicial</b> para abrir em 1 toque. Veja como em Ajustes.</p>
+    </div>
+  </section>
+
+  <!-- Semana -->
+  <section class="tela" id="t-semana" hidden>
+    <div class="dia-nav">
+      <button type="button" class="seta" id="sem-ant" aria-label="Semana anterior">‹</button>
+      <h1 id="sem-titulo">Esta semana</h1>
+      <button type="button" class="seta" id="sem-prox" aria-label="Próxima semana">›</button>
+    </div>
+    <div class="grade-wrap"><table class="grade" id="grade"></table></div>
+    <div class="numeros" id="numeros"></div>
+    <p class="alerta" id="alerta-sono" hidden>3 noites ou mais com 5 h ou menos nesta semana. Avise seu médico antes da próxima consulta.</p>
+    <p class="sos">Pensamentos de morte: ligue <a href="tel:188">188</a> (CVV).</p>
+  </section>
+
+  <!-- Resumo -->
+  <section class="tela" id="t-resumo" hidden>
+    <div class="nao-imprime">
+      <h1>Resumo para a consulta</h1>
+      <p>Uma página com as últimas semanas, para entregar ao profissional. Ela mostra só o que você registrou, sem interpretação.</p>
+      <div class="seg" role="group" aria-label="Período">
+        <button type="button" data-sem="2" aria-pressed="true">2 semanas</button>
+        <button type="button" data-sem="4" aria-pressed="false">4 semanas</button>
+      </div>
+      <button class="btn" type="button" id="btn-imprimir">Imprimir ou salvar em PDF</button>
+    </div>
+    <article class="folha" id="folha"></article>
+    <div class="nao-imprime caixa leve">
+      <h2>Depois da consulta</h2>
+      <form id="f-consulta">
+        <fieldset><legend>Você levou o resumo (ou as folhas)?</legend>
+          <div class="opcoes">
+            <label class="op"><input type="radio" name="levou" value="s"><span>Levei</span></label>
+            <label class="op"><input type="radio" name="levou" value="n"><span>Não levei</span></label>
+          </div>
+        </fieldset>
+        <fieldset id="fs-ajudou" hidden><legend>Ajudou na consulta?</legend>
+          <div class="opcoes">
+            <label class="op"><input type="radio" name="ajudou" value="muito"><span>Ajudou muito</span></label>
+            <label class="op"><input type="radio" name="ajudou" value="um-pouco"><span>Um pouco</span></label>
+            <label class="op"><input type="radio" name="ajudou" value="nao"><span>Não fez diferença</span></label>
+          </div>
+        </fieldset>
+        <button class="btn btn-out" type="submit">Enviar resposta</button>
+        <p class="ok" id="ok-consulta" role="status" hidden></p>
+      </form>
+      <p class="pequeno">Quer contar mais? <a href="/conte/?de=teste-app">Conte como foi</a> (1 minuto, sem e-mail).</p>
+    </div>
+  </section>
+
+  <!-- Ajustes -->
+  <section class="tela" id="t-ajustes" hidden>
+    <h1>Ajustes</h1>
+    <div class="caixa">
+      <h2>Lembrete diário</h2>
+      <p>Escolha um horário. O lembrete vira um evento diário no calendário do seu celular; a Draxora não fica sabendo o horário.</p>
+      <label class="linha">Horário <input type="time" id="hora-lembrete" value="21:00"></label>
+      <div class="botoes">
+        <button class="btn btn-out" type="button" id="btn-ics">iPhone ou outro calendário</button>
+        <button class="btn btn-out" type="button" id="btn-google">Google Agenda</button>
+      </div>
+    </div>
+    <div class="caixa">
+      <h2>Deixar na tela inicial</h2>
+      <button class="btn btn-out" type="button" id="btn-instalar" hidden>Instalar no celular</button>
+      <p><b>Android (Chrome):</b> menu ⋮ e depois "Adicionar à tela inicial" ou "Instalar app".</p>
+      <p><b>iPhone (Safari):</b> botão Compartilhar e depois "Adicionar à Tela de Início".</p>
+    </div>
+    <div class="caixa">
+      <h2>Cópia dos registros</h2>
+      <p>Os registros ficam só neste aparelho. Antes de trocar de celular ou limpar o navegador, salve uma cópia.</p>
+      <div class="botoes">
+        <button class="btn btn-out" type="button" id="btn-copia">Salvar cópia</button>
+        <label class="btn btn-out arquivo">Restaurar cópia <input type="file" id="arq-copia" accept="application/json,.json"></label>
+      </div>
+      <p class="ok" id="ok-copia" role="status" hidden></p>
+    </div>
+    <div class="caixa">
+      <h2>Sair do teste</h2>
+      <p>Apaga todos os registros deste aparelho. Não dá para desfazer.</p>
+      <button class="btn btn-perigo" type="button" id="btn-sair">Sair do teste</button>
+      <div id="confirma-sair" hidden>
+        <p><b>Tem certeza?</b> Se quiser guardar os registros, salve uma cópia antes.</p>
+        <div class="botoes">
+          <button class="btn btn-perigo" type="button" id="btn-sair-sim">Sim, sair e apagar</button>
+          <button class="btn btn-out" type="button" id="btn-sair-nao">Cancelar</button>
+        </div>
+      </div>
+    </div>
+    <p class="pequeno">Dúvidas sobre o teste: contato@draxora.com.br · <a href="/privacidade/">Privacidade</a></p>
+  </section>
+</main>
+
+<footer class="rodape nao-imprime">
+  Material educativo: não faz diagnóstico e não substitui avaliação profissional. Em sofrimento intenso, <a href="tel:188">188</a> (CVV). Emergência, <a href="tel:192">192</a>.
+</footer>
+</body>
+</html>

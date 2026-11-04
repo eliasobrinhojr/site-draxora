@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Robots-Tag: noindex, nofollow');
 header('Referrer-Policy: no-referrer');
-$v = '202611032300';
+$v = '202611041950';
 ?><!doctype html>
 <html lang="pt-BR">
 <head>
@@ -20,6 +20,7 @@ $v = '202611032300';
   <link rel="preload" href="/assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="painel.css?v=<?= $v ?>">
   <script src="painel.js?v=<?= $v ?>" defer></script>
+  <script src="teste.js?v=<?= $v ?>" defer></script>
 </head>
 <body>
 <a class="skip" href="#painel">Pular para o conteúdo</a>
@@ -129,6 +130,26 @@ $v = '202611032300';
       <section class="card pii" aria-labelledby="h-lista-app">
         <h2 id="h-lista-app">Interessados no app</h2>
         <div id="lista-app" class="lista"></div>
+      </section>
+
+      <section class="card" aria-labelledby="h-teste" id="teste" hidden>
+        <div class="card-topo">
+          <h2 id="h-teste">Teste do app (/teste/)</h2>
+          <button class="btn-txt" type="button" id="btn-teste-csv">Baixar planilha</button>
+        </div>
+        <p class="muted pequeno">Só contagens anônimas: nenhum registro de sono, humor ou remédio sai do celular. Semana ativa = 4 dias ou mais com registro, contando do dia do aceite. Critério do plano na semana 4: 40% ou mais ativos, seguir; menos de 15%, pivotar.</p>
+        <div class="seg seg-pequeno" id="teste-filtro" role="group" aria-label="Turma"></div>
+        <div id="teste-conteudo" class="teste-grid"></div>
+        <details class="teste-turmas">
+          <summary>Turmas e convites</summary>
+          <div id="teste-turmas" class="lista"></div>
+          <form id="f-turma" class="f-turma" autocomplete="off">
+            <label>Código <input name="codigo" required pattern="[A-Za-z0-9-]{4,20}" placeholder="ONDA1-TATI"></label>
+            <label>Nome <input name="nome" required maxlength="60" placeholder="Onda 1 · pacientes da Tatiane"></label>
+            <button class="btn-txt" type="submit">Criar turma</button>
+            <p class="pequeno" id="turma-msg" role="status"></p>
+          </form>
+        </details>
       </section>
 
       <p class="muted pequeno rodape" id="gerado"></p>
