@@ -13,9 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: PHP sem erro de sintaxe
-        run: for f in api/*.php; do php -l "$f"; done
+        run: for f in api/*.php painel/*.php; do php -l "$f"; done
       - name: JavaScript sem erro de sintaxe
-        run: node --check assets/js/main.js
+        run: node --check assets/js/main.js && node --check painel/painel.js
       - name: Nenhuma senha ou chave no repositório
         run: |
           if git ls-files | grep -iE '(^|/)(draxora-config\.php|\.env|.*\.sql|.*\.pem|.*\.key)$'; then
