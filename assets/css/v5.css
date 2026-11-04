@@ -299,6 +299,7 @@ h1, h2, h3, p { margin: 0; }
 /* amostra grátis (captura de e-mail) */
 .amostra { display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: center; background: var(--areia); border-radius: 28px; padding: 40px 44px; }
 .amostra img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 18px 40px rgba(41,79,70,.16); transform: rotate(-3deg); }
+.amostra img.pack { box-shadow: none; border-radius: 0; transform: none; }
 .amostra-copy { display: grid; gap: 14px; }
 .amostra .dx-input { border-color: var(--linha); background: #fff; }
 .amostra .dx-lead .btn { background: var(--verde); color: var(--creme); }

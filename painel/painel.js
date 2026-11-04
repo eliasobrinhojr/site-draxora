@@ -8,10 +8,11 @@
     usou: { 'quase-todo-dia': 'Quase todo dia', 'alguns-dias': 'Alguns dias', 'nao-usei': 'Ainda não usou' },
     consulta: { 'fui-levei': 'Foi e levou as folhas', 'fui-sem-levar': 'Foi, mas não levou', 'ainda-nao': 'Ainda não foi' },
     ajudou: { 'muito': 'Ajudou muito', 'um-pouco': 'Ajudou um pouco', 'nao': 'Não fez diferença', 'nao-se-aplica': 'Ainda não sabe' },
+    versao: { '1.1': 'Versão 1.1 (4 páginas)', '1.0': 'Versão 1.0 (25 páginas)', 'nao-lembro': 'Não lembra a versão' },
     diagnostico: { 'sim-acompanha': 'Tinha, e faz acompanhamento', 'sim-sem-acompanhar': 'Tinha, sem acompanhamento agora', 'em-investigacao': 'Em investigação', 'nao': 'Não, ia à primeira consulta', 'prefiro-nao-dizer': 'Prefere não dizer' },
     canal: { 'sim': 'Segue o canal', 'nao': 'Não segue', 'nao-sabia': 'Não sabia que existe' }
   };
-  var PERGUNTAS = [['usou', 'Usou as folhas?'], ['consulta', 'Foi à consulta?'], ['ajudou', 'O Mapa ajudou?'], ['diagnostico', 'Já tinha diagnóstico?'], ['canal', 'Canal do WhatsApp']];
+  var PERGUNTAS = [['usou', 'Usou as folhas?'], ['consulta', 'Foi à consulta?'], ['ajudou', 'O Mapa ajudou?'], ['versao', 'Qual versão?'], ['diagnostico', 'Já tinha diagnóstico?'], ['canal', 'Canal do WhatsApp']];
   var FONTES = { email: 'E-mail', instagram: 'Instagram', facebook: 'Facebook', google: 'Google', whatsapp: 'WhatsApp', guia: 'PDF do guia', amostra: 'PDF antigo (amostra)', link: 'Link /guia', baixar: 'Link de download', '(direto)': 'Direto ou sem origem' };
   var METRICAS = { cadastros: 'Cadastros do guia', baixou_guia: 'Baixaram o guia', baixou_folhas: 'Baixaram as folhas', relatos: 'Relatos na /conte/', interessados_app: 'Interessados no app' };
 
@@ -147,7 +148,7 @@
       var topo = el('div', 'item-topo'); topo.appendChild(el('span', null, dmh(r.em) + ' · ' + fonte(r.fonte)));
       topo.appendChild(el('span', null, r.email || 'sem e-mail')); it.appendChild(topo);
       var chips = el('div', 'chips');
-      ['usou', 'consulta', 'ajudou', 'diagnostico', 'canal'].forEach(function (k) { if (r[k] && ROT[k][r[k]]) chips.appendChild(el('span', 'chip', ROT[k][r[k]])); });
+      ['usou', 'consulta', 'ajudou', 'versao', 'diagnostico', 'canal'].forEach(function (k) { if (r[k] && ROT[k][r[k]]) chips.appendChild(el('span', 'chip', ROT[k][r[k]])); });
       it.appendChild(chips);
       if (r.texto) it.appendChild(el('p', 'item-texto', r.texto));
       box.appendChild(it);

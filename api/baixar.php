@@ -5,8 +5,10 @@ declare(strict_types=1);
 require __DIR__ . '/_db.php';
 
 $arquivos = [
-    'guia'   => '/assets/guia/mapa-dos-sintomas-guia.pdf?v=20261104b', // 04/11: folhas dentro do guia; p. 2 e 19 sem citar o PDF à parte (?v= renova o cache)
-    'folhas' => '/assets/guia/mapa-dos-sintomas-folhas.pdf',
+    // Desde 04/11/2026: versão 1.1 (4 páginas). Os dois links entregam o mesmo PDF, para os e-mails antigos
+    // continuarem funcionando. A versão 1.0 (guia de 25 páginas e folhas à parte) segue no servidor, sem link.
+    'guia'   => '/assets/guia/mapa-dos-sintomas-1-1.pdf',
+    'folhas' => '/assets/guia/mapa-dos-sintomas-1-1.pdf',
 ];
 $f = (string)($_GET['f'] ?? '');
 if (!isset($arquivos[$f])) {

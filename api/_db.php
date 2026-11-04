@@ -109,6 +109,11 @@ function dx_migrate(PDO $pdo): void {
         ? $pdo->query("SHOW COLUMNS FROM feedback LIKE 'diagnostico'")->fetchAll()
         : array_filter($pdo->query("PRAGMA table_info(feedback)")->fetchAll(), fn($c) => $c['name'] === 'diagnostico');
     if (!$cols) $pdo->exec("ALTER TABLE feedback ADD COLUMN diagnostico VARCHAR(30) NULL");
+    // 04/11: pergunta opcional "qual versão você usou?" (1.1 = 4 páginas, 1.0 = guia de 25 páginas).
+    $cols = $mysql
+        ? $pdo->query("SHOW COLUMNS FROM feedback LIKE 'versao'")->fetchAll()
+        : array_filter($pdo->query("PRAGMA table_info(feedback)")->fetchAll(), fn($c) => $c['name'] === 'versao');
+    if (!$cols) $pdo->exec("ALTER TABLE feedback ADD COLUMN versao VARCHAR(12) NULL");
     // Downloads dos PDFs (link /baixar/guia e /baixar/folhas nos e-mails). Sem e-mail: só contagem.
     $pdo->exec("CREATE TABLE IF NOT EXISTS downloads (
         id $id,

@@ -20,7 +20,7 @@
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="preload" href="../assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/v5.css?v=202611032200">
+  <link rel="stylesheet" href="../assets/css/v5.css?v=202611041300">
 </head>
 <body data-page="conte" data-root="../">
 <a class="skip" href="#principal">Pular para o conteúdo</a>
@@ -56,7 +56,12 @@
           <label class="dx-opt"><input type="radio" name="ajudou" value="nao" required> <span>Não fez diferença</span></label>
           <label class="dx-opt"><input type="radio" name="ajudou" value="nao-se-aplica" required> <span>Ainda não sei</span></label>
       </fieldset>
-      <fieldset class="dx-q"><legend>4. Quando você baixou o guia, já tinha diagnóstico? (opcional) <small style="display:block;font-weight:400;margin-top:4px">Ajuda a entender para quem o Mapa é mais útil: quem está começando ou quem já faz acompanhamento. Pode pular.</small></legend>
+      <fieldset class="dx-q"><legend>4. Qual versão você usou? (opcional) <small style="display:block;font-weight:400;margin-top:4px">A versão 1.1, de 4 páginas, saiu em 4 de novembro de 2026.</small></legend>
+          <label class="dx-opt"><input type="radio" name="versao" value="1.1"> <span>A curta, de 4 páginas (versão 1.1)</span></label>
+          <label class="dx-opt"><input type="radio" name="versao" value="1.0"> <span>O guia de 25 páginas (versão 1.0)</span></label>
+          <label class="dx-opt"><input type="radio" name="versao" value="nao-lembro"> <span>Não lembro</span></label>
+      </fieldset>
+      <fieldset class="dx-q"><legend>5. Quando você baixou o guia, já tinha diagnóstico? (opcional) <small style="display:block;font-weight:400;margin-top:4px">Ajuda a entender para quem o Mapa é mais útil: quem está começando ou quem já faz acompanhamento. Pode pular.</small></legend>
           <label class="dx-opt"><input type="radio" name="diagnostico" value="sim-acompanha"> <span>Sim, e faço acompanhamento</span></label>
           <label class="dx-opt"><input type="radio" name="diagnostico" value="sim-sem-acompanhar"> <span>Sim, mas não faço acompanhamento agora</span></label>
           <label class="dx-opt"><input type="radio" name="diagnostico" value="em-investigacao"> <span>Estou em investigação</span></label>
@@ -64,10 +69,10 @@
           <label class="dx-opt"><input type="radio" name="diagnostico" value="prefiro-nao-dizer"> <span>Prefiro não dizer</span></label>
       </fieldset>
       <div class="dx-field">
-        <label for="fb-texto"><strong>5. O que funcionou, o que atrapalhou ou o que você mudaria?</strong> (opcional)</label>
+        <label for="fb-texto"><strong>6. O que funcionou, o que atrapalhou ou o que você mudaria?</strong> (opcional)</label>
         <textarea id="fb-texto" name="texto" rows="5" maxlength="2000" placeholder="Escreva do seu jeito."></textarea>
       </div>
-      <fieldset class="dx-q"><legend>6. Você segue o canal do Mapa dos Sintomas no WhatsApp? (opcional) <a class="dx-canal-link" href="https://whatsapp.com/channel/0029Vb9c3uxEwEjqXdFM4d09" target="_blank" rel="noopener">Conhecer o canal</a></legend>
+      <fieldset class="dx-q"><legend>7. Você segue o canal do Mapa dos Sintomas no WhatsApp? (opcional) <a class="dx-canal-link" href="https://whatsapp.com/channel/0029Vb9c3uxEwEjqXdFM4d09" target="_blank" rel="noopener">Conhecer o canal</a></legend>
           <label class="dx-opt"><input type="radio" name="canal" value="sim"> <span>Sigo</span></label>
           <label class="dx-opt"><input type="radio" name="canal" value="nao"> <span>Não sigo</span></label>
           <label class="dx-opt"><input type="radio" name="canal" value="nao-sabia"> <span>Não sabia que existe</span></label>
@@ -108,6 +113,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=202611032200" defer></script>
+<script src="../assets/js/main.js?v=202611041300" defer></script>
 </body>
 </html>

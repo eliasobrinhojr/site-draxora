@@ -83,7 +83,7 @@
       var endpoint = form.getAttribute('data-endpoint');
       var data = new FormData(form);
       ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (params.get(k)) data.append(k, params.get(k)); });
-      data.append('origem', window.location.pathname);
+      data.append('origem', window.location.pathname + (deFb ? '?de=' + deFb : ''));
       data.append('dx_t', String(Math.round((Date.now() - PAGE_T0) / 1000)));
       if (btn) btn.disabled = true;
       fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
@@ -100,6 +100,9 @@
   // Relato de uso (/conte/) -> api/feedback.php
   document.querySelectorAll('form.dx-feedback').forEach(function (form) {
     var err = form.querySelector('[data-fb-error]');
+    // Links da versão 1.1 (PDF, e-mails, canal) chegam com ?de=…v11: a pergunta da versão já vem marcada.
+    var deFb = (params.get('de') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40);
+    if (/v11/i.test(deFb)) { var v11 = form.querySelector('input[name="versao"][value="1.1"]'); if (v11) v11.checked = true; }
     var btn = form.querySelector('button[type="submit"]');
     function fail(msg) { if (err) { err.textContent = msg; err.hidden = false; } }
     form.addEventListener('submit', function (ev) {
