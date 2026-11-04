@@ -5,7 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/_db.php';
 
 $arquivos = [
-    'guia'   => '/assets/guia/mapa-dos-sintomas-guia.pdf',
+    'guia'   => '/assets/guia/mapa-dos-sintomas-guia.pdf?v=20261104', // 04/11: folhas em alta qualidade dentro do guia (?v= renova o cache)
     'folhas' => '/assets/guia/mapa-dos-sintomas-folhas.pdf',
 ];
 $f = (string)($_GET['f'] ?? '');
