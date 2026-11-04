@@ -23,7 +23,15 @@ $robo = ($metodo !== 'GET' || $ua === '' ||
 
 try {
     $de = preg_replace('/[^a-z0-9_-]/i', '', (string)($_GET['de'] ?? ''));
-    $pdo = dx_db();
+    // Conexão própria: dx_db() encerra a resposta com erro 503 se o banco falhar, e aqui o PDF
+    // precisa abrir de qualquer jeito. Sem configuração ou sem banco, só não conta o download.
+    $c = dx_config();
+    if (empty($c['db_dsn'])) throw new RuntimeException('sem db_dsn');
+    $pdo = new PDO($c['db_dsn'], $c['db_user'] ?? null, $c['db_pass'] ?? null, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_TIMEOUT => 3,
+    ]);
+    dx_migrate($pdo);
     $ins = $pdo->prepare('INSERT INTO downloads (arquivo, origem, robo, ip_hash, criado_em) VALUES (?, ?, ?, ?, ?)');
     $ins->execute([$f, $de !== '' ? mb_substr($de, 0, 60) : null, $robo, dx_ip_hash(), dx_now()]);
 } catch (Throwable $e) {
