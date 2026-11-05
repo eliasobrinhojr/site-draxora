@@ -72,7 +72,7 @@
     barras($('#anuncios'), d.anuncios.map(function (a) { return { rot: a.anuncio, sub: fonte(a.fonte), n: a.n }; }), {});
     duplas(d.downloads_origem);
     distribuicoes(d.relatos_resumo);
-    if (!st.apresentacao) { listaRelatos(d.relatos || []); listaApp(d.interessados || []); }
+    if (!st.apresentacao) { listaRelatos(d.relatos || []); listaApp(d.interessados || [], d.interessados_total); }
   }
 
   function funil(d) {
@@ -156,9 +156,13 @@
     });
   }
 
-  function listaApp(lista) {
+  function listaApp(lista, total) {
     var box = limpa($('#lista-app'));
-    if (!lista.length) { box.appendChild(el('p', 'vazio', 'Ninguém novo no período.')); return; }
+    $('#app-total').textContent = total == null ? '–' : String(total);
+    var be = $('#btn-emails-app'); be.setAttribute('aria-pressed', String(!!st.emails)); be.textContent = st.emails ? 'Esconder e-mails' : 'Mostrar e-mails';
+    $('#btn-copiar-app').hidden = !st.emails || !lista.length;
+    $('#copiar-msg').textContent = '';
+    if (!lista.length) { box.appendChild(el('p', 'vazio', 'Ninguém na lista ainda.')); return; }
     lista.forEach(function (p) {
       var l = el('div', 'linha-app'); l.appendChild(el('span', null, p.email)); l.appendChild(el('span', null, dmh(p.em) + ' · ' + fonte(p.fonte)));
       box.appendChild(l);
@@ -266,6 +270,12 @@
   seg('#periodo', 'data-dias', function (v) { st.dias = +v; carrega(); });
   seg('#metrica', 'data-m', function (v) { st.metrica = v; grafico(); });
 
+  $('#btn-emails-app').addEventListener('click', function () { $('#btn-emails').click(); });
+  $('#btn-copiar-app').addEventListener('click', function () {
+    var lista = (st.dados && st.dados.interessados || []).map(function (p) { return p.email; }).join('\n');
+    var msg = $('#copiar-msg');
+    if (navigator.clipboard) navigator.clipboard.writeText(lista).then(function () { msg.textContent = 'E-mails copiados (um por linha).'; }, function () { msg.textContent = 'Não foi possível copiar.'; });
+  });
   $('#btn-emails').addEventListener('click', function () {
     st.emails = !st.emails; this.setAttribute('aria-pressed', String(st.emails));
     this.textContent = st.emails ? 'Esconder e-mails' : 'Mostrar e-mails'; carrega();

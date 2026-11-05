@@ -128,8 +128,16 @@ $v = '202611041950';
       </section>
 
       <section class="card pii" aria-labelledby="h-lista-app">
-        <h2 id="h-lista-app">Interessados no app</h2>
+        <div class="card-topo">
+          <h2 id="h-lista-app">Interessados no app</h2>
+          <div class="botoes-topo">
+            <button class="btn-txt" type="button" id="btn-emails-app" aria-pressed="false">Mostrar e-mails</button>
+            <button class="btn-txt" type="button" id="btn-copiar-app" hidden>Copiar e-mails</button>
+          </div>
+        </div>
+        <p class="app-total"><span class="tile-num" id="app-total">–</span> <span class="muted">desde o início</span></p>
         <div id="lista-app" class="lista"></div>
+        <p class="pequeno muted" id="copiar-msg" role="status"></p>
       </section>
 
       <section class="card" aria-labelledby="h-teste" id="teste" hidden>

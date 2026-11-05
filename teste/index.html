@@ -13,8 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="apple-touch-icon" href="icone-180.png">
-  <link rel="stylesheet" href="app.css?v=2">
-  <script src="app.js?v=2" defer></script>
+  <link rel="stylesheet" href="app.css?v=3">
+  <script src="app.js?v=3" defer></script>
 </head>
 <body>
 <!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
@@ -68,6 +68,7 @@
       <button type="button" class="seta" id="dia-prox" aria-label="Próximo dia">›</button>
     </div>
     <p class="dica" id="dica-dia">Escolha uma opção em cada linha. Dia difícil? Só o humor já vale.</p>
+    <button type="button" class="btn-dicas" id="btn-dicas" aria-haspopup="dialog">Dicas para registrar bem</button>
     <form id="f-dia">
       <fieldset>
         <legend>Sono <small>quanto dormi esta noite</small></legend>
@@ -81,8 +82,9 @@
         <legend>Remédio <small>se você usa</small></legend>
         <div class="opcoes" data-campo="remedio"></div>
       </fieldset>
-      <label class="nota"><span>Nota <small>opcional, algo marcante hoje</small></span>
-        <input type="text" name="nota" maxlength="60" autocomplete="off" placeholder="1 palavra ou frase curta">
+      <label class="nota"><span>Nota <small>opcional, o que as bolinhas não mostram</small></span>
+        <textarea name="nota" maxlength="140" rows="2" autocomplete="off" placeholder="Ex.: sem energia de dia, fiquei na cama até as 15h; à noite, mais disposto"></textarea>
+        <small class="conta-nota" id="conta-nota">0/140</small>
       </label>
       <button class="btn" type="submit">Salvar o dia</button>
       <p class="ok" id="ok-dia" role="status" hidden></p>
@@ -184,6 +186,30 @@
     <p class="pequeno">Dúvidas sobre o teste: contato@draxora.com.br · <a href="/privacidade/">Privacidade</a></p>
   </section>
 </main>
+
+<dialog class="dicas" id="dicas" aria-labelledby="dicas-titulo">
+  <div class="dicas-topo"><h2 id="dicas-titulo">Dicas para registrar bem</h2><button type="button" class="fechar" id="dicas-fechar" aria-label="Fechar">×</button></div>
+  <h3>Sono</h3>
+  <p>Não precisa ser exato: escolha a faixa mais perto do quanto você dormiu de fato, não do tempo na cama. Acordou muitas vezes? Some o total aproximado e conte na nota.</p>
+  <h3>Humor</h3>
+  <p>Pense na maior parte do dia. Se o humor mudou muito ao longo do dia, marque o que mais pesou e conte a mudança na nota.</p>
+  <h3>Remédio</h3>
+  <p>"Como combinado" é do jeito que o profissional orientou. Esqueceu, atrasou ou mudou a dose por conta própria? Marque "não tomei como combinado" e, se quiser, diga na nota.</p>
+  <h3>Nota</h3>
+  <p>Use para o que as bolinhas não mostram. Fatos, não rótulos: o que aconteceu, quanto durou, o que veio antes. Por exemplo:</p>
+  <ul>
+    <li>"Sem energia de dia, fiquei na cama até as 15h; à noite, mais disposto."</li>
+    <li>"Dormi 4 h e acordei cheio de planos."</li>
+    <li>"Discussão no trabalho; o humor caiu em minutos e voltou à noite."</li>
+    <li>"Comprei por impulso e me arrependi."</li>
+    <li>"Esqueci a reunião e perdi a chave de novo."</li>
+    <li>"Primeiro dia com a dose nova; tontura de manhã."</li>
+  </ul>
+  <h3>Rotina</h3>
+  <p>Registre no mesmo dia, de preferência à noite: a memória guarda o último dia, não a semana. Dia difícil? Só o humor já vale. Alguém próximo pode registrar por você.</p>
+  <p class="sos">Pensamentos de morte ou sofrimento intenso: ligue <a href="tel:188">188</a> (CVV, 24 horas). Emergência, <a href="tel:192">192</a>.</p>
+  <button type="button" class="btn" id="dicas-ok">Entendi</button>
+</dialog>
 
 <div class="aviso-toast nao-imprime" id="aviso" role="status" hidden><span id="aviso-txt"></span><button type="button" id="aviso-acao"></button></div>
 

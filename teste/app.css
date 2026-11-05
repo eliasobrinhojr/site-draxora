@@ -67,7 +67,7 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 .nota { display: block; margin: 0 0 18px; }
 .nota > span { display: block; font: 700 13px Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--verde); margin-bottom: 8px; }
 .nota small { text-transform: none; letter-spacing: 0; }
-.nota input, .linha input { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--linha); background: var(--papel); font: 16px Figtree, sans-serif; color: var(--verde); }
+.nota input, .nota textarea, .linha input { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--linha); background: var(--papel); font: 16px Figtree, sans-serif; color: var(--verde); }
 .linha { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--verde); margin-bottom: 12px; }
 .linha input { width: auto; }
 .semana-conta { margin-top: 16px; font-weight: 600; color: var(--verde); }
@@ -127,3 +127,16 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
   display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--verde); color: #fff; border-radius: 14px; padding: 12px 14px 12px 16px;
   box-shadow: 0 6px 20px rgba(41,79,70,.25); font-weight: 600; animation: entra .18s ease-out; }
 .aviso-toast button { background: transparent; border: 1.5px solid var(--menta); color: #fff; border-radius: 999px; padding: 8px 14px; font: 700 14px Figtree, sans-serif; cursor: pointer; min-height: 40px; }
+
+.nota textarea { resize: vertical; line-height: 1.4; }
+.conta-nota { display: block; text-align: right; margin-top: 4px; font-size: 12px; }
+.btn-dicas { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 18px; min-height: 40px; padding: 8px 16px; border-radius: 999px;
+  border: 1.5px solid var(--petroleo); background: var(--papel); color: var(--petroleo); font: 700 15px Figtree, sans-serif; cursor: pointer; }
+.btn-dicas::before { content: "?"; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--petroleo); color: #fff; font-size: 13px; }
+.dicas { width: min(560px, calc(100vw - 24px)); max-height: 86vh; overflow: auto; border: 0; border-radius: 18px; padding: 20px 18px; background: var(--creme); color: var(--texto); }
+.dicas::backdrop { background: rgba(41, 79, 70, .45); }
+.dicas h3 { font: 700 13px Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; margin: 16px 0 4px; }
+.dicas ul { margin: 0 0 12px; padding-left: 18px; } .dicas li { margin-bottom: 4px; }
+.dicas-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.dicas-topo h2 { margin: 0; }
+.fechar { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linha); background: var(--papel); color: var(--verde); font-size: 22px; cursor: pointer; }

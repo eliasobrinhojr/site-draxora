@@ -135,6 +135,7 @@
     var f = $('#f-dia');
     ['sono', 'humor', 'remedio'].forEach(function (c) { $$('input[name="' + c + '"]').forEach(function (i) { i.checked = r[c] === i.value; }); });
     f.nota.value = r.nota || '';
+    $('#conta-nota').textContent = f.nota.value.length + '/140';
     $('#ok-dia').hidden = true;
     var ja = !!(st.regs || {})[k];
     $('#dica-dia').textContent = ja ? 'Este dia já está registrado. Mude o que quiser e salve de novo; para desmarcar, toque de novo na opção.' : 'Escolha uma opção em cada linha. Dia difícil? Só o humor já vale.';
@@ -152,7 +153,7 @@
     ev.preventDefault();
     var f = ev.target, r = {};
     ['sono', 'humor', 'remedio'].forEach(function (c) { var i = f.querySelector('input[name="' + c + '"]:checked'); if (i) r[c] = i.value; });
-    var nota = f.nota.value.trim().slice(0, 60);
+    var nota = f.nota.value.trim().slice(0, 140);
     if (nota) r.nota = nota;
     var ok = $('#ok-dia');
     if (!r.sono && !r.humor && !r.remedio) { ok.textContent = 'Escolha pelo menos uma opção. Dia difícil? Só o humor já vale.'; ok.hidden = false; return; }
@@ -165,6 +166,15 @@
     mostra('semana');
     aviso(editou ? 'Alteração salva.' : (k === ymd(hoje()) ? 'Dia salvo. Até amanhã!' : 'Dia ' + dm(dia) + ' salvo.'), 'Corrigir', function () { diaSel = dia; mostra('hoje'); });
   });
+
+  // Dicas (sempre à mão na tela Hoje).
+  var dlg = $('#dicas');
+  function fechaDicas() { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+  $('#btn-dicas').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
+  $('#dicas-fechar').addEventListener('click', fechaDicas);
+  $('#dicas-ok').addEventListener('click', fechaDicas);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) fechaDicas(); });
+  $('#f-dia').nota.addEventListener('input', function () { $('#conta-nota').textContent = this.value.length + '/140'; });
 
   // Aviso curto no rodapé da tela, com uma ação opcional.
   var avisoTimer = null;
@@ -375,7 +385,7 @@
         if (SONO.some(function (o) { return o[0] === r.sono; })) limpo.sono = r.sono;
         if (HUMOR.some(function (o) { return o[0] === r.humor; })) limpo.humor = r.humor;
         if (REMEDIO.some(function (o) { return o[0] === r.remedio; })) limpo.remedio = r.remedio;
-        if (typeof r.nota === 'string' && r.nota) limpo.nota = r.nota.slice(0, 60);
+        if (typeof r.nota === 'string' && r.nota) limpo.nota = r.nota.slice(0, 140);
         if (Object.keys(limpo).length) { st.regs[k] = limpo; n++; }
       });
       // A cópia traz o mesmo participante: continua contando como a mesma pessoa no teste.

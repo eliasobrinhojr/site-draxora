@@ -290,7 +290,9 @@ if ($listas) {
     $saida['interessados'] = array_map(fn($r) => [
         'em' => $r['criado_em'], 'email' => $emailsInteiros ? $r['email'] : dx_mascara($r['email']),
         'fonte' => dx_fonte($r['utm_source']), 'campanha' => $r['utm_campaign'],
-    ], dx_todos($pdo, "SELECT criado_em, email, utm_source, utm_campaign FROM inscritos WHERE lista = 'mapa-dos-sintomas' AND criado_em >= ? AND criado_em < ? ORDER BY criado_em DESC LIMIT 200", [$de, $ate]));
+    ], dx_todos($pdo, "SELECT criado_em, email, utm_source, utm_campaign FROM inscritos WHERE lista = 'mapa-dos-sintomas' ORDER BY criado_em DESC LIMIT 500", []));
+    // A lista do app é pequena e vale inteira: desde o início, não só no período escolhido.
+    $saida['interessados_total'] = dx_um($pdo, "SELECT COUNT(*) FROM inscritos WHERE lista = 'mapa-dos-sintomas'", []);
     $saida['emails_inteiros'] = $emailsInteiros;
 }
 
