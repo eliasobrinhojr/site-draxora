@@ -36,3 +36,26 @@ jobs:
           for t in 'Options -Indexes' 'Strict-Transport-Security' 'X-Frame-Options' 'Content-Security-Policy' 'RedirectMatch 404'; do
             grep -q "$t" .htaccess || { echo "::error::Falta '$t' no .htaccess"; exit 1; }; done
           grep -q 'Require all denied' api/.htaccess || { echo "::error::api/.htaccess sem bloqueio"; exit 1; }
+      # Desde 04/11: o site num navegador de verdade, com banco de teste (SQLite). Os formulários
+      # enviam de verdade para o PHP local. Teria barrado o erro de 04/11 (cadastro travado das 12h58 às 22h04).
+      - name: PHP 8.5 para o teste do fluxo
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: pdo_sqlite, mbstring, curl
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Navegador para o teste (Playwright + Chromium)
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.0
+          npx playwright install --with-deps chromium
+      - name: Fluxo completo (páginas, formulários, downloads, painel)
+        env:
+          DX_CHAVE_TESTE: chave-de-teste-ci-1234567890
+        run: |
+          printf "<?php return ['db_dsn' => 'sqlite:%s/ci.db', 'export_key' => '%s', 'salt' => 'ci'];\n" "$RUNNER_TEMP" "$DX_CHAVE_TESTE" > "$RUNNER_TEMP/config.php"
+          DRAXORA_CONFIG="$RUNNER_TEMP/config.php" php -S 127.0.0.1:8080 -t . > "$RUNNER_TEMP/php.log" 2>&1 &
+          sleep 1
+          node .github/testes/fluxo.js http://127.0.0.1:8080 local || { echo "--- log do PHP"; cat "$RUNNER_TEMP/php.log"; exit 1; }

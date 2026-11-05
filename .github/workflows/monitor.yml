@@ -1,0 +1,44 @@
+# Vigia o site PUBLICADO (https://draxora.com.br): de hora em hora e logo depois de cada publicação na main.
+# Abre as páginas, clica nos formulários (o envio é interceptado no navegador: nenhum cadastro falso entra),
+# confere o banco (status.php) e os links de download (marcados como robô: não contam no painel).
+# Se algo quebrar, abre uma issue "Site com problema" no GitHub — o GitHub avisa o dono do repositório por e-mail.
+name: Vigia do site no ar
+on:
+  schedule:
+    - cron: '23 * * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: vigia
+  cancel-in-progress: true
+jobs:
+  vigia:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Navegador (Playwright + Chromium)
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.0
+          npx playwright install --with-deps chromium
+      - name: Esperar a Hostinger publicar (só depois de push)
+        if: github.event_name == 'push'
+        run: sleep 150
+      - name: Fluxo no site publicado
+        id: fluxo
+        run: node .github/testes/fluxo.js https://draxora.com.br ao-vivo 2>&1 | tee resultado.txt; exit ${PIPESTATUS[0]}
+      - name: Avisar (issue no GitHub)
+        if: failure() && steps.fluxo.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          corpo="$(printf 'O teste do site publicado falhou em %s (horário UTC).\n\nRodada: %s/%s/actions/runs/%s\n\n```\n%s\n```\n\nEnquanto esta issue estiver aberta, novas falhas viram comentário aqui. Feche quando o site estiver certo.' "$(date -u '+%d/%m %H:%M')" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(tail -40 resultado.txt)")"
+          n=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'in:title "Site com problema"' --json number --jq '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --repo "$GITHUB_REPOSITORY" --body "$corpo"
+          else gh issue create --repo "$GITHUB_REPOSITORY" --title "Site com problema: o teste do site publicado falhou" --body "$corpo"; fi
