@@ -119,3 +119,11 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
   .grade-wrap { border: 0; padding: 0; overflow: visible; }
   .bola.cheia { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+.dia-btn { background: none; border: 0; padding: 4px 2px; border-radius: 8px; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted var(--salvia); text-underline-offset: 3px; }
+.dia-btn span, .dia-btn small { display: block; }
+.grade th.destaque { background: var(--menta); border-radius: 8px; }
+.aviso-toast { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 20; max-width: 528px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--verde); color: #fff; border-radius: 14px; padding: 12px 14px 12px 16px;
+  box-shadow: 0 6px 20px rgba(41,79,70,.25); font-weight: 600; animation: entra .18s ease-out; }
+.aviso-toast button { background: transparent; border: 1.5px solid var(--menta); color: #fff; border-radius: 999px; padding: 8px 14px; font: 700 14px Figtree, sans-serif; cursor: pointer; min-height: 40px; }

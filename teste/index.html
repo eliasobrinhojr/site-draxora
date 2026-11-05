@@ -13,8 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="apple-touch-icon" href="icone-180.png">
-  <link rel="stylesheet" href="app.css?v=1">
-  <script src="app.js?v=1" defer></script>
+  <link rel="stylesheet" href="app.css?v=2">
+  <script src="app.js?v=2" defer></script>
 </head>
 <body>
 <!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
@@ -100,6 +100,7 @@
       <h1 id="sem-titulo">Esta semana</h1>
       <button type="button" class="seta" id="sem-prox" aria-label="Próxima semana">›</button>
     </div>
+    <p class="dica">Toque num dia dos últimos 7 para corrigir.</p>
     <div class="grade-wrap"><table class="grade" id="grade"></table></div>
     <div class="numeros" id="numeros"></div>
     <p class="alerta" id="alerta-sono" hidden>3 noites ou mais com 5 h ou menos nesta semana. Avise seu médico antes da próxima consulta.</p>
@@ -183,6 +184,8 @@
     <p class="pequeno">Dúvidas sobre o teste: contato@draxora.com.br · <a href="/privacidade/">Privacidade</a></p>
   </section>
 </main>
+
+<div class="aviso-toast nao-imprime" id="aviso" role="status" hidden><span id="aviso-txt"></span><button type="button" id="aviso-acao"></button></div>
 
 <footer class="rodape nao-imprime">
   Material educativo: não faz diagnóstico e não substitui avaliação profissional. Em sofrimento intenso, <a href="tel:188">188</a> (CVV). Emergência, <a href="tel:192">192</a>.

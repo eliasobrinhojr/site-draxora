@@ -118,6 +118,10 @@
       var l = el('label', 'op');
       var i = el('input'); i.type = 'radio'; i.name = campo; i.value = o[0];
       l.appendChild(i); l.appendChild(el('span', null, o[1])); box.appendChild(l);
+      // Tocar de novo na opção marcada desmarca (para corrigir um toque errado).
+      var estava = false;
+      l.addEventListener('pointerdown', function () { estava = i.checked; });
+      i.addEventListener('click', function () { if (estava) { i.checked = false; estava = false; } });
     });
   }
   opcoes('sono', SONO); opcoes('humor', HUMOR); opcoes('remedio', REMEDIO);
@@ -132,6 +136,9 @@
     ['sono', 'humor', 'remedio'].forEach(function (c) { $$('input[name="' + c + '"]').forEach(function (i) { i.checked = r[c] === i.value; }); });
     f.nota.value = r.nota || '';
     $('#ok-dia').hidden = true;
+    var ja = !!(st.regs || {})[k];
+    $('#dica-dia').textContent = ja ? 'Este dia já está registrado. Mude o que quiser e salve de novo; para desmarcar, toque de novo na opção.' : 'Escolha uma opção em cada linha. Dia difícil? Só o humor já vale.';
+    f.querySelector('button[type="submit"]').textContent = ja ? 'Salvar alteração' : 'Salvar o dia';
     contaSemana();
   }
   function contaSemana() {
@@ -149,16 +156,28 @@
     if (nota) r.nota = nota;
     var ok = $('#ok-dia');
     if (!r.sono && !r.humor && !r.remedio) { ok.textContent = 'Escolha pelo menos uma opção. Dia difícil? Só o humor já vale.'; ok.hidden = false; return; }
-    var k = ymd(diaSel);
+    var k = ymd(diaSel), editou = !!(st.regs || {})[k];
     st.regs = st.regs || {}; st.regs[k] = r; grava();
     evento('registro', k);
-    ok.textContent = ymd(diaSel) === ymd(hoje()) ? 'Dia salvo. Até amanhã!' : 'Dia ' + dm(diaSel) + ' salvo.';
-    ok.hidden = false;
-    contaSemana();
+    // Depois de salvar, mostra a semana com o dia destacado; o aviso tem "Corrigir" para voltar.
+    var dia = diaSel;
+    semIni = segunda(dia); semDestaque = k;
+    mostra('semana');
+    aviso(editou ? 'Alteração salva.' : (k === ymd(hoje()) ? 'Dia salvo. Até amanhã!' : 'Dia ' + dm(dia) + ' salvo.'), 'Corrigir', function () { diaSel = dia; mostra('hoje'); });
   });
 
+  // Aviso curto no rodapé da tela, com uma ação opcional.
+  var avisoTimer = null;
+  function aviso(txt, acao, fn) {
+    var a = $('#aviso'), b = $('#aviso-acao');
+    $('#aviso-txt').textContent = txt;
+    b.hidden = !acao; b.textContent = acao || ''; b.onclick = function () { a.hidden = true; fn(); };
+    a.hidden = false;
+    clearTimeout(avisoTimer); avisoTimer = setTimeout(function () { a.hidden = true; }, 6000);
+  }
+
   // ===== Semana =====
-  var semIni = segunda(hoje());
+  var semIni = segunda(hoje()), semDestaque = null;
   function desenhaSemana() {
     var atual = segunda(hoje());
     $('#sem-titulo').textContent = ymd(semIni) === ymd(atual) ? 'Esta semana' : 'Semana de ' + dm(semIni);
@@ -166,7 +185,21 @@
     var dias = []; for (var i = 0; i < 7; i++) dias.push(soma(semIni, i));
     var t = limpa($('#grade'));
     var cab = el('tr'); cab.appendChild(el('th', 'rot', ''));
-    dias.forEach(function (d) { var th = el('th', null); th.appendChild(el('span', null, DIAS_SEM[d.getDay()])); th.appendChild(el('small', null, dm(d))); cab.appendChild(th); });
+    var h0 = hoje();
+    dias.forEach(function (d) {
+      var dif = Math.round((h0 - d) / 864e5), k = ymd(d);
+      var th = el('th', k === semDestaque ? 'destaque' : null);
+      // Dias dos últimos 7 podem ser abertos para corrigir.
+      var alvo = th;
+      if (dif >= 0 && dif <= 6) {
+        alvo = el('button', 'dia-btn'); alvo.type = 'button';
+        alvo.setAttribute('aria-label', 'Corrigir ' + DIAS_SEM[d.getDay()] + ' ' + dm(d));
+        alvo.addEventListener('click', function () { diaSel = d; mostra('hoje'); });
+        th.appendChild(alvo);
+      }
+      alvo.appendChild(el('span', null, DIAS_SEM[d.getDay()])); alvo.appendChild(el('small', null, dm(d)));
+      cab.appendChild(th);
+    });
     t.appendChild(cab);
     function bloco(titulo, campo, lista) {
       var tr = el('tr', 'sec'); var th = el('th', null, titulo); th.colSpan = 8; tr.appendChild(th); t.appendChild(tr);
