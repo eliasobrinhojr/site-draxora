@@ -1,0 +1,7 @@
+# Senha de pasta do painel (camada antes da chave do painel).
+# Fica no repositório porque a publicação pelo Git apaga arquivos que não estão nele.
+# O arquivo de senhas fica FORA da public_html (a publicação não mexe lá) e nunca vai para o GitHub.
+AuthType Basic
+AuthName "Painel Draxora"
+AuthUserFile /home/u186194110/domains/draxora.com.br/.htpasswd-painel
+Require valid-user
