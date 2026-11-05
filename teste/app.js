@@ -583,7 +583,18 @@
   });
 
   // ===== Funciona sem internet depois da primeira visita =====
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+  // Atualização: o ícone da tela inicial costuma voltar do segundo plano sem recarregar. Ao voltar, procura versão
+  // nova; quando ela assume, recarrega uma vez (só se já havia versão antiga rodando, nunca na primeira visita).
+  if ('serviceWorker' in navigator) {
+    var tinhaVersao = !!navigator.serviceWorker.controller, recarregou = false;
+    navigator.serviceWorker.register('sw.js').then(function (reg) {
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) reg.update().catch(function () {}); });
+    }).catch(function () {});
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!tinhaVersao || recarregou) return;
+      recarregou = true; location.reload();
+    });
+  }
 
   inicia();
 })();

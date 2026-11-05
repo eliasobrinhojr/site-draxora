@@ -1,6 +1,6 @@
 // Minha semana · teste: guarda as telas para abrir sem internet. Eventos (api) nunca passam pelo cache.
-const CACHE = 'minha-semana-v6';
-const ARQS = ['./', 'index.html', 'app.css?v=6', 'app.js?v=6', 'manifest.json', 'icone-192.png', '../assets/fonts/figtree.woff2', '../assets/fonts/newsreader.woff2'];
+const CACHE = 'minha-semana-v7';
+const ARQS = ['./', 'index.html', 'app.css?v=6', 'app.js?v=7', 'manifest.json', 'icone-192.png', '../assets/fonts/figtree.woff2', '../assets/fonts/newsreader.woff2'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARQS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
