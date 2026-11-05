@@ -3,5 +3,6 @@ Disallow: /mapa-dos-sintomas/checkout/
 Disallow: /assets/guia/
 Disallow: /assets/amostra/
 Disallow: /teste/
+Disallow: /midia/
 
 Sitemap: https://draxora.com.br/sitemap.xml
