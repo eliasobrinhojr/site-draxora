@@ -8,6 +8,15 @@
   var SONO = [['9', '9 h ou mais'], ['8', '8 h'], ['7', '7 h'], ['6', '6 h'], ['5', '5 h ou menos']];
   var HUMOR = [['acelerado', 'Acelerado ou fora do controle'], ['animado', 'Animado'], ['normal', 'Normal para mim'], ['baixo', 'Pra baixo'], ['muito-baixo', 'Muito para baixo, tudo custa']];
   var REMEDIO = [['sim', 'Tomei como combinado'], ['nao', 'Não tomei como combinado'], ['nao-uso', 'Não uso remédio']];
+  // "Se aconteceu hoje": fatos do dia, opcionais, que não nomeiam nenhum quadro. [chave, texto, rótulo curto]
+  var MARCAS = [
+    ['muda', 'O humor mudou muito no mesmo dia', 'Humor mudou no dia'],
+    ['irrita', 'Muita irritação ou explosão', 'Irritação forte'],
+    ['impulso', 'Agi por impulso (gasto, comida, briga ou algo de que me arrependi)', 'Impulso'],
+    ['foco', 'Perdi o foco ou esqueci algo importante', 'Foco ou esquecimento'],
+    ['ansiedade', 'Crise de ansiedade ou pânico', 'Ansiedade ou pânico'],
+    ['evitei', 'Evitei pessoas, saídas ou compromissos', 'Evitei pessoas']
+  ];
   var DIAS_SEM = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   var $ = function (s) { return document.querySelector(s); };
@@ -79,6 +88,7 @@
   $$('#abas button').forEach(function (b) { b.addEventListener('click', function () { mostra(b.dataset.tela); }); });
 
   function ios() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+  function navegadorDeApp() { return /Instagram|FBAN|FBAV|FB_IAB|LinkedInApp|TikTok|musical_ly|Line\//.test(navigator.userAgent); }
   function instalado() { return navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches); }
 
   // ===== Entrada =====
@@ -93,7 +103,9 @@
         if (!j || !j.ativa) { $('#t-convite h1').textContent = 'Este convite não está ativo.'; mostra('convite'); return; }
         turmaConvite = c;
         // No iPhone, o app da tela inicial tem armazenamento próprio: melhor instalar antes de começar.
-        if (ios() && !instalado()) $('#aviso-ios').hidden = false;
+        // Aberto dentro do Instagram, Facebook ou LinkedIn: não instala e pode perder os registros.
+        if (navegadorDeApp()) $('#aviso-inapp').hidden = false;
+        else if (ios() && !instalado()) $('#aviso-ios').hidden = false;
         mostra('termo');
       })
       .catch(function () { $('#t-convite h1').textContent = 'Sem conexão agora.'; $('#t-convite p').textContent = 'Abra o link do convite de novo quando estiver com internet.'; mostra('convite'); });
@@ -125,6 +137,14 @@
     });
   }
   opcoes('sono', SONO); opcoes('humor', HUMOR); opcoes('remedio', REMEDIO);
+  (function () {
+    var box = limpa($('.opcoes[data-campo="marcas"]'));
+    MARCAS.forEach(function (o) {
+      var l = el('label', 'op');
+      var i = el('input'); i.type = 'checkbox'; i.name = 'marcas'; i.value = o[0];
+      l.appendChild(i); l.appendChild(el('span', null, o[1])); box.appendChild(l);
+    });
+  })();
 
   function desenhaHoje() {
     var h = hoje(), k = ymd(diaSel), r = (st.regs || {})[k] || {};
@@ -134,6 +154,7 @@
     $('#dia-ant').disabled = dif >= 6;
     var f = $('#f-dia');
     ['sono', 'humor', 'remedio'].forEach(function (c) { $$('input[name="' + c + '"]').forEach(function (i) { i.checked = r[c] === i.value; }); });
+    $$('input[name="marcas"]').forEach(function (i) { i.checked = (r.marcas || []).indexOf(i.value) >= 0; });
     f.nota.value = r.nota || '';
     $('#conta-nota').textContent = f.nota.value.length + '/140';
     $('#ok-dia').hidden = true;
@@ -153,10 +174,12 @@
     ev.preventDefault();
     var f = ev.target, r = {};
     ['sono', 'humor', 'remedio'].forEach(function (c) { var i = f.querySelector('input[name="' + c + '"]:checked'); if (i) r[c] = i.value; });
+    var marcas = $$('input[name="marcas"]:checked').map(function (i) { return i.value; });
+    if (marcas.length) r.marcas = marcas;
     var nota = f.nota.value.trim().slice(0, 140);
     if (nota) r.nota = nota;
     var ok = $('#ok-dia');
-    if (!r.sono && !r.humor && !r.remedio) { ok.textContent = 'Escolha pelo menos uma opção. Dia difícil? Só o humor já vale.'; ok.hidden = false; return; }
+    if (!r.sono && !r.humor && !r.remedio && !r.marcas) { ok.textContent = 'Escolha pelo menos uma opção. Dia difícil? Só o humor já vale.'; ok.hidden = false; return; }
     var k = ymd(diaSel), editou = !!(st.regs || {})[k];
     st.regs = st.regs || {}; st.regs[k] = r; grava();
     evento('registro', k);
@@ -214,11 +237,12 @@
     function bloco(titulo, campo, lista) {
       var tr = el('tr', 'sec'); var th = el('th', null, titulo); th.colSpan = 8; tr.appendChild(th); t.appendChild(tr);
       lista.forEach(function (o) {
-        var row = el('tr'); row.appendChild(el('th', 'rot', o[1]));
+        var row = el('tr'); var rot = el('th', 'rot', o[2] || o[1]); rot.title = o[1]; row.appendChild(rot);
         dias.forEach(function (d) {
           var r = (st.regs || {})[ymd(d)] || {};
-          var td = el('td'); var b = el('span', 'bola' + (r[campo] === o[0] ? ' cheia' : ''));
-          b.setAttribute('aria-label', r[campo] === o[0] ? 'marcado' : 'vazio'); td.appendChild(b); row.appendChild(td);
+          var tem = Array.isArray(r[campo]) ? r[campo].indexOf(o[0]) >= 0 : r[campo] === o[0];
+          var td = el('td'); var b = el('span', 'bola' + (tem ? ' cheia' : ''));
+          b.setAttribute('aria-label', tem ? 'marcado' : 'vazio'); td.appendChild(b); row.appendChild(td);
         });
         t.appendChild(row);
       });
@@ -226,6 +250,7 @@
     bloco('Sono', 'sono', SONO);
     bloco('Humor', 'humor', HUMOR);
     bloco('Remédio', 'remedio', [REMEDIO[0]]);
+    bloco('Se aconteceu', 'marcas', MARCAS);
     var rn = el('tr'); rn.appendChild(el('th', 'rot', 'Nota'));
     dias.forEach(function (d) { var r = (st.regs || {})[ymd(d)] || {}; var td = el('td', 'nota-cel'); if (r.nota) { td.textContent = '•'; td.title = r.nota; } rn.appendChild(td); });
     t.appendChild(rn);
@@ -237,7 +262,7 @@
     $('#alerta-sono').hidden = c.curtas < 3;
   }
   function conta(dias) {
-    var c = { curtas: 0, acel: 0, mbaixo: 0, regs: 0, sonoSoma: 0, sonoN: 0, humor: {}, rem: { sim: 0, nao: 0, 'nao-uso': 0 }, notas: [] };
+    var c = { curtas: 0, acel: 0, mbaixo: 0, regs: 0, sonoSoma: 0, sonoN: 0, humor: {}, rem: { sim: 0, nao: 0, 'nao-uso': 0 }, notas: [], marcas: {} };
     dias.forEach(function (d) {
       var r = (st.regs || {})[ymd(d)]; if (!r) return;
       c.regs++;
@@ -245,6 +270,7 @@
       if (r.humor) { c.humor[r.humor] = (c.humor[r.humor] || 0) + 1; if (r.humor === 'acelerado') c.acel++; if (r.humor === 'muito-baixo') c.mbaixo++; }
       if (r.remedio) c.rem[r.remedio]++;
       if (r.nota) c.notas.push([d, r.nota]);
+      (r.marcas || []).forEach(function (m) { c.marcas[m] = (c.marcas[m] || 0) + 1; });
     });
     return c;
   }
@@ -285,6 +311,11 @@
     else if (c.rem.sim + c.rem.nao === 0) m.appendChild(el('p', null, 'Sem registro de remédio no período.'));
     else m.appendChild(el('p', null, 'Tomou como combinado em ' + c.rem.sim + ' dia(s); não tomou como combinado em ' + c.rem.nao + ' dia(s).'));
     g.appendChild(m);
+    var sa = el('section'); sa.appendChild(el('h3', null, 'Se aconteceu (dias)'));
+    var mlist = MARCAS.filter(function (o) { return c.marcas[o[0]]; });
+    if (!mlist.length) sa.appendChild(el('p', null, 'Nenhuma marcação no período.'));
+    else { var ul2 = el('ul'); mlist.forEach(function (o) { ul2.appendChild(el('li', null, o[1] + ': ' + c.marcas[o[0]])); }); sa.appendChild(ul2); }
+    g.appendChild(sa);
     f.appendChild(g);
 
     // Linha do tempo: as bolinhas do humor e do sono, dia a dia, como na folha.
@@ -294,11 +325,14 @@
     dias.forEach(function (d) { var th = el('th', d.getDay() === 1 ? 'seg-ini' : null, String(d.getDate())); cab.appendChild(th); });
     t.appendChild(cab);
     var CURTO = { acelerado: 'Acelerado', animado: 'Animado', normal: 'Normal', baixo: 'Pra baixo', 'muito-baixo': 'Muito p/ baixo', '9': '9 h+', '8': '8 h', '7': '7 h', '6': '6 h', '5': '5 h ou -' };
-    [['Humor', 'humor', HUMOR], ['Sono', 'sono', SONO]].forEach(function (b) {
+    MARCAS.forEach(function (o) { CURTO[o[0]] = o[2]; });
+    var linhas = [['Humor', 'humor', HUMOR], ['Sono', 'sono', SONO]];
+    if (Object.keys(c.marcas).length) linhas.push(['Se aconteceu', 'marcas', MARCAS.filter(function (o) { return c.marcas[o[0]]; })]);
+    linhas.forEach(function (b) {
       var tr = el('tr', 'sec'); var th = el('th', null, b[0]); th.colSpan = dias.length + 1; tr.appendChild(th); t.appendChild(tr);
       b[2].forEach(function (o) {
         var row = el('tr'); row.appendChild(el('th', 'rot', CURTO[o[0]]));
-        dias.forEach(function (d) { var r = (st.regs || {})[ymd(d)] || {}; var td = el('td', d.getDay() === 1 ? 'seg-ini' : null); td.appendChild(el('span', 'bola' + (r[b[1]] === o[0] ? ' cheia' : ''))); row.appendChild(td); });
+        dias.forEach(function (d) { var r = (st.regs || {})[ymd(d)] || {}; var v = r[b[1]]; var tem = Array.isArray(v) ? v.indexOf(o[0]) >= 0 : v === o[0]; var td = el('td', d.getDay() === 1 ? 'seg-ini' : null); td.appendChild(el('span', 'bola' + (tem ? ' cheia' : ''))); row.appendChild(td); });
         t.appendChild(row);
       });
     });
@@ -309,7 +343,7 @@
       var ln = el('ul'); c.notas.forEach(function (x) { ln.appendChild(el('li', null, dm(x[0]) + ': ' + x[1])); });
       n.appendChild(ln); f.appendChild(n);
     }
-    f.appendChild(el('p', 'rodape-folha', 'Para o profissional: resumo das últimas semanas, feito pelo paciente (ou por alguém próximo) a partir de registros diários (sono em faixas de horas e humor em 5 níveis descritos em palavras). Sem interpretação. Material educativo, não diagnóstico. Gerado em ' + dm(new Date()) + '/' + new Date().getFullYear() + ' · Minha semana (teste) · Draxora.'));
+    f.appendChild(el('p', 'rodape-folha', 'Para o profissional: resumo das últimas semanas, feito pelo paciente (ou por alguém próximo) a partir de registros diários (sono em faixas de horas, humor em 5 níveis descritos em palavras e, quando marcado, situações do dia). Sem interpretação. Material educativo, não diagnóstico. Gerado em ' + dm(new Date()) + '/' + new Date().getFullYear() + ' · Minha semana (teste) · Draxora.'));
   }
   $('#btn-imprimir').addEventListener('click', function () {
     evento('resumo', ymd(hoje()), String(semanasResumo));
@@ -386,6 +420,7 @@
         if (HUMOR.some(function (o) { return o[0] === r.humor; })) limpo.humor = r.humor;
         if (REMEDIO.some(function (o) { return o[0] === r.remedio; })) limpo.remedio = r.remedio;
         if (typeof r.nota === 'string' && r.nota) limpo.nota = r.nota.slice(0, 140);
+        if (Array.isArray(r.marcas)) { var ms = r.marcas.filter(function (m) { return MARCAS.some(function (o) { return o[0] === m; }); }); if (ms.length) limpo.marcas = ms; }
         if (Object.keys(limpo).length) { st.regs[k] = limpo; n++; }
       });
       // A cópia traz o mesmo participante: continua contando como a mesma pessoa no teste.

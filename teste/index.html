@@ -13,8 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="apple-touch-icon" href="icone-180.png">
-  <link rel="stylesheet" href="app.css?v=3">
-  <script src="app.js?v=3" defer></script>
+  <link rel="stylesheet" href="app.css?v=4">
+  <script src="app.js?v=4" defer></script>
 </head>
 <body>
 <!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
@@ -41,6 +41,9 @@
   <!-- Termo -->
   <section class="tela" id="t-termo" hidden>
     <h1>Teste do diário entre consultas</h1>
+    <div class="caixa aviso" id="aviso-inapp" hidden>
+      <p><b>Você abriu pelo app do Instagram, Facebook ou LinkedIn.</b> Por aqui não dá para instalar, e os registros podem se perder. Toque nos três pontinhos no canto da tela e escolha "Abrir no navegador" (Chrome no Android, Safari no iPhone). Depois siga por lá.</p>
+    </div>
     <div class="caixa aviso" id="aviso-ios" hidden>
       <p><b>No iPhone, comece pela tela inicial.</b> Toque em Compartilhar e depois em "Adicionar à Tela de Início". Abra o Minha semana por lá e aceite o termo. Se começar aqui no Safari, os registros ficam presos ao Safari.</p>
     </div>
@@ -81,6 +84,10 @@
       <fieldset>
         <legend>Remédio <small>se você usa</small></legend>
         <div class="opcoes" data-campo="remedio"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Se aconteceu hoje <small>opcional, marque quantos quiser</small></legend>
+        <div class="opcoes" data-campo="marcas"></div>
       </fieldset>
       <label class="nota"><span>Nota <small>opcional, o que as bolinhas não mostram</small></span>
         <textarea name="nota" maxlength="140" rows="2" autocomplete="off" placeholder="Ex.: sem energia de dia, fiquei na cama até as 15h; à noite, mais disposto"></textarea>
@@ -195,6 +202,8 @@
   <p>Pense na maior parte do dia. Se o humor mudou muito ao longo do dia, marque o que mais pesou e conte a mudança na nota.</p>
   <h3>Remédio</h3>
   <p>"Como combinado" é do jeito que o profissional orientou. Esqueceu, atrasou ou mudou a dose por conta própria? Marque "não tomei como combinado" e, se quiser, diga na nota.</p>
+  <h3>Se aconteceu hoje</h3>
+  <p>Marque só o que aconteceu de fato, quantas opções quiser. Não é teste nem diagnóstico: são fatos do dia que ajudam o profissional a ver o que se repete. Nada aconteceu? Deixe em branco.</p>
   <h3>Nota</h3>
   <p>Use para o que as bolinhas não mostram. Fatos, não rótulos: o que aconteceu, quanto durou, o que veio antes. Por exemplo:</p>
   <ul>

@@ -78,6 +78,8 @@ ErrorDocument 404 /404.html
   RewriteRule ^wpp/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=whatsapp&utm_medium=canal#amostra [R=302,NE,L]
   RewriteRule ^canal/?$ https://whatsapp.com/channel/0029Vb9c3uxEwEjqXdFM4d09 [R=302,L]
   RewriteRule ^guia/?$ https://draxora.com.br/mapa-dos-sintomas/?utm_source=link#amostra [R=302,NE,L]
+  # Teste do app aberto ao público (desde 05/11): link curto para quem digita o endereço.
+  RewriteRule ^testar/?$ https://draxora.com.br/teste/?c=TESTE-GERAL [R=302,L]
   # Download contado dos PDFs (links dos e-mails do Brevo): /baixar/guia e /baixar/folhas
   RewriteRule ^baixar/(guia|folhas)/?$ api/baixar.php?f=$1 [QSA,L]
 </IfModule>
