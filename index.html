@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/draxora-icone-app.svg?v=5">
   <link rel="preload" href="assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/v5.css?v=202611042215">
+  <link rel="stylesheet" href="assets/css/v5.css?v=202611050030">
   <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -119,25 +119,25 @@
     <div class="wrap">
       <div class="app">
         <div style="display:grid;gap:14px">
-          <span class="eb">Em estudo</span>
-          <h2 class="t t-m">Um app para depois do diagnóstico? <em>Primeiro, o papel.</em></h2>
-          <p>Estamos estudando um app para quem já está em tratamento. Antes de construir qualquer coisa, estamos testando as folhas em papel com quem usa. Se o teste mostrar que faz sentido, quem deixar o e-mail fica sabendo primeiro.</p>
-          <p class="app-count" data-count="mapa-dos-sintomas" hidden><strong></strong> pessoas querendo saber do app</p>
+          <span class="eb">Teste aberto · acesso antecipado</span>
+          <h2 class="t t-m">O Mapa dos Sintomas no celular. <em>Quer testar?</em></h2>
+          <p>O registro das folhas agora funciona no celular: sono, humor, remédio e o que aconteceu no dia, em cerca de 20 segundos, com 1 página para levar à consulta. Deixe seu e-mail para o acesso antecipado: o link chega na hora.</p>
+          <p class="app-count" data-count="mapa-dos-sintomas" hidden><strong></strong> pessoas na lista de acesso antecipado</p>
         </div>
         <form class="dx-lead" data-endpoint="api/inscrever.php" novalidate>
           <label class="sr-only" for="lead-app">Seu e-mail</label>
           <div class="dx-lead-row">
             <input id="lead-app" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
             <input type="hidden" name="lista" value="mapa-dos-sintomas">
-            <button class="btn" type="submit">Quero saber primeiro</button>
+            <button class="btn" type="submit">Quero acesso antecipado</button>
           </div>
           <div class="dx-hp" aria-hidden="true"><label for="lead-app-site">Site</label><input id="lead-app-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
           <label class="dx-consent-check" for="lead-app-ok">
             <input id="lead-app-ok" type="checkbox" name="consentimento" value="sim" required>
-            <span>Aceito receber e-mails da Draxora sobre novas ferramentas, como um possível app. Posso sair quando quiser. <a href="privacidade/">Privacidade</a></span>
+            <span>Aceito receber o link do teste e e-mails da Draxora sobre o app. Posso sair quando quiser. <a href="privacidade/">Privacidade</a></span>
           </label>
           <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
-          <p class="dx-lead-ok" role="status">Pronto. Se o app sair, você fica sabendo primeiro.</p>
+          <p class="dx-lead-ok" role="status">Pronto! Seu acesso está liberado.</p>
         </form>
       </div>
     </div>
@@ -223,6 +223,6 @@
   </div>
 </dialog>
 
-<script src="assets/js/main.js?v=202611042215" defer></script>
+<script src="assets/js/main.js?v=202611050030" defer></script>
 </body>
 </html>

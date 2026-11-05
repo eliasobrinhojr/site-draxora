@@ -3,28 +3,92 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mapa dos Sintomas · Draxora</title>
+  <title>Minha semana: o Mapa dos Sintomas no celular · Draxora</title>
+  <meta name="description" content="Teste aberto e gratuito do Minha semana: o registro do Mapa dos Sintomas no celular. Acesso antecipado, com o link na hora.">
   <meta name="robots" content="noindex">
-  <meta http-equiv="refresh" content="0; url=../mapa-dos-sintomas/?utm_source=atalho&amp;utm_medium=link&amp;utm_campaign=ponte-app#app">
-  <link rel="canonical" href="https://draxora.com.br/mapa-dos-sintomas/">
-  <script>
-    // Atalho /app → lista "se o app sair, você fica sabendo primeiro" (página do Mapa, #app).
-    // Origem do clique: utm_* que vierem no link; senão, Instagram/Facebook pelo referrer; senão, "atalho" (desde 04/11: o PDF 1.0, que usava este link, saiu do fluxo).
-    (function () {
-      var q = new URLSearchParams(location.search), out = new URLSearchParams();
-      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (q.get(k)) out.set(k, q.get(k)); });
-      if (!out.get('utm_source')) {
-        var r = document.referrer || '';
-        if (/instagram\./i.test(r) || /Instagram/.test(navigator.userAgent)) { out.set('utm_source', 'instagram'); out.set('utm_medium', 'social'); }
-        else if (/facebook\.|fb\.me/i.test(r) || /FBAN|FBAV|FB_IAB/.test(navigator.userAgent)) { out.set('utm_source', 'facebook'); out.set('utm_medium', 'social'); }
-        else { out.set('utm_source', 'atalho'); out.set('utm_medium', 'link'); }
-      }
-      if (!out.get('utm_campaign')) out.set('utm_campaign', 'ponte-app');
-      location.replace('../mapa-dos-sintomas/?' + out.toString() + '#app');
-    })();
-  </script>
+  <link rel="canonical" href="https://draxora.com.br/app/">
+  <meta property="og:title" content="Minha semana: o Mapa dos Sintomas no celular">
+  <meta property="og:description" content="Teste aberto e gratuito do Minha semana: o registro do Mapa dos Sintomas no celular. Acesso antecipado, com o link na hora.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://draxora.com.br/app/">
+  <meta property="og:image" content="https://draxora.com.br/assets/img/v5/og-draxora.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#FAF7F0">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
+  <link rel="preload" href="../assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/v5.css?v=202611050030">
 </head>
-<body style="margin:0;background:#FAF7F0;color:#294F46;font:17px/1.6 system-ui,sans-serif;padding:24px">
-  <p>Abrindo a página do Mapa dos Sintomas… <a style="color:#066A62;font-weight:700" href="../mapa-dos-sintomas/?utm_source=atalho&amp;utm_medium=link&amp;utm_campaign=ponte-app#app">Toque aqui se não abrir.</a></p>
+<body data-page="conte" data-root="../">
+<a class="skip" href="#principal">Pular para o conteúdo</a>
+
+<header class="hd">
+  <div class="wrap">
+    <a class="brand" href="../" aria-label="Draxora — início"><img src="../assets/img/v5/draxora-v5.svg" alt="Draxora" width="180" height="28"></a>
+    <nav aria-label="Principal">
+      <a class="btn btn-primary" href="../mapa-dos-sintomas/">Mapa dos Sintomas</a>
+    </nav>
+  </div>
+</header>
+
+<main id="principal" tabindex="-1">
+  <section class="sec" id="app">
+    <div class="wrap">
+      <div class="app">
+        <div style="display:grid;gap:14px">
+          <span class="eb">Teste aberto · acesso antecipado</span>
+          <h1 class="t t-m">O Mapa dos Sintomas no celular. <em>Quer testar?</em></h1>
+          <p>O registro das folhas agora funciona no celular: sono, humor, remédio e o que aconteceu no dia, em cerca de 20 segundos. No dia da consulta, o app monta 1 página com as últimas semanas para levar ao profissional.</p>
+          <ul class="app-lista">
+            <li>Grátis, sem senha. O link chega na hora.</li>
+            <li>O que você registra fica só no seu celular.</li>
+            <li>Com ou sem diagnóstico, com ou sem acompanhamento.</li>
+          </ul>
+          <p class="app-count" data-count="mapa-dos-sintomas" hidden><strong></strong> pessoas na lista de acesso antecipado</p>
+        </div>
+        <form class="dx-lead" data-endpoint="../api/inscrever.php" novalidate>
+          <label class="sr-only" for="lead-app">Seu e-mail</label>
+          <div class="dx-lead-row">
+            <input id="lead-app" class="dx-input" type="email" name="email" placeholder="voce@email.com" autocomplete="email" required>
+            <input type="hidden" name="lista" value="mapa-dos-sintomas">
+            <button class="btn" type="submit">Quero acesso antecipado</button>
+          </div>
+          <div class="dx-hp" aria-hidden="true"><label for="lead-app-site">Site</label><input id="lead-app-site" type="text" name="site" tabindex="-1" autocomplete="off"></div>
+          <label class="dx-consent-check" for="lead-app-ok">
+            <input id="lead-app-ok" type="checkbox" name="consentimento" value="sim" required>
+            <span>Aceito receber o link do teste e e-mails da Draxora sobre o app. Posso sair quando quiser. <a href="../privacidade/">Privacidade</a></span>
+          </label>
+          <p class="dx-lead-error" data-lead-error role="alert" hidden></p>
+          <p class="dx-lead-ok" role="status">Pronto! Seu acesso está liberado.</p>
+        </form>
+      </div>
+      <p class="pequeno" style="margin-top:28px;color:var(--txt-2,#55675F)">Material educativo: não faz diagnóstico e não substitui avaliação profissional. Em sofrimento intenso, ligue 188 (CVV, 24 horas) ou, em emergência, 192.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-top">
+      <img src="../assets/img/v5/draxora-v5.svg" alt="Draxora" width="150" height="24">
+      <nav aria-label="Rodapé">
+        <a href="../mapa-dos-sintomas/">Mapa dos Sintomas</a>
+        <a href="../guias/">Guias</a>
+        <a href="../termos/">Termos de uso</a>
+        <a href="../privacidade/">Privacidade</a>
+        <button type="button" class="dx-cookie-prefs" data-cookie-prefs hidden>Preferências de cookies</button>
+        <a href="../sobre/">Sobre</a>
+        <a href="https://www.instagram.com/usedraxora/" rel="noopener" target="_blank">Instagram</a>
+        <a href="mailto:contato@draxora.com.br">Contato</a>
+      </nav>
+    </div>
+    <p>© <span data-year>2026</span> Draxora. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js?v=202611050030" defer></script>
 </body>
 </html>

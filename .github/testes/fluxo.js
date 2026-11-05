@@ -39,7 +39,9 @@ async function etapa(nome, fn) { try { const r = await fn(); if (r === false) fa
     await ctx.route(/\/api\/(inscrever|feedback)\.php/, async r => {
       const req = r.request();
       enviados.push({ url: req.url(), corpo: req.postData() || '' });
-      await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
+      // A lista do app responde com o link do teste, como o servidor faz desde 05/11.
+      const app = /lista=mapa-dos-sintomas/.test(req.postData() || '') || /name="lista"\r\n\r\nmapa-dos-sintomas/.test(req.postData() || '');
+      await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(app ? { ok: true, teste: 'https://draxora.com.br/teste/?c=TESTE-GERAL' } : { ok: true }) });
     });
   }
 
@@ -66,11 +68,12 @@ async function etapa(nome, fn) { try { const r = await fn(); if (r === false) fa
       if (erros.length) throw new Error(erros.join(' | '));
     });
   }
-  await etapa('/app/ leva à lista do app', async () => {
+  await etapa('/app/ abre o acesso antecipado ao teste', async () => {
     const { page, erros } = await abre('/app/');
-    await page.waitForURL(/mapa-dos-sintomas\/.*#app/, { timeout: 8000 });
+    const ok = await page.locator('form.dx-lead input[name="lista"][value="mapa-dos-sintomas"]').count();
     await page.close();
     if (erros.length) throw new Error(erros.join(' | '));
+    if (!ok) throw new Error('sem o formulário da lista do app');
   });
 
   // 2. Formulários (o clique de verdade, como uma pessoa faria)
@@ -104,7 +107,8 @@ async function etapa(nome, fn) { try { const r = await fn(); if (r === false) fa
     return email;
   }
   await etapa('Cadastro do guia (página do Mapa, #amostra)', () => testaLead('/mapa-dos-sintomas/?utm_source=teste-ci#amostra', 'form.dx-lead[data-lead="amostra"]', 'amostra', 'Enviamos o guia'));
-  await etapa('Lista do app (página do Mapa, #app)', () => testaLead('/mapa-dos-sintomas/#app', '#app form.dx-lead', 'mapa-dos-sintomas', 'Cadastramos'));
+  await etapa('Lista do app (página do Mapa, #app)', () => testaLead('/mapa-dos-sintomas/#app', '#app form.dx-lead', 'mapa-dos-sintomas', 'Abrir o teste agora'));
+  await etapa('Lista do app (/app/, acesso antecipado)', () => testaLead('/app/?de=teste-ci', 'form.dx-lead', 'mapa-dos-sintomas', 'Abrir o teste agora'));
   await etapa('Lista do app (home)', () => testaLead('/', 'form.dx-lead', 'mapa-dos-sintomas', ''));
   await etapa('Relato na /conte/', async () => {
     const { page, erros } = await abre('/conte/?de=teste-ci');

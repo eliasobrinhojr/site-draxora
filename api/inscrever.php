@@ -62,6 +62,20 @@ if ((int)$g->fetchColumn() >= (int)(dx_config()['max_por_hora'] ?? 300)) {
     dx_json(429, ['ok' => false, 'error' => 'limite', 'message' => 'Muitas inscrições agora. Tente de novo em alguns minutos.']);
 }
 
+// Lista do app (acesso antecipado ao teste, desde 05/11): a pessoa recebe o link na hora,
+// na tela e por e-mail. A turma do teste sai da origem do cadastro.
+$teste = null;
+if ($lista === 'mapa-dos-sintomas') {
+    $fonte = strtolower((string)($_POST['utm_source'] ?? '') . ' ' . (string)($_POST['origem'] ?? ''));
+    $turma = 'TESTE-GERAL';
+    if (preg_match('/brevo|email|e-mail/', $fonte)) $turma = 'TESTE-EMAIL';
+    elseif (preg_match('/instagram|\big\b/', $fonte)) $turma = 'TESTE-IG';
+    elseif (preg_match('/meta|facebook|\bfb\b/', $fonte)) $turma = 'TESTE-ADS';
+    elseif (preg_match('/whatsapp|canal/', $fonte)) $turma = 'TESTE-CANAL';
+    elseif (preg_match('/linkedin/', $fonte)) $turma = 'TESTE-IN';
+    $teste = 'https://draxora.com.br/teste/?c=' . $turma;
+}
+
 try {
     $ins = $pdo->prepare('INSERT INTO inscritos (email, lista, consentimento_em, origem, utm_source, utm_medium, utm_campaign, utm_content, ip_hash, criado_em)
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
@@ -76,8 +90,8 @@ try {
     ]);
 } catch (PDOException $e) {
     if ((string)$e->getCode() === '23000') {
-        // Já estava na lista: para a pessoa, é o mesmo resultado.
-        dx_json(200, ['ok' => true, 'ja' => true]);
+        // Já estava na lista: para a pessoa, é o mesmo resultado (sem reenviar e-mail, para não virar spam).
+        dx_json(200, ['ok' => true, 'ja' => true] + ($teste ? ['teste' => $teste] : []));
     }
     error_log('[draxora] inscrever: ' . $e->getMessage());
     dx_json(500, ['ok' => false, 'error' => 'db', 'message' => 'Não foi possível salvar agora. Tente de novo em instantes.']);
@@ -97,7 +111,8 @@ if (!empty($c['notify_to']) && !empty($c['mail_from'])) {
 // Envia o contato ao Brevo (lista por nome de lista), se a chave estiver no draxora-config.php.
 // Falha aqui nunca derruba o cadastro: o e-mail já está salvo no banco.
 $brevoKey = (string)($c['brevo_api_key'] ?? '');
-$brevoLists = (array)($c['brevo_listas'] ?? []);
+// Listas padrão (ids do Brevo não são segredo); o draxora-config.php pode sobrescrever.
+$brevoLists = (array)($c['brevo_listas'] ?? []) + DX_BREVO_LISTAS_PADRAO;
 if ($brevoKey !== '' && !empty($brevoLists[$lista]) && function_exists('curl_init')) {
     $payload = json_encode([
         'email' => $email,
@@ -133,4 +148,40 @@ if ($brevoKey !== '' && !empty($brevoLists[$lista]) && function_exists('curl_ini
     }
 }
 
-dx_json(201, ['ok' => true]);
+// Lista do app: e-mail transacional com o link do teste (Brevo). Falha só vai para o log.
+if ($teste && $brevoKey !== '' && function_exists('curl_init')) {
+    $link = htmlspecialchars($teste, ENT_QUOTES);
+    $html = '<!doctype html><html><body style="margin:0;background:#FAF7F0;font-family:Helvetica,Arial,sans-serif;color:#55675F">'
+        . '<div style="max-width:560px;margin:0 auto;padding:28px 20px"><div style="background:#fff;border:1px solid #E3DED3;border-radius:16px;padding:28px 26px">'
+        . '<p style="font-size:12px;letter-spacing:.14em;color:#789783;font-weight:700;margin:0 0 14px">MINHA SEMANA · TESTE ABERTO</p>'
+        . '<h1 style="font-family:Georgia,serif;font-weight:600;color:#294F46;font-size:26px;line-height:1.15;margin:0 0 16px">Seu acesso está liberado.</h1>'
+        . '<p style="font-size:16px;line-height:1.55">O Minha semana é o registro do Mapa dos Sintomas no celular: sono, humor, remédio e o que aconteceu no dia, em cerca de 20 segundos. No dia da consulta, ele monta 1 página com as últimas semanas.</p>'
+        . '<p><a href="' . $link . '" style="display:inline-block;background:#087F75;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:12px">Abrir o teste</a></p>'
+        . '<p style="font-size:16px;line-height:1.55">Abra o link no celular, no Chrome ou no Safari, e adicione à tela inicial: o app mostra como. O que você registra fica só no seu celular.</p>'
+        . '<p style="font-size:16px;line-height:1.55">Depois de algumas semanas, conte como foi: <a href="https://draxora.com.br/conte/?de=email-teste" style="color:#087F75;font-weight:700">draxora.com.br/conte</a>. É isso que decide se o app sai do teste.</p>'
+        . '<p style="font-size:13px;color:#8A968F;line-height:1.5;margin-top:22px;padding-top:14px;border-top:1px solid #E3DED3">Material educativo: não faz diagnóstico e não substitui avaliação profissional. Em sofrimento intenso, ligue 188 (CVV, 24 horas) ou, em emergência, 192.<br>Draxora · draxora.com.br · @usedraxora<br>Você recebe este e-mail porque pediu acesso ao teste do app.</p>'
+        . '</div></div></body></html>';
+    $mail = json_encode([
+        'sender' => ['name' => 'Draxora', 'email' => 'contato@draxora.com.br'],
+        'to' => [['email' => $email]],
+        'replyTo' => ['email' => 'contato@draxora.com.br', 'name' => 'Draxora'],
+        'subject' => 'Seu acesso ao teste: Minha semana',
+        'htmlContent' => $html,
+        'tags' => ['teste-app'],
+    ]);
+    $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $mail,
+        CURLOPT_HTTPHEADER => ['accept: application/json', 'content-type: application/json', 'api-key: ' . $brevoKey],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 5,
+        CURLOPT_CONNECTTIMEOUT => 3,
+    ]);
+    $resp = curl_exec($ch);
+    $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    unset($ch);
+    @file_put_contents(dx_log_file(), date('Y-m-d H:i:s') . ($code >= 200 && $code < 300 ? " teste-email ok ($code)\n" : " teste-email HTTP $code: " . substr((string)$resp, 0, 200) . "\n"));
+}
+
+dx_json(201, ['ok' => true] + ($teste ? ['teste' => $teste] : []));

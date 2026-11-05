@@ -208,3 +208,6 @@ function dx_clean(?string $v, int $max): ?string {
 
 // Listas aceitas. Adicione aqui a cada nova porta.
 const DX_LISTAS = ['porta-01', 'mapa-dos-sintomas', 'amostra'];
+// Listas do Brevo por lista do site (padrão; 'brevo_listas' no draxora-config.php tem prioridade).
+// 8 = "Interessados no app · teste" (05/11).
+const DX_BREVO_LISTAS_PADRAO = ['mapa-dos-sintomas' => 8];

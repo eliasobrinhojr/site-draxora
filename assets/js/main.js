@@ -45,7 +45,7 @@
   var DE_PARAM = (params.get('de') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40);
   // Sucesso: o próprio formulário vira um cartão de confirmação, com o e-mail cadastrado,
   // recebe o foco (leitores de tela anunciam) e fica visível na tela.
-  function leadDone(form, email, ja) {
+  function leadDone(form, email, ja, teste) {
     var ok = form.querySelector('.dx-lead-ok');
     form.classList.add('is-done');
     if (!ok) return;
@@ -62,10 +62,19 @@
       ? (ja
         ? email + ' já estava cadastrado. Se não achar o guia no seu e-mail, escreva para contato@draxora.com.br.'
         : 'Enviamos o guia para ' + email + '. Chega em instantes (confira Promoções ou Spam).')
-      : (ja
-        ? email + ' já estava na lista. Tudo certo.'
-        : 'Cadastramos ' + email + '. Você recebe as novidades em primeira mão.');
+      : teste
+        ? (ja ? email + ' já estava na lista. Seu acesso continua liberado:' : 'Também enviamos o link para ' + email + '.')
+        : (ja
+          ? email + ' já estava na lista. Tudo certo.'
+          : 'Cadastramos ' + email + '. Você recebe as novidades em primeira mão.');
     ok.appendChild(who);
+    // Lista do app: o acesso ao teste vem na hora, sem esperar o e-mail.
+    if (teste && /^https:\/\/draxora\.com\.br\/teste\/\?c=[A-Z-]+$/.test(teste) && !ok.querySelector('.dx-teste-link')) {
+      var a = document.createElement('a');
+      a.className = 'btn dx-teste-link'; a.href = teste; a.textContent = 'Abrir o teste agora';
+      a.style.marginTop = '12px'; a.style.display = 'inline-flex';
+      ok.appendChild(a);
+    }
     ok.setAttribute('tabindex', '-1');
     try { ok.focus({ preventScroll: true }); } catch (e) { ok.focus(); }
     var r = ok.getBoundingClientRect();
@@ -91,7 +100,7 @@
       fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
         .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
         .then(function (res) {
-          if (res && res.ok) { leadDone(form, email.value.trim(), res.ja); form.dispatchEvent(new CustomEvent('dx:lead')); }
+          if (res && res.ok) { leadDone(form, email.value.trim(), res.ja, res.teste); form.dispatchEvent(new CustomEvent('dx:lead')); }
           else { fail((res && res.message) || 'Não foi possível salvar agora. Tente de novo em instantes.'); }
         })
         .catch(function () { fail('Sem conexão. Confira sua internet e tente de novo.'); })
