@@ -127,6 +127,13 @@ function dx_migrate(PDO $pdo): void {
         ativa TINYINT NOT NULL DEFAULT 1,
         criada_em VARCHAR(25) NOT NULL
     )$tail");
+    // 05/11: turma interna (fica fora dos totais e dos números do edital) e gasto digitado no painel.
+    foreach (['interna' => 'TINYINT NULL', 'gasto_centavos' => 'INT NULL'] as $col => $tipoCol) {
+        $cols = $mysql
+            ? $pdo->query("SHOW COLUMNS FROM teste_turmas LIKE '$col'")->fetchAll()
+            : array_filter($pdo->query("PRAGMA table_info(teste_turmas)")->fetchAll(), fn($c) => $c['name'] === $col);
+        if (!$cols) $pdo->exec("ALTER TABLE teste_turmas ADD COLUMN $col $tipoCol");
+    }
     $pdo->exec("CREATE TABLE IF NOT EXISTS teste_eventos (
         id $id,
         pid CHAR(36) NOT NULL,

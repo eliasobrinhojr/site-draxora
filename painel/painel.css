@@ -170,8 +170,16 @@ body.apresentacao #painel { max-width: 1400px; }
 
 /* Teste do app */
 .teste-grid { display: grid; gap: 20px; }
-@media (min-width: 760px) { .teste-grid { grid-template-columns: 1fr 1fr; } .teste-kpis, .teste-ret { grid-column: 1 / -1; } }
-.teste-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.teste-grid > * { min-width: 0; }
+@media (min-width: 760px) { .teste-grid { grid-template-columns: 1fr 1fr; } .teste-kpis, .teste-ret, .teste-edital, .teste-canais { grid-column: 1 / -1; } }
+.teste-edital { border: 1.5px solid var(--s1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 6px; }
+.edital-rot { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--txt-2); margin-top: 4px; }
+.edital-txt { font-size: 15px; line-height: 1.5; }
+.teste-canais .tabela-wrap td.num, .teste-canais td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.teste-canais th { text-align: left; } .teste-canais th.num { text-align: right; }
+.f-extra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 14px; }
+.f-extra input:not([type]) , .f-extra input[inputmode] { min-height: 36px; padding: 6px 10px; border: 1.5px solid var(--linha); border-radius: 10px; background: var(--fundo); color: var(--txt); font: inherit; width: 7em; }
+.teste-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; }
 .teste-kpi { background: var(--fundo); border-radius: 12px; padding: 10px 12px; }
 .ret-linha { display: grid; grid-template-columns: 76px 1fr 120px; align-items: center; gap: 10px; margin-top: 8px; font-size: 14px; }
 .ret-trilho { position: relative; height: 14px; background: var(--trilho); border-radius: 999px; }

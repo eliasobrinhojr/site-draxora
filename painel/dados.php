@@ -1,6 +1,6 @@
 <?php
 // Painel da Draxora — dados. POST /painel/dados.php?acao=entrar|sair|dados|teste|turma
-// (turma é a única ação que grava: cria, ativa ou desativa um código de convite do teste do app)
+// (turma é a única ação que grava: cria, ativa ou desativa um convite do teste do app, marca turma interna e guarda o gasto digitado)
 //
 // Acesso:
 //   1. (recomendado) senha de pasta do hPanel em /painel/ — barra a página antes do PHP.
@@ -86,58 +86,46 @@ if ($acao === 'entrar') {
 }
 
 // ===== Teste do app (/teste/): só contagens anônimas =====
-if ($acao === 'teste' || $acao === 'turma') {
-    if (!dx_painel_logado()) dx_json(401, ['ok' => false, 'error' => 'sessao', 'message' => 'Entre de novo.']);
-    if ($acao === 'turma') {
-        $codigo = strtoupper(trim((string)($in['codigo'] ?? '')));
-        if (!preg_match('/^[A-Z0-9-]{4,20}$/', $codigo)) dx_json(422, ['ok' => false, 'message' => 'Código: 4 a 20 letras, números ou hífen.']);
-        $q = $pdo->prepare('SELECT ativa FROM teste_turmas WHERE codigo = ?'); $q->execute([$codigo]);
-        $existe = $q->fetchColumn();
-        if ($existe === false) {
-            $nome = trim((string)($in['nome'] ?? ''));
-            if ($nome === '' || mb_strlen($nome) > 60) dx_json(422, ['ok' => false, 'message' => 'Dê um nome à turma (até 60 caracteres).']);
-            $pdo->prepare('INSERT INTO teste_turmas (codigo, nome, ativa, criada_em) VALUES (?, ?, 1, ?)')->execute([$codigo, $nome, dx_now()]);
-        } else {
-            $pdo->prepare('UPDATE teste_turmas SET ativa = ? WHERE codigo = ?')->execute([!empty($in['ativa']) ? 1 : 0, $codigo]);
-        }
-        dx_json(200, ['ok' => true]);
-    }
-    $tz = new DateTimeZone('America/Sao_Paulo');
-    $hojeT = new DateTimeImmutable('today', $tz);
-    $turmas = [];
-    foreach ($pdo->query('SELECT codigo, nome, ativa, criada_em FROM teste_turmas ORDER BY criada_em') as $r) {
-        $turmas[$r['codigo']] = ['codigo' => $r['codigo'], 'nome' => $r['nome'], 'ativa' => (int)$r['ativa'] === 1, 'criada_em' => $r['criada_em']];
-    }
-    // Por participante: dia do aceite, dias com registro, saiu, resumo, lembrete, respostas de consulta.
+// Turma interna (nossa, de teste) fica fora dos totais e dos números do edital.
+function dx_turma_interna(string $codigo, $marcada): bool {
+    if ($marcada !== null) return (int)$marcada === 1;
+    return (bool)preg_match('/^(INTERNO|TESTE-LOCAL|CI-)/', $codigo);
+}
+// Agrega os eventos até $hojeT (exclusivo). Com corte, nada do dia do corte em diante entra.
+function dx_teste_agrega(array $eventos, DateTimeImmutable $hojeT, DateTimeZone $tz, bool $comLinhas): array {
+    $limite = $hojeT->format('Y-m-d');
     $p = [];
-    foreach ($pdo->query('SELECT pid, turma, tipo, dia, valor FROM teste_eventos ORDER BY dia') as $e) {
+    foreach ($eventos as $e) {
+        if ($e['dia'] >= $limite && $comLinhas === false) continue;
         $id = $e['pid'];
-        if (!isset($p[$id])) $p[$id] = ['turma' => $e['turma'], 'aceite' => null, 'regs' => [], 'saiu' => null, 'resumo' => 0, 'lembrete' => false, 'consultas' => []];
+        if (!isset($p[$id])) $p[$id] = ['turma' => $e['turma'], 'aceite' => null, 'regs' => [], 'saiu' => null, 'resumo' => 0, 'lembrete' => false, 'copia' => false, 'consultas' => []];
         switch ($e['tipo']) {
             case 'aceite': $p[$id]['aceite'] = $e['dia']; break;
             case 'registro': $p[$id]['regs'][$e['dia']] = true; break;
             case 'saiu': $p[$id]['saiu'] = $e['dia']; break;
             case 'resumo': $p[$id]['resumo']++; break;
             case 'lembrete': $p[$id]['lembrete'] = true; break;
+            case 'copia': $p[$id]['copia'] = true; break;
             case 'consulta': $p[$id]['consultas'][] = $e['valor']; break;
         }
     }
-    $porTurma = [];
-    $linhas = []; // para a planilha: participante anônimo × semana
-    $n = 0;
+    $tresDias = $hojeT->modify('-3 days')->format('Y-m-d');
+    $porTurma = []; $linhas = [];
     foreach ($p as $id => $x) {
         if (!$x['aceite']) continue;
-        $n++;
         $t = $x['turma'];
-        if (!isset($porTurma[$t])) $porTurma[$t] = ['participantes' => 0, 'sairam' => 0, 'resumo' => 0, 'lembrete' => 0,
+        if (!isset($porTurma[$t])) $porTurma[$t] = ['participantes' => 0, 'com_registro' => 0, 'parados' => 0, 'sairam' => 0, 'resumo' => 0, 'lembrete' => 0, 'copia' => 0,
             'semanas' => [1 => ['completas' => 0, 'ativos' => 0], 2 => ['completas' => 0, 'ativos' => 0], 3 => ['completas' => 0, 'ativos' => 0], 4 => ['completas' => 0, 'ativos' => 0]],
             'dist' => array_fill(0, 8, 0), 'consulta' => ['s-muito' => 0, 's-um-pouco' => 0, 's-nao' => 0, 'n' => 0],
             'w4_lembrete' => ['completas' => 0, 'ativos' => 0], 'w4_sem_lembrete' => ['completas' => 0, 'ativos' => 0]];
         $T = &$porTurma[$t];
         $T['participantes']++;
+        if ($x['regs']) $T['com_registro']++;
+        elseif ($x['aceite'] <= $tresDias && !$x['saiu']) $T['parados']++; // aceitou há 3 dias ou mais e nunca registrou
         if ($x['saiu']) $T['sairam']++;
         if ($x['resumo'] > 0) $T['resumo']++;
         if ($x['lembrete']) $T['lembrete']++;
+        if ($x['copia']) $T['copia']++;
         foreach ($x['consultas'] as $v) if (isset($T['consulta'][$v])) $T['consulta'][$v]++;
         $ini = new DateTimeImmutable($x['aceite'], $tz);
         $codigoAnon = substr(hash('sha256', $id), 0, 8);
@@ -156,12 +144,55 @@ if ($acao === 'teste' || $acao === 'turma') {
                     $T[$g]['completas']++; if ($dias >= 4) $T[$g]['ativos']++;
                 }
             }
-            $linhas[] = [$t, $codigoAnon, $x['aceite'], $k, $a->format('Y-m-d'), $b->format('Y-m-d'), $completa ? 'sim' : 'em andamento', $dias, $dias >= 4 ? 'sim' : 'nao', $x['lembrete'] ? 'sim' : 'nao', $x['resumo'] > 0 ? 'sim' : 'nao', $x['saiu'] ?: ''];
+            if ($comLinhas) $linhas[] = [$t, $codigoAnon, $x['aceite'], $k, $a->format('Y-m-d'), $b->format('Y-m-d'), $completa ? 'sim' : 'em andamento', $dias, $dias >= 4 ? 'sim' : 'nao', $x['lembrete'] ? 'sim' : 'nao', $x['resumo'] > 0 ? 'sim' : 'nao', $x['saiu'] ?: ''];
         }
         unset($T);
     }
-    foreach ($porTurma as $c => $v) if (!isset($turmas[$c])) $turmas[$c] = ['codigo' => $c, 'nome' => '(turma apagada)', 'ativa' => false, 'criada_em' => ''];
-    dx_json(200, ['ok' => true, 'gerado_em' => dx_now(), 'participantes' => $n, 'turmas' => array_values($turmas), 'por_turma' => $porTurma, 'linhas' => $linhas]);
+    return [$porTurma, $linhas];
+}
+
+if ($acao === 'teste' || $acao === 'turma') {
+    if (!dx_painel_logado()) dx_json(401, ['ok' => false, 'error' => 'sessao', 'message' => 'Entre de novo.']);
+    if ($acao === 'turma') {
+        $codigo = strtoupper(trim((string)($in['codigo'] ?? '')));
+        if (!preg_match('/^[A-Z0-9-]{4,20}$/', $codigo)) dx_json(422, ['ok' => false, 'message' => 'Código: 4 a 20 letras, números ou hífen.']);
+        $q = $pdo->prepare('SELECT ativa FROM teste_turmas WHERE codigo = ?'); $q->execute([$codigo]);
+        $existe = $q->fetchColumn();
+        if ($existe === false) {
+            $nome = trim((string)($in['nome'] ?? ''));
+            if ($nome === '' || mb_strlen($nome) > 60) dx_json(422, ['ok' => false, 'message' => 'Dê um nome à turma (até 60 caracteres).']);
+            $pdo->prepare('INSERT INTO teste_turmas (codigo, nome, ativa, criada_em) VALUES (?, ?, 1, ?)')->execute([$codigo, $nome, dx_now()]);
+        } else {
+            if (array_key_exists('ativa', $in)) $pdo->prepare('UPDATE teste_turmas SET ativa = ? WHERE codigo = ?')->execute([!empty($in['ativa']) ? 1 : 0, $codigo]);
+            if (array_key_exists('interna', $in)) $pdo->prepare('UPDATE teste_turmas SET interna = ? WHERE codigo = ?')->execute([!empty($in['interna']) ? 1 : 0, $codigo]);
+            if (array_key_exists('gasto', $in)) {
+                $g = trim(str_replace(['R$', ' '], '', (string)$in['gasto']));
+                if ($g === '') $centavos = null;
+                else {
+                    if (strpos($g, ',') !== false) $g = str_replace(',', '.', str_replace('.', '', $g)); // 1.234,56 → 1234.56
+                    if (!preg_match('/^\d{1,7}(\.\d{1,2})?$/', $g)) dx_json(422, ['ok' => false, 'message' => 'Gasto: um valor em reais, como 30 ou 30,50.']);
+                    $centavos = (int)round((float)$g * 100);
+                }
+                $pdo->prepare('UPDATE teste_turmas SET gasto_centavos = ? WHERE codigo = ?')->execute([$centavos, $codigo]);
+            }
+        }
+        dx_json(200, ['ok' => true]);
+    }
+    $tz = new DateTimeZone('America/Sao_Paulo');
+    $hojeT = new DateTimeImmutable('today', $tz);
+    $corteT = $hojeT->modify('first day of this month');
+    $turmas = [];
+    foreach ($pdo->query('SELECT codigo, nome, ativa, criada_em, interna, gasto_centavos FROM teste_turmas ORDER BY criada_em') as $r) {
+        $turmas[$r['codigo']] = ['codigo' => $r['codigo'], 'nome' => $r['nome'], 'ativa' => (int)$r['ativa'] === 1, 'criada_em' => $r['criada_em'],
+            'interna' => dx_turma_interna($r['codigo'], $r['interna']), 'gasto' => $r['gasto_centavos'] === null ? null : ((int)$r['gasto_centavos']) / 100];
+    }
+    $eventos = $pdo->query('SELECT pid, turma, tipo, dia, valor FROM teste_eventos ORDER BY dia')->fetchAll();
+    [$porTurma, $linhas] = dx_teste_agrega($eventos, $hojeT, $tz, true);
+    [$porTurmaCorte] = dx_teste_agrega($eventos, $corteT, $tz, false);
+    $n = 0; foreach ($porTurma as $v) $n += $v['participantes'];
+    foreach ($porTurma as $c => $v) if (!isset($turmas[$c])) $turmas[$c] = ['codigo' => $c, 'nome' => '(turma apagada)', 'ativa' => false, 'criada_em' => '', 'interna' => dx_turma_interna($c, null), 'gasto' => null];
+    dx_json(200, ['ok' => true, 'gerado_em' => dx_now(), 'participantes' => $n, 'turmas' => array_values($turmas), 'por_turma' => $porTurma, 'linhas' => $linhas,
+        'corte' => $corteT->format('Y-m-d'), 'por_turma_corte' => $porTurmaCorte]);
 }
 
 if ($acao !== 'dados') dx_json(404, ['ok' => false, 'error' => 'acao']);

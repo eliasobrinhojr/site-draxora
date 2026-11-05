@@ -145,7 +145,7 @@ $v = '202611041950';
           <h2 id="h-teste">Teste do app (/teste/)</h2>
           <button class="btn-txt" type="button" id="btn-teste-csv">Baixar planilha</button>
         </div>
-        <p class="muted pequeno">Só contagens anônimas: nenhum registro de sono, humor ou remédio sai do celular. Semana ativa = 4 dias ou mais com registro, contando do dia do aceite. Critério do plano na semana 4: 40% ou mais ativos, seguir; menos de 15%, pivotar.</p>
+        <p class="muted pequeno">Só contagens anônimas: nenhum registro de sono, humor ou remédio sai do celular. Semana ativa = 4 dias ou mais com registro, contando do dia do aceite. Critério do plano na semana 4: 40% ou mais ativos, seguir; menos de 15%, pivotar. Turmas internas ficam fora dos totais e dos números do edital.</p>
         <div class="seg seg-pequeno" id="teste-filtro" role="group" aria-label="Turma"></div>
         <div id="teste-conteudo" class="teste-grid"></div>
         <details class="teste-turmas">
