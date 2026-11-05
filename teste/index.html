@@ -13,8 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="apple-touch-icon" href="icone-180.png">
-  <link rel="stylesheet" href="app.css?v=5">
-  <script src="app.js?v=5" defer></script>
+  <link rel="stylesheet" href="app.css?v=6">
+  <script src="app.js?v=6" defer></script>
 </head>
 <body>
 <!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
@@ -36,17 +36,28 @@
     <h1>Este teste é só para convidados.</h1>
     <p>Se você recebeu um convite, abra o link dele de novo. Se não, conheça o guia gratuito Mapa dos Sintomas.</p>
     <p><a class="btn" href="/mapa-dos-sintomas/">Conhecer o guia</a></p>
+    <p class="pequeno"><button type="button" class="link" id="btn-convite-trazer">Já participa do teste? Traga seus registros</button></p>
   </section>
 
   <!-- Termo -->
   <section class="tela" id="t-termo" hidden>
     <h1>Teste do diário entre consultas</h1>
+    <p class="pequeno"><a href="#trazer" id="link-trazer">Já começou o teste neste celular? Traga seus registros</a></p>
     <div class="caixa aviso" id="aviso-inapp" hidden>
-      <p><b>Você abriu pelo app do Instagram, Facebook ou LinkedIn.</b> Por aqui não dá para instalar, e os registros podem se perder. Toque nos três pontinhos no canto da tela e escolha "Abrir no navegador" (Chrome no Android, Safari no iPhone). Depois siga por lá.</p>
+      <p><b>Antes de começar, abra no navegador do celular.</b> Você está no navegador de dentro de outro app (Instagram, Facebook, LinkedIn, e-mail…). Por aqui não dá para instalar, e o que você registrar fica preso a ele.</p>
+      <p><a class="btn" id="abrir-chrome" href="#" hidden>Abrir no Chrome</a></p>
+      <p id="inapp-passos">Toque nos três pontinhos (⋯ ou ⋮) no canto da tela e escolha "Abrir no navegador" (Chrome no Android, Safari no iPhone).</p>
     </div>
     <div class="caixa aviso" id="aviso-ios" hidden>
-      <p><b>No iPhone, comece pela tela inicial.</b> Toque em Compartilhar e depois em "Adicionar à Tela de Início". Abra o Minha semana por lá e aceite o termo. Se começar aqui no Safari, os registros ficam presos ao Safari.</p>
+      <p><b>No iPhone, comece pelo ícone da tela inicial.</b> O Safari e o ícone guardam os registros separados: o que você marcar aqui no Safari não aparece no ícone.</p>
+      <ol class="passos">
+        <li>Toque em Compartilhar (o quadrado com a seta para cima).</li>
+        <li>Escolha "Adicionar à Tela de Início".</li>
+        <li>Abra o Minha semana pelo ícone novo e comece por lá.</li>
+      </ol>
+      <p class="pequeno">Não aparece "Adicionar à Tela de Início"? Você está dentro de outro app: toque em "Abrir no Safari" (a bússola) e repita.</p>
     </div>
+    <p class="pequeno" id="mesmo-assim" hidden><button type="button" class="link" id="btn-mesmo-assim">Prefiro começar aqui mesmo assim</button></p>
     <p>Você foi convidado para testar, por cerca de 4 semanas, uma versão simples de um diário no celular: sono, humor e remédio em 20 segundos por dia, e um resumo de 1 página para levar à consulta.</p>
     <div class="caixa">
       <p><b>Fica só no seu celular:</b> tudo o que você registra (sono, humor, remédio e notas) e o resumo. A Draxora não recebe esse conteúdo.</p>
@@ -61,6 +72,20 @@
       <p class="erro" id="erro-termo" role="alert" hidden></p>
       <button class="btn" type="submit">Começar</button>
     </form>
+    <div class="caixa leve" id="trazer">
+      <p><b>Já começou o teste em outro lugar deste celular?</b> Por exemplo, no navegador, antes de pôr o ícone na tela inicial. Traga os registros para cá e continue de onde parou.</p>
+      <button type="button" class="btn btn-out" id="btn-trazer">Trazer meus registros</button>
+      <div id="trazer-form" hidden>
+        <ol class="passos">
+          <li>Abra o teste onde você registrou e vá em Ajustes.</li>
+          <li>Toque em "Copiar meus registros".</li>
+          <li>Volte aqui, cole no campo abaixo e toque em Trazer.</li>
+        </ol>
+        <textarea id="cod-trazer" rows="3" placeholder="Cole aqui (começa com MS1.)" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+        <button type="button" class="btn" id="btn-trazer-ok">Trazer</button>
+        <p class="erro" id="erro-trazer" role="alert" hidden></p>
+      </div>
+    </div>
   </section>
 
   <!-- Hoje -->
@@ -102,7 +127,7 @@
     </form>
     <p class="semana-conta" id="semana-conta"></p>
     <div class="caixa leve" id="instalar-dica" hidden>
-      <p><b>Deixe na tela inicial</b> para abrir em 1 toque. Veja como em Ajustes.</p>
+      <p id="instalar-dica-txt"><b>Deixe na tela inicial</b> para abrir em 1 toque. Veja como em Ajustes.</p>
     </div>
   </section>
 
@@ -173,6 +198,25 @@
       <button class="btn btn-out" type="button" id="btn-instalar" hidden>Instalar no celular</button>
       <p><b>Android (Chrome):</b> menu ⋮ e depois "Adicionar à tela inicial" ou "Instalar app".</p>
       <p><b>iPhone (Safari):</b> botão Compartilhar e depois "Adicionar à Tela de Início".</p>
+    </div>
+    <div class="caixa" id="caixa-levar">
+      <h2>Levar os registros para outro lugar</h2>
+      <p>Cada lugar guarda os registros separados: o navegador, o ícone da tela inicial (no iPhone) e o navegador de dentro de outros apps. Para juntar tudo num lugar só:</p>
+      <ol class="passos">
+        <li>Aqui, toque em "Copiar meus registros".</li>
+        <li>Abra o teste no outro lugar e toque em "Trazer meus registros" (na primeira tela) ou "Colar registros" (em Ajustes).</li>
+        <li>Cole e confirme. Os dias se juntam; nada é enviado para a Draxora.</li>
+      </ol>
+      <div class="botoes">
+        <button class="btn btn-out" type="button" id="btn-copiar-cod">Copiar meus registros</button>
+        <button class="btn btn-out" type="button" id="btn-colar-cod">Colar registros</button>
+      </div>
+      <textarea id="cod-levar" rows="3" readonly hidden aria-label="Seus registros para copiar"></textarea>
+      <div id="colar-form" hidden>
+        <textarea id="cod-colar" rows="3" placeholder="Cole aqui (começa com MS1.)" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+        <button type="button" class="btn" id="btn-colar-ok">Juntar registros</button>
+      </div>
+      <p class="ok" id="ok-levar" role="status" hidden></p>
     </div>
     <div class="caixa">
       <h2>Cópia dos registros</h2>

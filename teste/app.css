@@ -146,3 +146,8 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 
 .caixa.ajuda { background: var(--areia); border-color: transparent; margin-top: 12px; color: var(--verde); }
 .caixa.ajuda a, .alerta a { color: var(--terracota); font-weight: 800; }
+
+.passos { margin: 0 0 12px; padding-left: 22px; } .passos li { margin-bottom: 4px; }
+.link { background: none; border: 0; padding: 0; color: var(--petroleo); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; text-align: left; }
+#trazer textarea, #caixa-levar textarea { width: 100%; min-height: 72px; margin: 4px 0 10px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--linha); background: var(--papel); font: 14px/1.4 ui-monospace, Menlo, monospace; color: var(--verde); word-break: break-all; }
+#trazer { margin-top: 20px; }

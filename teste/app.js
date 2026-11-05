@@ -88,16 +88,68 @@
     if (id === 'resumo') desenhaResumo();
     window.scrollTo(0, 0);
   }
-  $$('#abas button').forEach(function (b) { b.addEventListener('click', function () { mostra(b.dataset.tela); }); });
+  // A aba "Hoje" sempre abre no dia de hoje (outros dias: setas ou toque na Semana).
+  $$('#abas button').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.tela === 'hoje') diaSel = hoje(); mostra(b.dataset.tela); }); });
 
   function ios() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
   function navegadorDeApp() { return /Instagram|FBAN|FBAV|FB_IAB|LinkedInApp|TikTok|musical_ly|Line\//.test(navigator.userAgent); }
   function instalado() { return navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches); }
+  function android() { return /Android/i.test(navigator.userAgent); }
+  // Pede ao navegador para não apagar os registros quando faltar espaço (Chrome e ícone da tela inicial).
+  function pedePersistir() { try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {}); } catch (e) { /* nada */ } }
+
+  // ===== Levar os registros entre lugares do mesmo celular =====
+  // Navegador, ícone da tela inicial (iPhone) e navegador de dentro de outros apps guardam tudo separado.
+  // O código "MS1." leva os registros pela área de transferência do próprio celular: nada passa pela Draxora.
+  function codifica() {
+    var b = new TextEncoder().encode(JSON.stringify({ p: st.pid, t: st.turma, a: st.aceito, r: st.regs || {} })), s = '';
+    for (var i = 0; i < b.length; i += 8192) s += String.fromCharCode.apply(null, b.subarray(i, i + 8192));
+    return 'MS1.' + btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function decodifica(txt) {
+    var m = String(txt || '').replace(/\s+/g, '').match(/MS1\.([A-Za-z0-9_-]+)/);
+    if (!m) return null;
+    try {
+      var s = atob(m[1].replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((m[1].length + 3) % 4));
+      var b = new Uint8Array(s.length);
+      for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i);
+      var j = JSON.parse(new TextDecoder().decode(b));
+      return j && typeof j === 'object' && j.r && typeof j.r === 'object' ? j : null;
+    } catch (e) { return null; }
+  }
+  // Só aceita as opções que o app conhece (cópia em arquivo ou código colado).
+  function limpaRegs(regs) {
+    var out = {};
+    Object.keys(regs || {}).forEach(function (k) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+      var r = regs[k] || {}, limpo = {};
+      if (SONO.some(function (o) { return o[0] === r.sono; })) limpo.sono = r.sono;
+      if (HUMOR.some(function (o) { return o[0] === r.humor; })) limpo.humor = r.humor;
+      if (REMEDIO.some(function (o) { return o[0] === r.remedio; })) limpo.remedio = r.remedio;
+      if (typeof r.nota === 'string' && r.nota) limpo.nota = r.nota.slice(0, 140);
+      if (Array.isArray(r.marcas)) { var ms = r.marcas.filter(function (m) { return MARCAS.some(function (o) { return o[0] === m; }); }); if (ms.length) limpo.marcas = ms; }
+      if (Object.keys(limpo).length) out[k] = limpo;
+    });
+    return out;
+  }
+  // Junta os dias que faltam aqui (o que já está registrado aqui fica como está). Fica o participante que
+  // começou primeiro, para o teste continuar contando como a mesma pessoa.
+  function junta(j) {
+    var regs = limpaRegs(j.r), n = 0, iguais = 0;
+    st.regs = st.regs || {};
+    Object.keys(regs).forEach(function (k) { if (st.regs[k]) iguais++; else { st.regs[k] = regs[k]; n++; } });
+    var pidOk = typeof j.p === 'string' && /^[0-9a-f-]{36}$/.test(j.p);
+    if (pidOk && (!st.pid || !st.aceito || (j.a && String(j.a) < String(st.aceito)))) { st.pid = j.p; st.turma = j.t || null; st.aceito = j.a || new Date().toISOString(); }
+    st.fila = st.fila || [];
+    grava();
+    return { novos: n, iguais: iguais };
+  }
+  function diasTxt(n) { return n === 1 ? '1 dia' : n + ' dias'; }
 
   // ===== Entrada =====
   var turmaConvite = null;
   function inicia() {
-    if (st.pid) { mostra('hoje'); envia(); return; }
+    if (st.pid) { pedePersistir(); mostra('hoje'); envia(); return; }
     var c = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
     if (!/^[A-Z0-9-]{4,20}$/.test(c)) { mostra('convite'); return; }
     fetch(API + '?c=' + encodeURIComponent(c), { credentials: 'omit', cache: 'no-store' })
@@ -105,10 +157,20 @@
       .then(function (j) {
         if (!j || !j.ativa) { $('#t-convite h1').textContent = 'Este convite não está ativo.'; mostra('convite'); return; }
         turmaConvite = c;
-        // No iPhone, o app da tela inicial tem armazenamento próprio: melhor instalar antes de começar.
-        // Aberto dentro do Instagram, Facebook ou LinkedIn: não instala e pode perder os registros.
-        if (navegadorDeApp()) $('#aviso-inapp').hidden = false;
-        else if (ios() && !instalado()) $('#aviso-ios').hidden = false;
+        // No iPhone, o ícone da tela inicial tem armazenamento próprio: começa pelo ícone.
+        // Dentro do Instagram, Facebook, LinkedIn etc.: não instala e os registros ficam presos ao app.
+        // Nesses dois casos o termo só aparece depois de "Prefiro começar aqui mesmo assim".
+        var porta = false;
+        if (navegadorDeApp()) {
+          porta = true; $('#aviso-inapp').hidden = false;
+          if (android()) {
+            var a = $('#abrir-chrome');
+            a.href = 'intent://' + location.host + location.pathname + location.search + '#Intent;scheme=https;package=com.android.chrome;end';
+            a.hidden = false;
+          }
+        } else if (ios() && !instalado()) { porta = true; $('#aviso-ios').hidden = false; }
+        $('#f-termo').hidden = porta;
+        $('#mesmo-assim').hidden = !porta;
         mostra('termo');
       })
       .catch(function () { $('#t-convite h1').textContent = 'Sem conexão agora.'; $('#t-convite p').textContent = 'Abra o link do convite de novo quando estiver com internet.'; mostra('convite'); });
@@ -121,8 +183,39 @@
     st = { pid: uuid(), turma: turmaConvite, aceito: new Date().toISOString(), regs: st.regs || {}, fila: [] };
     grava();
     evento('aceite', ymd(hoje()));
-    $('#instalar-dica').hidden = instalado();
+    pedePersistir();
     mostra('hoje');
+  });
+  $('#btn-mesmo-assim').addEventListener('click', function () {
+    $('#f-termo').hidden = false; $('#mesmo-assim').hidden = true;
+    $('#f-termo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // Primeira tela: trazer os registros de outro lugar do celular.
+  function abreTrazer() {
+    $('#trazer-form').hidden = false; $('#btn-trazer').hidden = true;
+    $('#trazer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () { $('#cod-trazer').focus(); }, 350);
+  }
+  $('#link-trazer').addEventListener('click', function (e) { e.preventDefault(); abreTrazer(); });
+  $('#btn-trazer').addEventListener('click', abreTrazer);
+  $('#btn-convite-trazer').addEventListener('click', function () {
+    // Sem convite válido (ícone salvo sem o link da turma): só a parte de trazer os registros.
+    ['#f-termo', '#mesmo-assim', '#aviso-inapp', '#aviso-ios', '#link-trazer'].forEach(function (s) { $(s).hidden = true; });
+    mostra('termo'); abreTrazer();
+  });
+  $('#btn-trazer-ok').addEventListener('click', function () {
+    var j = decodifica($('#cod-trazer').value), er = $('#erro-trazer');
+    if (!j || typeof j.p !== 'string' || !/^[0-9a-f-]{36}$/.test(j.p)) {
+      er.textContent = 'Não reconheci o código. No lugar onde você registrou, abra Ajustes, toque em "Copiar meus registros" e cole aqui de novo.';
+      er.hidden = false; return;
+    }
+    er.hidden = true;
+    var r = junta(j);
+    pedePersistir(); envia();
+    $('#cod-trazer').value = '';
+    mostra('hoje');
+    aviso(diasTxt(r.novos) + (r.novos === 1 ? ' trazido.' : ' trazidos.') + ' Continue por aqui.');
   });
 
   // ===== Hoje =====
@@ -166,6 +259,25 @@
     $('#dica-dia').textContent = ja ? 'Este dia já está registrado. Mude o que quiser e salve de novo; para desmarcar, toque de novo na opção.' : 'Escolha uma opção em cada linha. Dia difícil? Só o humor já vale.';
     f.querySelector('button[type="submit"]').textContent = ja ? 'Salvar alteração' : 'Salvar o dia';
     contaSemana();
+    dicaInstalar();
+  }
+  // Fora do ícone da tela inicial: no iPhone e nos navegadores de outros apps, lembra de levar os registros.
+  function dicaInstalar() {
+    var d = $('#instalar-dica'), t = $('#instalar-dica-txt');
+    if (instalado()) { d.hidden = true; return; }
+    limpa(t);
+    var b = el('b');
+    if (navegadorDeApp()) {
+      b.textContent = 'Você está no navegador de dentro de outro app.';
+      t.appendChild(b); t.appendChild(document.createTextNode(' Para não perder os registros, leve-os para o navegador do celular: Ajustes, "Copiar meus registros".'));
+    } else if (ios()) {
+      b.textContent = 'No iPhone, o ícone da tela inicial não enxerga o que está no Safari.';
+      t.appendChild(b); t.appendChild(document.createTextNode(' Se for pôr o ícone, antes toque em Ajustes, "Copiar meus registros", e depois cole no ícone.'));
+    } else {
+      b.textContent = 'Deixe na tela inicial';
+      t.appendChild(b); t.appendChild(document.createTextNode(' para abrir em 1 toque. Veja como em Ajustes.'));
+    }
+    d.hidden = false;
   }
   function contaSemana() {
     var s = segunda(hoje()), n = 0;
@@ -406,6 +518,32 @@
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); pedidoInstalar = e; $('#btn-instalar').hidden = false; });
   $('#btn-instalar').addEventListener('click', function () { if (pedidoInstalar) { pedidoInstalar.prompt(); pedidoInstalar = null; $('#btn-instalar').hidden = true; } });
 
+  // ===== Ajustes: levar os registros (código pela área de transferência) =====
+  $('#btn-copiar-cod').addEventListener('click', function () {
+    var cod = codifica(), ok = $('#ok-levar'), ta = $('#cod-levar');
+    function campo() {
+      ta.value = cod; ta.hidden = false; ta.focus(); ta.select();
+      ok.textContent = 'Toque e segure no campo acima e escolha Copiar. Depois cole no outro lugar.'; ok.hidden = false;
+    }
+    evento('copia', ymd(hoje()));
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cod).then(function () {
+        ta.hidden = true;
+        ok.textContent = 'Copiado (' + diasTxt(Object.keys(st.regs || {}).length) + '). Abra o teste no outro lugar e cole em "Trazer meus registros" ou em Ajustes, "Colar registros".';
+        ok.hidden = false;
+      }, campo);
+    } else campo();
+  });
+  $('#btn-colar-cod').addEventListener('click', function () { $('#colar-form').hidden = false; $('#cod-colar').focus(); });
+  $('#btn-colar-ok').addEventListener('click', function () {
+    var j = decodifica($('#cod-colar').value), ok = $('#ok-levar');
+    if (!j) { ok.textContent = 'Não reconheci o código. Copie de novo no outro lugar e cole aqui.'; ok.hidden = false; return; }
+    var r = junta(j);
+    envia();
+    ok.textContent = diasTxt(r.novos) + (r.novos === 1 ? ' juntado.' : ' juntados.') + (r.iguais === 1 ? ' 1 dia que já estava aqui ficou como estava.' : r.iguais > 1 ? ' ' + r.iguais + ' dias que já estavam aqui ficaram como estavam.' : '');
+    ok.hidden = false; $('#colar-form').hidden = true; $('#cod-colar').value = '';
+  });
+
   // ===== Ajustes: cópia =====
   $('#btn-copia').addEventListener('click', function () {
     var dados = { app: 'draxora-minha-semana-teste', versao: 1, exportado_em: new Date().toISOString(), pid: st.pid, turma: st.turma, aceito: st.aceito, regs: st.regs || {} };
@@ -419,17 +557,9 @@
     arq.text().then(function (txt) {
       var j = JSON.parse(txt);
       if (!j || j.app !== 'draxora-minha-semana-teste' || typeof j.regs !== 'object') throw new Error('arquivo');
-      var n = 0;
-      Object.keys(j.regs).forEach(function (k) {
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
-        var r = j.regs[k] || {}, limpo = {};
-        if (SONO.some(function (o) { return o[0] === r.sono; })) limpo.sono = r.sono;
-        if (HUMOR.some(function (o) { return o[0] === r.humor; })) limpo.humor = r.humor;
-        if (REMEDIO.some(function (o) { return o[0] === r.remedio; })) limpo.remedio = r.remedio;
-        if (typeof r.nota === 'string' && r.nota) limpo.nota = r.nota.slice(0, 140);
-        if (Array.isArray(r.marcas)) { var ms = r.marcas.filter(function (m) { return MARCAS.some(function (o) { return o[0] === m; }); }); if (ms.length) limpo.marcas = ms; }
-        if (Object.keys(limpo).length) { st.regs[k] = limpo; n++; }
-      });
+      var regs = limpaRegs(j.regs), n = 0;
+      st.regs = st.regs || {};
+      Object.keys(regs).forEach(function (k) { st.regs[k] = regs[k]; n++; });
       // A cópia traz o mesmo participante: continua contando como a mesma pessoa no teste.
       if (j.pid && /^[0-9a-f-]{36}$/.test(j.pid)) { st.pid = j.pid; st.turma = j.turma; st.aceito = j.aceito; }
       grava();
