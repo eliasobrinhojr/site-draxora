@@ -143,3 +143,6 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 
 .op input[type="checkbox"] + span::before { border-radius: 6px; }
 .op input[type="checkbox"]:checked + span::before { box-shadow: inset 0 0 0 3px var(--menta); }
+
+.caixa.ajuda { background: var(--areia); border-color: transparent; margin-top: 12px; color: var(--verde); }
+.caixa.ajuda a, .alerta a { color: var(--terracota); font-weight: 800; }

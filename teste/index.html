@@ -13,8 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="apple-touch-icon" href="icone-180.png">
-  <link rel="stylesheet" href="app.css?v=4">
-  <script src="app.js?v=4" defer></script>
+  <link rel="stylesheet" href="app.css?v=5">
+  <script src="app.js?v=5" defer></script>
 </head>
 <body>
 <!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
@@ -88,6 +88,10 @@
       <fieldset>
         <legend>Se aconteceu hoje <small>opcional, marque quantos quiser</small></legend>
         <div class="opcoes" data-campo="marcas"></div>
+        <div class="caixa ajuda" id="ajuda-morte" role="status" hidden>
+          <p><b>Obrigado por registrar.</b> Se esses pensamentos estão fortes agora, você não precisa passar por isso sozinho: ligue <a href="tel:188">188</a> (CVV, gratuito, 24 horas) ou, em emergência, <a href="tel:192">192</a>.</p>
+          <p>Conte também ao profissional que acompanha você, ou a alguém de confiança. Este app não avisa ninguém: o registro fica só no seu celular.</p>
+        </div>
       </fieldset>
       <label class="nota"><span>Nota <small>opcional, o que as bolinhas não mostram</small></span>
         <textarea name="nota" maxlength="140" rows="2" autocomplete="off" placeholder="Ex.: sem energia de dia, fiquei na cama até as 15h; à noite, mais disposto"></textarea>
@@ -112,6 +116,7 @@
     <p class="dica">Toque num dia dos últimos 7 para corrigir.</p>
     <div class="grade-wrap"><table class="grade" id="grade"></table></div>
     <div class="numeros" id="numeros"></div>
+    <p class="alerta" id="alerta-morte" hidden>Nesta semana houve dia com pensamentos de morte ou de se machucar. Conte ao profissional que acompanha você. Se estiverem fortes agora, ligue <a href="tel:188">188</a> (CVV, 24 horas) ou <a href="tel:192">192</a>.</p>
     <p class="alerta" id="alerta-sono" hidden>3 noites ou mais com 5 h ou menos nesta semana. Avise seu médico antes da próxima consulta.</p>
     <p class="sos">Pensamentos de morte: ligue <a href="tel:188">188</a> (CVV).</p>
   </section>
@@ -204,6 +209,7 @@
   <p>"Como combinado" é do jeito que o profissional orientou. Esqueceu, atrasou ou mudou a dose por conta própria? Marque "não tomei como combinado" e, se quiser, diga na nota.</p>
   <h3>Se aconteceu hoje</h3>
   <p>Marque só o que aconteceu de fato, quantas opções quiser. Não é teste nem diagnóstico: são fatos do dia que ajudam o profissional a ver o que se repete. Nada aconteceu? Deixe em branco.</p>
+  <p>Pensamentos de morte e uso de álcool ou outras substâncias também entram aqui, porque são importantes para quem acompanha você. Marcar não avisa ninguém: leve ao profissional pelo resumo. Se os pensamentos estiverem fortes agora, ligue 188 (CVV) ou 192.</p>
   <h3>Nota</h3>
   <p>Use para o que as bolinhas não mostram. Fatos, não rótulos: o que aconteceu, quanto durou, o que veio antes. Por exemplo:</p>
   <ul>

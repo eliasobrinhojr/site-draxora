@@ -15,8 +15,11 @@
     ['impulso', 'Agi por impulso (gasto, comida, briga ou algo de que me arrependi)', 'Impulso'],
     ['foco', 'Perdi o foco ou esqueci algo importante', 'Foco ou esquecimento'],
     ['ansiedade', 'Crise de ansiedade ou pânico', 'Ansiedade ou pânico'],
-    ['evitei', 'Evitei pessoas, saídas ou compromissos', 'Evitei pessoas']
+    ['evitei', 'Evitei pessoas, saídas ou compromissos', 'Evitei pessoas'],
+    ['substancia', 'Usei álcool ou outras substâncias mais do que o normal', 'Álcool ou substâncias'],
+    ['morte', 'Tive pensamentos de morte ou de me machucar', 'Pensamentos de morte']
   ];
+  // Quando "pensamentos de morte" é marcado, o app mostra ajuda na hora. Ele não avisa ninguém (está no termo).
   var DIAS_SEM = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   var $ = function (s) { return document.querySelector(s); };
@@ -155,6 +158,7 @@
     var f = $('#f-dia');
     ['sono', 'humor', 'remedio'].forEach(function (c) { $$('input[name="' + c + '"]').forEach(function (i) { i.checked = r[c] === i.value; }); });
     $$('input[name="marcas"]').forEach(function (i) { i.checked = (r.marcas || []).indexOf(i.value) >= 0; });
+    ajudaMorte();
     f.nota.value = r.nota || '';
     $('#conta-nota').textContent = f.nota.value.length + '/140';
     $('#ok-dia').hidden = true;
@@ -197,6 +201,8 @@
   $('#dicas-fechar').addEventListener('click', fechaDicas);
   $('#dicas-ok').addEventListener('click', fechaDicas);
   dlg.addEventListener('click', function (e) { if (e.target === dlg) fechaDicas(); });
+  function ajudaMorte() { var i = document.querySelector('input[name="marcas"][value="morte"]'); $('#ajuda-morte').hidden = !(i && i.checked); }
+  document.addEventListener('change', function (e) { if (e.target && e.target.name === 'marcas') ajudaMorte(); });
   $('#f-dia').nota.addEventListener('input', function () { $('#conta-nota').textContent = this.value.length + '/140'; });
 
   // Aviso curto no rodapé da tela, com uma ação opcional.
@@ -260,6 +266,7 @@
       var d = el('div', 'num'); d.appendChild(el('b', null, String(x[0]))); d.appendChild(el('span', null, x[1])); nb.appendChild(d);
     });
     $('#alerta-sono').hidden = c.curtas < 3;
+    $('#alerta-morte').hidden = !c.marcas.morte;
   }
   function conta(dias) {
     var c = { curtas: 0, acel: 0, mbaixo: 0, regs: 0, sonoSoma: 0, sonoN: 0, humor: {}, rem: { sim: 0, nao: 0, 'nao-uso': 0 }, notas: [], marcas: {} };
