@@ -41,6 +41,8 @@
   // Formulários de captura "Avisar-me" -> api/inscrever.php (PHP + MySQL na Hostinger)
   var PAGE_T0 = Date.now();
   var params = new URLSearchParams(window.location.search);
+  // ?de=… do link (PDF, e-mail, canal): vai junto na origem do cadastro. Fica aqui fora para os dois formulários enxergarem.
+  var DE_PARAM = (params.get('de') || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40);
   // Sucesso: o próprio formulário vira um cartão de confirmação, com o e-mail cadastrado,
   // recebe o foco (leitores de tela anunciam) e fica visível na tela.
   function leadDone(form, email, ja) {
@@ -83,7 +85,7 @@
       var endpoint = form.getAttribute('data-endpoint');
       var data = new FormData(form);
       ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) { if (params.get(k)) data.append(k, params.get(k)); });
-      data.append('origem', window.location.pathname + (deFb ? '?de=' + deFb : ''));
+      data.append('origem', window.location.pathname + (DE_PARAM ? '?de=' + DE_PARAM : ''));
       data.append('dx_t', String(Math.round((Date.now() - PAGE_T0) / 1000)));
       if (btn) btn.disabled = true;
       fetch(endpoint, { method: 'POST', body: data, credentials: 'same-origin' })
