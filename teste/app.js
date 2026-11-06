@@ -517,108 +517,134 @@
   function graficoResumo(f, dias, c) {
     var n = dias.length;
     var W = larguraImpressao || Math.max(300, Math.round(f.clientWidth - 36));
-    var L = W < 420 ? 122 : 140, R = 6, slot = (W - L - R) / n;
+    var estreito = W < 420;
+    var L = estreito ? 112 : 138, R = 30, slot = (W - L - R) / n, xFim = W - R;
     var CURTO_H = { acelerado: 'Acelerado', animado: 'Animado', normal: 'Normal p/ mim', baixo: 'Pra baixo', 'muito-baixo': 'Muito p/ baixo' };
     var marcasUsadas = MARCAS.filter(function (o) { return c.marcas[o[0]]; });
     var temRem = c.rem.sim + c.rem.nao + c.rem['nao-uso'] > 0, temNota = c.notas.length > 0;
-    // Alturas dos blocos
-    var y = 0, linhaH = W < 420 ? 18 : 20;
-    var yHumorT = y; y += 18; var yHumor = y; y += linhaH * 5; y += 14;
-    var ySonoT = y; y += 18; var ySono = y, sonoH = 64; y += sonoH; y += 14;
-    var yRemT = y, yRem = y + 18; if (temRem) y += 18 + linhaH; 
-    var yMarT = y, yMar = y + 18; if (marcasUsadas.length) y += 18 + linhaH * marcasUsadas.length;
-    var yNota = y; if (temNota) y += linhaH;
-    var yEixo = y + 6; var H = yEixo + 18;
+    var regs = dias.map(function (d) { return (st.regs || {})[ymd(d)] || null; });
+    var linhaH = estreito ? 20 : 22, tituloH = 22, gap = 18;
+    var tam = Math.max(3, Math.min(5, slot / 2 - 0.5)); // raio/meio-lado dos símbolos
+
+    // ----- Legenda destacada (HTML, acima do gráfico; também sai na impressão) -----
+    var leg = el('div', 'g-legenda');
+    function icone(desenho) { var s2 = sv('svg', { viewBox: '0 0 16 16', width: 16, height: 16, 'aria-hidden': 'true' }); desenho(s2); return s2; }
+    function item(desenho, txt) { var it = el('span', 'g-leg-item'); it.appendChild(icone(desenho)); it.appendChild(el('span', null, txt)); leg.appendChild(it); }
+    item(function (g) { g.appendChild(sv('line', { x1: 1, y1: 11, x2: 15, y2: 5, 'class': 'g-linha' })); g.appendChild(sv('circle', { cx: 8, cy: 8, r: 3.5, 'class': 'g-ponto' })); }, 'Humor do dia');
+    item(function (g) { g.appendChild(sv('rect', { x: 0, y: 4, width: 16, height: 8, rx: 2, 'class': 'g-normal' })); }, 'Faixa “normal para mim”');
+    item(function (g) { g.appendChild(sv('rect', { x: 4, y: 3, width: 8, height: 13, rx: 1.5, 'class': 'g-barra' })); }, 'Horas de sono');
+    item(function (g) { g.appendChild(sv('rect', { x: 4, y: 7, width: 8, height: 9, rx: 1.5, 'class': 'g-barra curta' })); }, '5 h ou menos');
+    if (temRem) {
+      item(function (g) { g.appendChild(sv('circle', { cx: 8, cy: 8, r: 4.5, 'class': 'g-ponto' })); }, 'Tomou o remédio');
+      item(function (g) { g.appendChild(sv('path', { d: 'M4,4L12,12M12,4L4,12', 'class': 'g-x' })); }, 'Não tomou');
+      if (c.rem['nao-uso']) item(function (g) { g.appendChild(sv('line', { x1: 3, y1: 8, x2: 13, y2: 8, 'class': 'g-traco' })); }, 'Não usa');
+    }
+    if (marcasUsadas.length) item(function (g) { g.appendChild(sv('rect', { x: 3.5, y: 3.5, width: 9, height: 9, rx: 1.5, 'class': 'g-marca' })); }, 'Aconteceu no dia');
+    if (temNota) item(function (g) { g.appendChild(sv('circle', { cx: 8, cy: 8, r: 4, 'class': 'g-nota' })); }, 'Tem nota');
+
+    // ----- Posições dos blocos -----
+    var y = 4, blocos = [];
+    function bloco(nome, alturaPlot, total) { var b = { nome: nome, yt: y, yp: y + tituloH, h: alturaPlot, total: total }; y = b.yp + alturaPlot + gap; blocos.push(b); return b; }
+    var bH = bloco('Humor', linhaH * 5, null);
+    var bS = bloco('Sono', estreito ? 72 : 84, 'h/noite');
+    var bR = temRem ? bloco('Remédio', linhaH, (c.rem.sim + c.rem.nao) ? 'tomou ' + c.rem.sim + ' de ' + (c.rem.sim + c.rem.nao) + ' dias' : 'não usa') : null;
+    var bM = marcasUsadas.length ? bloco('Se aconteceu', linhaH * marcasUsadas.length, 'dias') : null;
+    var bN = temNota ? bloco('Notas', linhaH, null) : null;
+    var yEixo = y - gap + 6, H = yEixo + 20;
+
     var svg = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, 'class': 'graf', role: 'img', tabindex: '0' });
     svg.setAttribute('aria-label', 'Gráfico dia a dia de ' + dm(dias[0]) + ' a ' + dm(dias[n - 1]) + ': humor, sono, remédio e marcações. Toque ou use as setas para ver cada dia. A versão em valores tem as contagens.');
-    var defs = sv('defs'); var pat = sv('pattern', { id: 'hach', width: 4, height: 4, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
-    pat.appendChild(sv('rect', { width: 4, height: 4, fill: 'var(--g2)' })); pat.appendChild(sv('line', { x1: 0, y1: 0, x2: 0, y2: 4, stroke: '#fff', 'stroke-width': 1.4 }));
+    var defs = sv('defs'); var pat = sv('pattern', { id: 'hach', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
+    pat.appendChild(sv('rect', { width: 5, height: 5, fill: 'var(--g2)' })); pat.appendChild(sv('line', { x1: 0, y1: 0, x2: 0, y2: 5, stroke: '#fff', 'stroke-width': 1.6 }));
     defs.appendChild(pat); svg.appendChild(defs);
     function cx(i) { return L + slot * i + slot / 2; }
-    function titulo(yy, txt, extra) {
-      var t = sv('text', { x: 0, y: yy + 12, 'class': 'g-tit' }, txt); svg.appendChild(t);
-      if (extra) svg.appendChild(sv('text', { x: L, y: yy + 12, 'class': 'g-leg' }, extra));
-    }
-    function rotulo(yy, txt) { svg.appendChild(sv('text', { x: 0, y: yy + 4, 'class': 'g-rot' }, txt)); }
-    // Faixa de destaque do dia tocado (fica atrás de tudo)
-    var faixa = sv('rect', { x: 0, y: 0, width: slot, height: yEixo, 'class': 'g-faixa', visibility: 'hidden' }); svg.appendChild(faixa);
-    // Separador de semana (segunda-feira) em todos os blocos
-    dias.forEach(function (d, i) { if (i > 0 && d.getDay() === 1) svg.appendChild(sv('line', { x1: L + slot * i, x2: L + slot * i, y1: yHumor - 6, y2: yEixo, 'class': 'g-sem' })); });
-    var regs = dias.map(function (d) { return (st.regs || {})[ymd(d)] || null; });
+    function txt(x, yy, t, cls, anc) { var e = sv('text', { x: x, y: yy, 'class': cls }, t); if (anc) e.setAttribute('text-anchor', anc); svg.appendChild(e); return e; }
+    function rotulo(yy, t) { txt(L - 10, yy + 4, t, 'g-rot', 'end'); }
+    function conta(yy, t) { txt(W, yy + 4, t, 'g-conta', 'end'); }
 
-    // 1. Humor: 5 níveis em palavras, linha só entre dias seguidos com registro
-    titulo(yHumorT, 'Humor');
-    var nivel = {}; HUMOR.forEach(function (o, k) { nivel[o[0]] = k; });
-    HUMOR.forEach(function (o, k) {
-      var yy = yHumor + linhaH * k + linhaH / 2;
-      svg.appendChild(sv('line', { x1: L, x2: W - R, y1: yy, y2: yy, 'class': o[0] === 'normal' ? 'g-ref' : 'g-grade' }));
-      rotulo(yy, CURTO_H[o[0]]);
+    // Fundo de cada bloco (área do gráfico) + título + separador entre blocos
+    blocos.forEach(function (b, k) {
+      svg.appendChild(sv('rect', { x: L - 4, y: b.yp - 4, width: xFim - L + 8, height: b.h + 8, rx: 8, 'class': 'g-fundo' }));
+      txt(0, b.yt + 13, b.nome.toUpperCase(), 'g-tit');
+      if (b.total) txt(W, b.yt + 13, b.total, 'g-tit-conta', 'end');
+      if (k > 0) svg.appendChild(sv('line', { x1: 0, x2: W, y1: b.yt - gap / 2, y2: b.yt - gap / 2, 'class': 'g-div' }));
     });
-    var pts = regs.map(function (r, i) { return r && r.humor in nivel ? [cx(i), yHumor + linhaH * nivel[r.humor] + linhaH / 2] : null; });
+    var faixa = sv('rect', { x: 0, y: blocos[0].yp - 4, width: slot, height: yEixo - blocos[0].yp + 4, rx: 3, 'class': 'g-faixa', visibility: 'hidden' }); svg.appendChild(faixa);
+    // Separador de semana (segunda-feira) só dentro da área de cada bloco (não corta títulos nem totais)
+    dias.forEach(function (d, i) {
+      if (i > 0 && d.getDay() === 1) blocos.forEach(function (b) { svg.appendChild(sv('line', { x1: L + slot * i, x2: L + slot * i, y1: b.yp - 4, y2: b.yp + b.h + 4, 'class': 'g-sem' })); });
+    });
+
+    // 1. Humor
+    var nivel = {}; HUMOR.forEach(function (o, k) { nivel[o[0]] = k; });
+    var yN = bH.yp + linhaH * nivel.normal;
+    svg.appendChild(sv('rect', { x: L - 4, y: yN + 2, width: xFim - L + 8, height: linhaH - 4, rx: 4, 'class': 'g-normal' }));
+    HUMOR.forEach(function (o, k) {
+      var yy = bH.yp + linhaH * k + linhaH / 2;
+      if (o[0] !== 'normal') svg.appendChild(sv('line', { x1: L, x2: xFim, y1: yy, y2: yy, 'class': 'g-grade' }));
+      rotulo(yy, CURTO_H[o[0]]);
+      conta(yy, String(c.humor[o[0]] || 0));
+    });
+    txt(W, bH.yt + 13, 'dias', 'g-tit-conta', 'end');
+    var pts = regs.map(function (r, i) { return r && r.humor in nivel ? [cx(i), bH.yp + linhaH * nivel[r.humor] + linhaH / 2] : null; });
     var trecho = [];
     function fechaTrecho() { if (trecho.length > 1) svg.appendChild(sv('polyline', { points: trecho.map(function (p) { return p.join(','); }).join(' '), 'class': 'g-linha' })); trecho = []; }
     pts.forEach(function (p) { if (p) trecho.push(p); else fechaTrecho(); }); fechaTrecho();
-    var raio = Math.max(3, Math.min(4.5, slot / 2 - 1));
-    pts.forEach(function (p) { if (p) svg.appendChild(sv('circle', { cx: p[0], cy: p[1], r: raio, 'class': 'g-ponto' })); });
+    pts.forEach(function (p) { if (p) svg.appendChild(sv('circle', { cx: p[0], cy: p[1], r: tam, 'class': 'g-ponto' })); });
 
-    // 2. Sono: barras da base zero; 5 h ou menos com hachura (lê também em preto e branco)
-    titulo(ySonoT, 'Sono', '▨ 5 h ou menos');
-    var maxH = 9;
+    // 2. Sono (base zero; 5 h ou menos hachurado)
+    var maxH = 9, base = bS.yp + bS.h;
     [5, 7, 9].forEach(function (h) {
-      var yy = ySono + sonoH - h / maxH * sonoH;
-      svg.appendChild(sv('line', { x1: L, x2: W - R, y1: yy, y2: yy, 'class': 'g-grade' }));
-      svg.appendChild(sv('text', { x: L - 6, y: yy + 3.5, 'class': 'g-eixo', 'text-anchor': 'end' }, h + (h === 9 ? '+ h' : ' h')));
+      var yy = base - h / maxH * bS.h;
+      svg.appendChild(sv('line', { x1: L, x2: xFim, y1: yy, y2: yy, 'class': h === 5 ? 'g-grade forte' : 'g-grade' }));
+      txt(L - 10, yy + 4, h === 9 ? '9+ h' : h + ' h', 'g-eixo', 'end');
     });
-    rotulo(ySono + sonoH / 2 - 6, 'Horas');
-    svg.appendChild(sv('line', { x1: L, x2: W - R, y1: ySono + sonoH, y2: ySono + sonoH, 'class': 'g-base' }));
-    var bw = Math.max(2, Math.min(14, slot - 3));
+    svg.appendChild(sv('line', { x1: L, x2: xFim, y1: base, y2: base, 'class': 'g-base' }));
+    var bw = Math.max(2, Math.min(16, slot * 0.7));
     regs.forEach(function (r, i) {
       if (!r || !r.sono) return;
-      var h = +r.sono, hh = h / maxH * sonoH, x = cx(i) - bw / 2, yb = ySono + sonoH, rr = Math.min(2, bw / 2);
-      var d = 'M' + x + ',' + yb + 'V' + (yb - hh + rr) + 'Q' + x + ',' + (yb - hh) + ' ' + (x + rr) + ',' + (yb - hh) + 'H' + (x + bw - rr) + 'Q' + (x + bw) + ',' + (yb - hh) + ' ' + (x + bw) + ',' + (yb - hh + rr) + 'V' + yb + 'Z';
+      var h = +r.sono, hh = h / maxH * bS.h, x = cx(i) - bw / 2, rr = Math.min(3, bw / 2);
+      var d = 'M' + x + ',' + base + 'V' + (base - hh + rr) + 'Q' + x + ',' + (base - hh) + ' ' + (x + rr) + ',' + (base - hh) + 'H' + (x + bw - rr) + 'Q' + (x + bw) + ',' + (base - hh) + ' ' + (x + bw) + ',' + (base - hh + rr) + 'V' + base + 'Z';
       svg.appendChild(sv('path', { d: d, 'class': h <= 5 ? 'g-barra curta' : 'g-barra' }));
     });
+    conta(bS.yp + bS.h / 2, c.sonoN ? (c.sonoSoma / c.sonoN).toFixed(1).replace('.', ',') : '–');
 
-    // 3. Remédio: ● tomou · ✕ não tomou · – não usa
-    if (temRem) {
-      titulo(yRemT, 'Remédio', '● tomou   ✕ não tomou   – não usa');
-      var yr = yRem + linhaH / 2; rotulo(yr, 'Como combinado');
+    // 3. Remédio
+    if (bR) {
+      var yr = bR.yp + linhaH / 2; rotulo(yr, 'Como combinado');
       regs.forEach(function (r, i) {
-        if (!r || !r.remedio) return; var x = cx(i), s = Math.min(4, slot / 2 - 1);
-        if (r.remedio === 'sim') svg.appendChild(sv('circle', { cx: x, cy: yr, r: s, 'class': 'g-ponto' }));
-        else if (r.remedio === 'nao') { svg.appendChild(sv('path', { d: 'M' + (x - s) + ',' + (yr - s) + 'L' + (x + s) + ',' + (yr + s) + 'M' + (x + s) + ',' + (yr - s) + 'L' + (x - s) + ',' + (yr + s), 'class': 'g-x' })); }
-        else svg.appendChild(sv('line', { x1: x - s, x2: x + s, y1: yr, y2: yr, 'class': 'g-traco' }));
+        if (!r || !r.remedio) return; var x = cx(i), s2 = tam;
+        if (r.remedio === 'sim') svg.appendChild(sv('circle', { cx: x, cy: yr, r: s2, 'class': 'g-ponto' }));
+        else if (r.remedio === 'nao') svg.appendChild(sv('path', { d: 'M' + (x - s2) + ',' + (yr - s2) + 'L' + (x + s2) + ',' + (yr + s2) + 'M' + (x + s2) + ',' + (yr - s2) + 'L' + (x - s2) + ',' + (yr + s2), 'class': 'g-x' }));
+        else svg.appendChild(sv('line', { x1: x - s2, x2: x + s2, y1: yr, y2: yr, 'class': 'g-traco' }));
       });
     }
-    // 4. Se aconteceu: um quadradinho no dia marcado
-    if (marcasUsadas.length) {
-      titulo(yMarT, 'Se aconteceu');
+    // 4. Se aconteceu
+    if (bM) {
       marcasUsadas.forEach(function (o, k) {
-        var yy = yMar + linhaH * k + linhaH / 2; rotulo(yy, o[2]);
-        svg.appendChild(sv('line', { x1: L, x2: W - R, y1: yy, y2: yy, 'class': 'g-grade' }));
-        regs.forEach(function (r, i) { if (r && (r.marcas || []).indexOf(o[0]) >= 0) { var s = Math.min(4, slot / 2 - 1); svg.appendChild(sv('rect', { x: cx(i) - s, y: yy - s, width: 2 * s, height: 2 * s, rx: 1, 'class': 'g-marca' })); } });
+        var yy = bM.yp + linhaH * k + linhaH / 2; rotulo(yy, o[2]);
+        svg.appendChild(sv('line', { x1: L, x2: xFim, y1: yy, y2: yy, 'class': 'g-grade' }));
+        regs.forEach(function (r, i) { if (r && (r.marcas || []).indexOf(o[0]) >= 0) svg.appendChild(sv('rect', { x: cx(i) - tam, y: yy - tam, width: 2 * tam, height: 2 * tam, rx: 1.5, 'class': 'g-marca' })); });
+        conta(yy, String(c.marcas[o[0]]));
       });
     }
-    if (temNota) {
-      var yn = yNota + linhaH / 2; rotulo(yn, 'Nota');
-      regs.forEach(function (r, i) { if (r && r.nota) svg.appendChild(sv('circle', { cx: cx(i), cy: yn, r: Math.min(3.5, slot / 2 - 1), 'class': 'g-nota' })); });
+    // 5. Notas (o texto vem logo abaixo, em "Notas do paciente")
+    if (bN) {
+      var yn = bN.yp + linhaH / 2; rotulo(yn, 'Dia com nota');
+      regs.forEach(function (r, i) { if (r && r.nota) svg.appendChild(sv('circle', { cx: cx(i), cy: yn, r: tam - 0.5, 'class': 'g-nota' })); });
+      conta(yn, String(c.notas.length));
     }
-    // Eixo dos dias: todos se couber, senão segundas e o último
-    var cabe = slot >= 15;
-    // Rótulos que encostariam no anterior são pulados (o último dia sempre aparece).
-    var fimAnterior = -1e9, rotEixo = [];
+
+    // Eixo dos dias (rótulos que encostariam no anterior são pulados; o último dia sempre aparece)
+    var cabe = slot >= 15, fimAnterior = -1e9, rotEixo = [];
     dias.forEach(function (d, i) {
       if (!cabe && d.getDay() !== 1 && i !== n - 1 && i !== 0) return;
-      var txt = (i === 0 || d.getDate() === 1) ? d.getDate() + '/' + (d.getMonth() + 1) : String(d.getDate());
-      var larg = txt.length * 6, ini = i === 0 ? L : cx(i) - larg / 2;
+      var t = (i === 0 || d.getDate() === 1) ? d.getDate() + '/' + (d.getMonth() + 1) : String(d.getDate());
+      var larg = t.length * 6.5, ini = i === 0 ? L : cx(i) - larg / 2;
       if (ini < fimAnterior + 5) { if (i !== n - 1) return; rotEixo.pop(); }
-      rotEixo.push([i, txt]); fimAnterior = ini + larg;
+      rotEixo.push([i, t]); fimAnterior = ini + larg;
     });
-    rotEixo.forEach(function (x) {
-      var i = x[0];
-      // O primeiro rótulo começa na borda do gráfico (não invade o vizinho)
-      svg.appendChild(sv('text', { x: i === 0 ? L : cx(i), y: yEixo + 12, 'class': 'g-eixo', 'text-anchor': i === 0 ? 'start' : 'middle' }, x[1]));
-    });
+    rotEixo.forEach(function (x) { var i = x[0]; txt(i === 0 ? L : cx(i), yEixo + 13, x[1], 'g-eixo', i === 0 ? 'start' : 'middle'); });
 
     // Toque / setas: detalhe do dia embaixo do gráfico
     var info = el('p', 'g-info nao-imprime', 'Toque num dia para ver o detalhe.'); info.setAttribute('aria-live', 'polite');
@@ -640,12 +666,12 @@
     }
     svg.addEventListener('click', function (e) {
       var p = svg.getBoundingClientRect(), x = (e.clientX - p.left) * W / p.width;
-      if (x >= L) mostraDia(Math.floor((x - L) / slot));
+      if (x >= L && x <= xFim) mostraDia(Math.floor((x - L) / slot));
     });
     svg.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); mostraDia(atual < 0 ? n - 1 : atual + (e.key === 'ArrowRight' ? 1 : -1)); }
     });
-    var caixa = el('div', 'graf-wrap'); caixa.appendChild(svg); f.appendChild(caixa); f.appendChild(info);
+    var caixa = el('div', 'graf-wrap'); caixa.appendChild(leg); caixa.appendChild(svg); f.appendChild(caixa); f.appendChild(info);
   }
   // Impressão do gráfico: redesenha na largura da folha A4 e volta depois.
   window.addEventListener('beforeprint', function () { if (modoResumo === 'grafico' && !$('#t-resumo').hidden) { larguraImpressao = 680; desenhaResumo(); } });

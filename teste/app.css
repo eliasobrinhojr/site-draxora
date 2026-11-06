@@ -124,27 +124,35 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 
 /* Resumo em gráfico (cores validadas: contraste e daltonismo) */
 .folha { --g1: #00897D; --g2: #BC5A40; }
-.graf-wrap { margin: 14px 0 4px; }
+.graf-wrap { margin: 16px 0 6px; }
+.g-legenda { display: flex; flex-wrap: wrap; gap: 6px 14px; background: var(--creme); border: 1px solid var(--linha); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+.g-leg-item { display: inline-flex; align-items: center; gap: 6px; font: 600 13px Figtree, sans-serif; color: #2b3a35; white-space: nowrap; }
+.g-leg-item svg { flex: none; overflow: visible; }
 .graf { display: block; max-width: 100%; height: auto; overflow: visible; }
 .graf:focus-visible { outline: 3px solid var(--petroleo); outline-offset: 4px; border-radius: 6px; }
-.g-tit { font: 700 11px Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; fill: var(--verde); }
-.g-leg { font: 500 11px Figtree, sans-serif; fill: var(--texto); }
-.g-rot { font: 500 11px Figtree, sans-serif; fill: #2b3a35; }
-.g-eixo { font: 500 10px Figtree, sans-serif; fill: var(--texto); font-variant-numeric: tabular-nums; }
+.g-tit { font: 700 12px Figtree, sans-serif; letter-spacing: .12em; fill: var(--verde); }
+.g-tit-conta { font: 600 10px Figtree, sans-serif; letter-spacing: .04em; fill: var(--salvia); }
+.g-rot { font: 500 12px Figtree, sans-serif; fill: #2b3a35; }
+.g-conta { font: 700 12px Figtree, sans-serif; fill: var(--verde); font-variant-numeric: tabular-nums; }
+.g-eixo { font: 500 11px Figtree, sans-serif; fill: var(--texto); font-variant-numeric: tabular-nums; }
+.g-fundo { fill: #FCFBF8; stroke: #EFEBE3; stroke-width: 1; }
+.g-div { stroke: var(--linha); stroke-width: 1; }
 .g-grade { stroke: #ECE8E0; stroke-width: 1; }
-.g-ref { stroke: var(--salvia); stroke-width: 1; stroke-dasharray: 3 3; }
-.g-base { stroke: var(--salvia); stroke-width: 1; }
-.g-sem { stroke: var(--linha); stroke-width: 1; }
-.g-linha { fill: none; stroke: var(--g1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.g-grade.forte { stroke: #D9D3C7; stroke-dasharray: 3 3; }
+.g-normal { fill: var(--menta); opacity: .85; }
+.g-base { stroke: var(--salvia); stroke-width: 1.2; }
+.g-sem { stroke: #E3DED3; stroke-width: 1; }
+.g-linha { fill: none; stroke: var(--g1); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
 .g-ponto { fill: var(--g1); stroke: #fff; stroke-width: 1.5; }
 .g-barra { fill: var(--g1); }
 .g-barra.curta { fill: url(#hach); }
-.g-x { stroke: var(--g2); stroke-width: 2; stroke-linecap: round; }
-.g-traco { stroke: var(--salvia); stroke-width: 2; stroke-linecap: round; }
+.g-x { stroke: var(--g2); stroke-width: 2.4; stroke-linecap: round; fill: none; }
+.g-traco { stroke: var(--salvia); stroke-width: 2.4; stroke-linecap: round; }
 .g-marca { fill: var(--verde); }
-.g-nota { fill: #fff; stroke: var(--verde); stroke-width: 1.5; }
-.g-faixa { fill: var(--menta); }
-.g-info { font-size: 14px; color: #2b3a35; background: var(--creme); border-radius: 10px; padding: 8px 10px; min-height: 2.6em; }
+.g-nota { fill: #fff; stroke: var(--verde); stroke-width: 1.8; }
+.g-faixa { fill: #294F46; opacity: .08; }
+.g-info { font-size: 14px; color: #2b3a35; background: var(--creme); border: 1px solid var(--linha); border-radius: 10px; padding: 10px 12px; min-height: 2.6em; }
+@media print { .g-legenda { background: #fff; padding: 6px 8px; } .g-leg-item { font-size: 11px; } }
 @media print {
   @page { size: A4; margin: 12mm; }
   body { background: #fff; }
