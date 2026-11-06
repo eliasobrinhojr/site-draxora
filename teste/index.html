@@ -13,8 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="../assets/img/draxora-icone-app.svg?v=5">
   <link rel="apple-touch-icon" href="icone-180.png">
-  <link rel="stylesheet" href="app.css?v=7">
-  <script src="app.js?v=10" defer></script>
+  <link rel="stylesheet" href="app.css?v=8">
+  <script src="app.js?v=11" defer></script>
 </head>
 <body>
 <!-- Teste do app, só para convidados. Sem Pixel, sem Google, sem cookies: nada além de contagens anônimas sai deste aparelho. -->
@@ -154,6 +154,10 @@
       <div class="seg" role="group" aria-label="Período">
         <button type="button" data-sem="2" aria-pressed="true">2 semanas</button>
         <button type="button" data-sem="4" aria-pressed="false">4 semanas</button>
+      </div>
+      <div class="seg" role="group" aria-label="Formato do resumo" id="seg-modo">
+        <button type="button" data-modo="valores" aria-pressed="true">Valores</button>
+        <button type="button" data-modo="grafico" aria-pressed="false">Gráfico</button>
       </div>
       <button class="btn" type="button" id="btn-imprimir">Imprimir ou salvar em PDF</button>
     </div>

@@ -122,6 +122,29 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 
 @media (min-width: 520px) { .folha-grid { grid-template-columns: 1fr 1fr; } }
 
+/* Resumo em gráfico (cores validadas: contraste e daltonismo) */
+.folha { --g1: #00897D; --g2: #BC5A40; }
+.graf-wrap { margin: 14px 0 4px; }
+.graf { display: block; max-width: 100%; height: auto; overflow: visible; }
+.graf:focus-visible { outline: 3px solid var(--petroleo); outline-offset: 4px; border-radius: 6px; }
+.g-tit { font: 700 11px Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; fill: var(--verde); }
+.g-leg { font: 500 11px Figtree, sans-serif; fill: var(--texto); }
+.g-rot { font: 500 11px Figtree, sans-serif; fill: #2b3a35; }
+.g-eixo { font: 500 10px Figtree, sans-serif; fill: var(--texto); font-variant-numeric: tabular-nums; }
+.g-grade { stroke: #ECE8E0; stroke-width: 1; }
+.g-ref { stroke: var(--salvia); stroke-width: 1; stroke-dasharray: 3 3; }
+.g-base { stroke: var(--salvia); stroke-width: 1; }
+.g-sem { stroke: var(--linha); stroke-width: 1; }
+.g-linha { fill: none; stroke: var(--g1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.g-ponto { fill: var(--g1); stroke: #fff; stroke-width: 1.5; }
+.g-barra { fill: var(--g1); }
+.g-barra.curta { fill: url(#hach); }
+.g-x { stroke: var(--g2); stroke-width: 2; stroke-linecap: round; }
+.g-traco { stroke: var(--salvia); stroke-width: 2; stroke-linecap: round; }
+.g-marca { fill: var(--verde); }
+.g-nota { fill: #fff; stroke: var(--verde); stroke-width: 1.5; }
+.g-faixa { fill: var(--menta); }
+.g-info { font-size: 14px; color: #2b3a35; background: var(--creme); border-radius: 10px; padding: 8px 10px; min-height: 2.6em; }
 @media print {
   @page { size: A4; margin: 12mm; }
   body { background: #fff; }
