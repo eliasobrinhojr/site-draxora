@@ -91,6 +91,18 @@
   // A aba "Hoje" sempre abre no dia de hoje (outros dias: setas ou toque na Semana).
   $$('#abas button').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.tela === 'hoje') diaSel = hoje(); mostra(b.dataset.tela); }); });
 
+  // Voltando do segundo plano (o ícone da tela inicial costuma voltar sem recarregar): depois de 5 min fora,
+  // se hoje já está registrado e a tela é a de Hoje (ou de um dia antigo), vai para a Semana com hoje destacado;
+  // se não está registrado, reabre o Hoje no dia de hoje (vale para quem deixou o app aberto de um dia para o outro).
+  var escondidoEm = 0;
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { escondidoEm = Date.now(); return; }
+    if (!st.pid || !escondidoEm || Date.now() - escondidoEm < 5 * 60e3 || $('#t-hoje').hidden) return;
+    diaSel = hoje();
+    if ((st.regs || {})[ymd(hoje())]) { semIni = segunda(hoje()); semDestaque = ymd(hoje()); mostra('semana'); }
+    else mostra('hoje');
+  });
+
   function ios() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
   function navegadorDeApp() { return /Instagram|FBAN|FBAV|FB_IAB|LinkedInApp|TikTok|musical_ly|Line\//.test(navigator.userAgent); }
   function instalado() { return navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches); }
