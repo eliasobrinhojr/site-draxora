@@ -149,7 +149,13 @@
   // ===== Entrada =====
   var turmaConvite = null;
   function inicia() {
-    if (st.pid) { pedePersistir(); mostra('hoje'); envia(); return; }
+    if (st.pid) {
+      pedePersistir();
+      // Hoje já registrado: abre na Semana com o dia destacado (o formulário preenchido confundia).
+      if ((st.regs || {})[ymd(hoje())]) { semIni = segunda(hoje()); semDestaque = ymd(hoje()); mostra('semana'); }
+      else mostra('hoje');
+      envia(); return;
+    }
     var c = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
     if (!/^[A-Z0-9-]{4,20}$/.test(c)) { mostra('convite'); return; }
     fetch(API + '?c=' + encodeURIComponent(c), { credentials: 'omit', cache: 'no-store' })
@@ -413,29 +419,42 @@
     var f = limpa($('#folha'));
     var topo = el('header', 'folha-topo');
     topo.appendChild(el('p', 'eb', 'RESUMO PARA A CONSULTA · FEITO PELO PACIENTE'));
-    topo.appendChild(el('h2', null, 'Últimas ' + semanasResumo + ' semanas: ' + dm(ini) + ' a ' + dm(fim) + '/' + fim.getFullYear()));
-    topo.appendChild(el('p', null, 'Dias com registro: ' + c.regs + ' de ' + dias.length + '.'));
+    topo.appendChild(el('h2', null, dm(ini) + ' a ' + dm(fim) + '/' + fim.getFullYear()));
+    topo.appendChild(el('p', 'folha-sub', 'Últimas ' + semanasResumo + ' semanas · ' + c.regs + ' de ' + dias.length + ' dias com registro'));
     f.appendChild(topo);
 
+    // Três números de destaque (o que o profissional costuma perguntar primeiro).
+    var remReg = c.rem.sim + c.rem.nao;
+    var nums = el('div', 'folha-nums');
+    [[c.sonoN ? (c.sonoSoma / c.sonoN).toFixed(1).replace('.', ',') + ' h' : '–', 'sono médio por noite'],
+     [String(c.curtas), c.curtas === 1 ? 'noite com 5 h ou menos' : 'noites com 5 h ou menos'],
+     [remReg ? c.rem.sim + ' de ' + remReg : '–', 'remédio como combinado']].forEach(function (x) {
+      var d = el('div', 'num'); d.appendChild(el('b', null, x[0])); d.appendChild(el('span', null, x[1])); nums.appendChild(d);
+    });
+    f.appendChild(nums);
+
+    // Contagens em linhas: rótulo à esquerda, número à direita (zeros mais claros).
+    function linhas(titulo, itens, vazio) {
+      var sec = el('section'); var h3 = el('h3', null, titulo[0]); if (titulo[1]) h3.appendChild(el('small', null, titulo[1])); sec.appendChild(h3);
+      if (!itens.length) { sec.appendChild(el('p', 'vazio', vazio)); return sec; }
+      itens.forEach(function (it) {
+        var l = el('div', 'lin' + (it[1] ? '' : ' zero')); l.appendChild(el('span', null, it[0])); l.appendChild(el('b', null, String(it[1]))); sec.appendChild(l);
+      });
+      return sec;
+    }
     var g = el('div', 'folha-grid');
-    var s = el('section'); s.appendChild(el('h3', null, 'Sono'));
-    s.appendChild(el('p', null, c.sonoN ? 'Média aproximada: ' + (c.sonoSoma / c.sonoN).toFixed(1).replace('.', ',') + ' h por noite (registro em faixas de 5 h ou menos a 9 h ou mais).' : 'Sem registro de sono no período.'));
-    s.appendChild(el('p', null, 'Noites com 5 h ou menos: ' + c.curtas + '.'));
-    g.appendChild(s);
-    var h = el('section'); h.appendChild(el('h3', null, 'Humor (dias)'));
-    var ul = el('ul');
-    HUMOR.forEach(function (o) { ul.appendChild(el('li', null, o[1] + ': ' + (c.humor[o[0]] || 0))); });
-    h.appendChild(ul); g.appendChild(h);
-    var m = el('section'); m.appendChild(el('h3', null, 'Remédio'));
-    if (c.rem.sim + c.rem.nao === 0 && c.rem['nao-uso'] > 0) m.appendChild(el('p', null, 'Não usa remédio.'));
-    else if (c.rem.sim + c.rem.nao === 0) m.appendChild(el('p', null, 'Sem registro de remédio no período.'));
-    else m.appendChild(el('p', null, 'Tomou como combinado em ' + c.rem.sim + ' dia(s); não tomou como combinado em ' + c.rem.nao + ' dia(s).'));
-    g.appendChild(m);
-    var sa = el('section'); sa.appendChild(el('h3', null, 'Se aconteceu (dias)'));
-    var mlist = MARCAS.filter(function (o) { return c.marcas[o[0]]; });
-    if (!mlist.length) sa.appendChild(el('p', null, 'Nenhuma marcação no período.'));
-    else { var ul2 = el('ul'); mlist.forEach(function (o) { ul2.appendChild(el('li', null, o[1] + ': ' + c.marcas[o[0]])); }); sa.appendChild(ul2); }
-    g.appendChild(sa);
+    g.appendChild(linhas(['Humor', 'dias'], HUMOR.map(function (o) { return [o[1], c.humor[o[0]] || 0]; })));
+    var sonoL = SONO.map(function (o) { return [o[1], 0, o[0]]; });
+    dias.forEach(function (d) { var r = (st.regs || {})[ymd(d)]; if (r && r.sono) sonoL.forEach(function (x) { if (x[2] === r.sono) x[1]++; }); });
+    g.appendChild(linhas(['Sono', 'noites'], c.sonoN ? sonoL : [], 'Sem registro de sono no período.'));
+    var remL = [];
+    if (remReg || c.rem['nao-uso']) {
+      remL.push(['Tomou como combinado', c.rem.sim], ['Não tomou como combinado', c.rem.nao]);
+      if (c.rem['nao-uso']) remL.push(['Não usa remédio', c.rem['nao-uso']]);
+      var semRem = c.regs - remReg - c.rem['nao-uso']; if (semRem > 0) remL.push(['Sem resposta', semRem]);
+    }
+    g.appendChild(linhas(['Remédio', 'dias'], remL, 'Sem registro de remédio no período.'));
+    g.appendChild(linhas(['Se aconteceu', 'dias'], MARCAS.filter(function (o) { return c.marcas[o[0]]; }).map(function (o) { return [o[1], c.marcas[o[0]]]; }), 'Nenhuma marcação no período.'));
     f.appendChild(g);
 
     // Linha do tempo: as bolinhas do humor e do sono, dia a dia, como na folha.
@@ -446,9 +465,12 @@
     t.appendChild(cab);
     var CURTO = { acelerado: 'Acelerado', animado: 'Animado', normal: 'Normal', baixo: 'Pra baixo', 'muito-baixo': 'Muito p/ baixo', '9': '9 h+', '8': '8 h', '7': '7 h', '6': '6 h', '5': '5 h ou -' };
     MARCAS.forEach(function (o) { CURTO[o[0]] = o[2]; });
-    var linhas = [['Humor', 'humor', HUMOR], ['Sono', 'sono', SONO]];
-    if (Object.keys(c.marcas).length) linhas.push(['Se aconteceu', 'marcas', MARCAS.filter(function (o) { return c.marcas[o[0]]; })]);
-    linhas.forEach(function (b) {
+    CURTO.sim = 'Tomou'; CURTO.nao = 'Não tomou'; CURTO['nao-uso'] = 'Não usa';
+    var linhasT = [['Humor', 'humor', HUMOR], ['Sono', 'sono', SONO]];
+    if (remReg || c.rem['nao-uso']) linhasT.push(['Remédio', 'remedio', REMEDIO.filter(function (o) { return o[0] !== 'nao-uso' || c.rem['nao-uso']; })]);
+    if (Object.keys(c.marcas).length) linhasT.push(['Se aconteceu', 'marcas', MARCAS.filter(function (o) { return c.marcas[o[0]]; })]);
+    f.appendChild(el('h3', 'folha-h3', 'Dia a dia'));
+    linhasT.forEach(function (b) {
       var tr = el('tr', 'sec'); var th = el('th', null, b[0]); th.colSpan = dias.length + 1; tr.appendChild(th); t.appendChild(tr);
       b[2].forEach(function (o) {
         var row = el('tr'); row.appendChild(el('th', 'rot', CURTO[o[0]]));

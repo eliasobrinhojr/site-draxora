@@ -94,7 +94,20 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 .folha { background: var(--papel); border: 1px solid var(--linha); border-radius: 16px; padding: 18px; margin: 16px 0; color: #2b3a35; }
 .folha .eb { font: 700 11px Figtree, sans-serif; letter-spacing: .14em; color: var(--terracota); margin-bottom: 6px; }
 .folha h2 { font-size: 20px; }
-.folha-grid { display: grid; gap: 12px; grid-template-columns: 1fr; margin: 12px 0; }
+.folha-grid { display: grid; gap: 18px 28px; grid-template-columns: 1fr; margin: 16px 0; }
+.folha-sub { color: var(--salvia); font-size: 14px; margin-top: 2px; }
+.folha-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0 4px; }
+.folha-nums .num { padding: 10px 6px; }
+.folha-nums .num b { font-size: 22px; white-space: nowrap; }
+.folha-nums .num span { display: block; font-size: 12px; line-height: 1.3; margin-top: 2px; }
+.folha section h3 small { font: 500 11px Figtree, sans-serif; letter-spacing: 0; text-transform: none; color: var(--salvia); margin-left: 6px; }
+.lin { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--linha); font-size: 15px; line-height: 1.35; }
+.lin:last-child { border-bottom: 0; }
+.lin b { font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; flex: none; }
+.lin.zero { color: var(--salvia); }
+.lin.zero b { font-weight: 500; }
+.folha .vazio { color: var(--salvia); font-size: 14px; }
+.folha-h3 { font: 700 12px Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; margin: 8px 0 0; }
 .folha section h3 { font: 700 12px Figtree, sans-serif; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
 .folha ul { margin: 0; padding-left: 18px; }
 .folha .mini { font-size: 10px; }
@@ -107,7 +120,7 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
 
 .rodape { max-width: 560px; margin: 0 auto; padding: 0 16px 28px; font-size: 13px; color: var(--salvia); }
 
-@media (min-width: 520px) { .folha-grid { grid-template-columns: 1fr 1fr 1fr; } }
+@media (min-width: 520px) { .folha-grid { grid-template-columns: 1fr 1fr; } }
 
 @media print {
   @page { size: A4; margin: 12mm; }
@@ -115,7 +128,9 @@ legend small { text-transform: none; letter-spacing: 0; font-size: 13px; margin-
   .topo, .nao-imprime, .rodape, .tela:not(#t-resumo) { display: none !important; }
   main { max-width: none; padding: 0; }
   .folha { border: 0; padding: 0; margin: 0; }
-  .folha-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .folha-grid { grid-template-columns: 1fr 1fr; gap: 10px 28px; }
+  .lin { font-size: 12px; padding: 3px 0; }
+  .folha-nums .num { border: 1px solid #ccc; }
   .grade-wrap { border: 0; padding: 0; overflow: visible; }
   .bola.cheia { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
