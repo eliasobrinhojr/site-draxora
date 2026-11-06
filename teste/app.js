@@ -367,7 +367,8 @@
     }
     bloco('Sono', 'sono', SONO);
     bloco('Humor', 'humor', HUMOR);
-    bloco('Remédio', 'remedio', [REMEDIO[0]]);
+    // As três respostas viram linhas (antes só "Tomei": quem marcava "Não tomei" não via nada na Semana).
+    bloco('Remédio', 'remedio', [['sim', REMEDIO[0][1], 'Tomei'], ['nao', REMEDIO[1][1], 'Não tomei'], ['nao-uso', REMEDIO[2][1], 'Não uso']]);
     bloco('Se aconteceu', 'marcas', MARCAS);
     var rn = el('tr'); rn.appendChild(el('th', 'rot', 'Nota'));
     dias.forEach(function (d) { var r = (st.regs || {})[ymd(d)] || {}; var td = el('td', 'nota-cel'); if (r.nota) { td.textContent = '•'; td.title = r.nota; } rn.appendChild(td); });
